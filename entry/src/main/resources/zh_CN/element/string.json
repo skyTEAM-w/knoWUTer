@@ -10,7 +10,27 @@
     },
     {
       "name": "EntryAbility_label",
-      "value": "label"
+      "value": "小助手"
+    },
+    {
+      "name": "bottom_text_course",
+      "value": "课程"
+    },
+    {
+      "name": "bottom_text_service",
+      "value": "服务"
+    },
+    {
+      "name": "bottom_text_home",
+      "value": "主页"
+    },
+    {
+      "name": "bottom_text_tools",
+      "value": "工具"
+    },
+    {
+      "name": "bottom_text_user",
+      "value": "用户"
     }
   ]
 }

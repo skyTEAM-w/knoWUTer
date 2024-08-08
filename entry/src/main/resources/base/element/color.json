@@ -3,6 +3,18 @@
     {
       "name": "start_window_background",
       "value": "#FFFFFF"
+    },
+    {
+      "name": "bottom_text_color_selected",
+      "value": "#007DFF"
+    },
+    {
+      "name": "bottom_text_color_normal",
+      "value": "#000000"
+    },
+    {
+      "name": "bottom_tab_background_color",
+      "value": "#F1F3F5"
     }
   ]
 }

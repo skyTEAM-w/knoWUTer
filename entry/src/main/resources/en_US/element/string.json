@@ -10,7 +10,27 @@
     },
     {
       "name": "EntryAbility_label",
-      "value": "label"
+      "value": "WHUT Helper"
+    },
+    {
+      "name": "bottom_text_course",
+      "value": "Course"
+    },
+    {
+      "name": "bottom_text_service",
+      "value": "Service"
+    },
+    {
+      "name": "bottom_text_home",
+      "value": "Home"
+    },
+    {
+      "name": "bottom_text_tools",
+      "value": "Tools"
+    },
+    {
+      "name": "bottom_text_user",
+      "value": "User"
     }
   ]
 }
