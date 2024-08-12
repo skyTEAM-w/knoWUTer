@@ -1,11 +1,13 @@
 import { BottomTabsList } from '../viewmodel/BottomTabsModel';
 import { Home } from '../view/HomeComponent';
+import { Tools } from '../view/ToolComponent';
+import { CommonConstants } from '../common/constants/CommonConstants';
 import { webview } from '@kit.ArkWeb'
 
 @Entry
 @Component
 struct Index {
-  @State bottomTabIndex: number = 1;
+  @State bottomTabIndex: number = 2;
   private bottomTabController: TabsController = new TabsController();
 
   @Builder
@@ -30,9 +32,9 @@ struct Index {
   }
 
   pageTransition() {
-    PageTransitionEnter({ duration: 800 })
+    PageTransitionEnter({ duration: CommonConstants.DURATION})
       .slide(SlideEffect.Top)
-    PageTransitionExit({ delay: 100 })
+    PageTransitionExit({ delay: CommonConstants.EXIT_DELAY })
       .opacity(0)
   }
 
@@ -40,11 +42,11 @@ struct Index {
     Flex({ direction: FlexDirection.Column, alignItems: ItemAlign.End, justifyContent: FlexAlign.End }) {
       Tabs({ barPosition: BarPosition.End, index: this.bottomTabIndex, controller: this.bottomTabController }) {
         TabContent() {
-          Home()
+
         }.tabBar(this.TabBuilder(0, 'Map'))
 
         TabContent() {
-          Home()
+
         }.tabBar(this.TabBuilder(1, 'Zone'))
 
         TabContent() {
@@ -52,11 +54,11 @@ struct Index {
         }.tabBar(this.TabBuilder(2, 'Train'))
 
         TabContent() {
-          Home()
+          Tools()
         }.tabBar(this.TabBuilder(3, 'Train'))
 
         TabContent() {
-          Home()
+
         }.tabBar(this.TabBuilder(4, 'Train'))
 
       }

@@ -3,6 +3,14 @@
     {
       "name": "bottom_font_size",
       "value": "10fp"
+    },
+    {
+      "name": "component_title_size",
+      "value": "24"
+    },
+    {
+      "name": "component_title_weight",
+      "value": "700"
     }
   ]
 }

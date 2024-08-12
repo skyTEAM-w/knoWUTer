@@ -31,6 +31,10 @@
     {
       "name": "bottom_text_user",
       "value": "User"
+    },
+    {
+      "name": "text_tools",
+      "value": "Tools"
     }
   ]
 }

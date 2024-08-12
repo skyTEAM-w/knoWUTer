@@ -31,6 +31,10 @@
     {
       "name": "bottom_text_user",
       "value": "用户"
+    },
+    {
+      "name": "text_tools",
+      "value": "实用工具"
     }
   ]
 }
