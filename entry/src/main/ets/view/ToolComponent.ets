@@ -1,10 +1,18 @@
 import { hilog } from '@kit.PerformanceAnalysisKit'
 import { http } from '@kit.NetworkKit';
 import { url } from '@kit.ArkTS';
+import { webview } from '@kit.ArkWeb';
+import { getElectricCharge } from '../common/utils/PayElectricCharge'
+import { DormitoryLocation } from '../model/DormitoryLocation'
+import axios, { AxiosResponse } from '@ohos/axios';
+import { router } from '@kit.ArkUI';
+import { BusinessError } from '@kit.BasicServicesKit';
 
 @Component
 export struct Tools {
   @StorageLink('Cookie') cookie: string = '';
+  private webviewController: webview.WebviewController = new webview.WebviewController();
+  private webResult: string = '';
 
   build() {
     Navigation() {
@@ -18,25 +26,18 @@ export struct Tools {
           .fontFamily('HarmonyHeiTi-Bold')
           .lineHeight(33)
       }
+      Button($r('app.string.tool_electric_charge'))
+        .onClick(() => {
+          getElectricCharge(this.webviewController, new DormitoryLocation('', '', '', ''))
+
+            // router.pushUrl({
+            //   url: 'pages/PayElecPage',
+            //   params: ''
+            // })
+
+        })
+      Web({src: 'http://cwsf.whut.edu.cn/nyyPayElecPages51274E035', controller: this.webviewController})
+        .visibility(Visibility.Hidden)
     }
-    // Button('HTTP Test')
-    //   .onClick(async () => {
-    //     hilog.info(0x0000, 'HTTP TEST', 'HTTP TEST');
-    //     let httpReq = http.createHttp();
-    //     let response = httpReq.request(
-    //       'https://zhlgd.whut.edu.cn/tp_up/view?m=up#act=portal/viewhome',
-    //       {
-    //         method: http.RequestMethod.GET,
-    //         header: {
-    //           'content-type:': 'text/html',
-    //           'cookie': this.cookie.toString(),
-    //           'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36 Edg/127.0.0.0'
-    //         }
-    //       }
-    //     )
-    //     await response.then((data) => {
-    //       hilog.info(0x0000, 'HTTP TEST', data.responseCode.toString());
-    //     })
-    //   })
   }
 }

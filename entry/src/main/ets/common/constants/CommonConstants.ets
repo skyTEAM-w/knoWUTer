@@ -43,7 +43,7 @@ export class CommonConstants {
   /**
    * Time constants.
    */
-  static readonly DURATION: number = 1000;
+  static readonly DURATION: number = 500;
   static readonly MORNING_TIME: number = 6;
   static readonly EVENING_TIME: number = 18;
   static readonly NIGHT_TIME: number = 19;

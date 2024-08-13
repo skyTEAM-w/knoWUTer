@@ -3,7 +3,13 @@
   "buildOption": {
     "externalNativeOptions": {
       "path": "./src/main/cpp/CMakeLists.txt",
-      "abiFilters": ["arm64-v8a", "x86_64"]
+      "abiFilters": [
+        "arm64-v8a",
+        "x86_64"
+      ]
+    },
+    "cangjieOptions": {
+      "path": "./src/main/cangjie/cjpm.toml"
     }
   },
   "buildOptionSet": [

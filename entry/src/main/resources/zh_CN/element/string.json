@@ -35,6 +35,10 @@
     {
       "name": "text_tools",
       "value": "实用工具"
+    },
+    {
+      "name": "tool_electric_charge",
+      "value": "电费"
     }
   ]
 }

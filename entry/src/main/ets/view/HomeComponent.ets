@@ -8,7 +8,8 @@ export struct Home {
   build() {
     Column() {
       Web({ src: "https://zhlgd.whut.edu.cn/tpass/login", controller: this.webviewController })
-        .domStorageAccess(false)
+        .domStorageAccess(true)
+        .javaScriptAccess(true)
         .onTitleReceive(() => {
           this.cookie = webview.WebCookieManager.fetchCookieSync("https://zhlgd.whut.edu.cn/tp_up/view?m=up#act=portal/viewhome").toString();
         })

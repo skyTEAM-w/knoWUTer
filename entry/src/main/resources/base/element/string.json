@@ -35,6 +35,10 @@
     {
       "name": "text_tools",
       "value": "Tools"
+    },
+    {
+      "name": "tool_electric_charge",
+      "value": "Electric Charge"
     }
   ]
 }

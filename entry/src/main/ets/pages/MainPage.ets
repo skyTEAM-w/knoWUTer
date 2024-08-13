@@ -33,7 +33,7 @@ struct Index {
 
   pageTransition() {
     PageTransitionEnter({ duration: CommonConstants.DURATION})
-      .slide(SlideEffect.Top)
+      .slide(SlideEffect.Left)
     PageTransitionExit({ delay: CommonConstants.EXIT_DELAY })
       .opacity(0)
   }
