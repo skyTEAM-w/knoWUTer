@@ -1,0 +1,17 @@
+[
+  {
+    "id": 0,
+    "imageSrc": "app.media.banner_info_gate",
+    "url": "https://zhlgd.whut.edu.cn/tp_up/view?m=up#act=portal/viewhome"
+  },
+  {
+    "id": 1,
+    "imageSrc": "app.media.banner_full_text_search",
+    "url": "https://z.whut.edu.cn/"
+  },
+  {
+    "id": 2,
+    "imageSrc": "app.media.banner_campus_map",
+    "url": "http://gis.whut.edu.cn/index.shtml"
+  }
+]

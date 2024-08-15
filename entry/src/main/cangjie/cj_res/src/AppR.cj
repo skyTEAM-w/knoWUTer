@@ -14,6 +14,9 @@ public class AppString {
 	public var lib_name = 16777254
 	public var module_desc = 16777225
 	public var page_show = 16777251
+	public var text_course_table = 16777258
+	public var text_home = 16777259
+	public var text_service = 16777257
 	public var text_tools = 16777226
 	public var tool_electric_charge = 16777252
 }
@@ -26,6 +29,7 @@ public class AppColor {
 }
 
 public class AppFloat {
+	public var border_radius = 16777263
 	public var bottom_font_size = 16777231
 	public var component_title_size = 16777232
 	public var component_title_weight = 16777233
@@ -34,6 +38,9 @@ public class AppFloat {
 public class AppMedia {
 	public var app_icon = 16777217
 	public var background = 16777234
+	public var banner_campus_map = 16777260
+	public var banner_full_text_search = 16777261
+	public var banner_info_gate = 16777262
 	public var foreground = 16777235
 	public var ic_public_app = 16777236
 	public var ic_public_app_filled = 16777237
@@ -79,17 +86,24 @@ public func updateAllRes() {
 	resourceMap.put("string lib_name", 16777254)
 	resourceMap.put("string module_desc", 16777225)
 	resourceMap.put("string page_show", 16777251)
+	resourceMap.put("string text_course_table", 16777258)
+	resourceMap.put("string text_home", 16777259)
+	resourceMap.put("string text_service", 16777257)
 	resourceMap.put("string text_tools", 16777226)
 	resourceMap.put("string tool_electric_charge", 16777252)
 	resourceMap.put("color bottom_tab_background_color", 16777227)
 	resourceMap.put("color bottom_text_color_normal", 16777228)
 	resourceMap.put("color bottom_text_color_selected", 16777229)
 	resourceMap.put("color start_window_background", 16777230)
+	resourceMap.put("float border_radius", 16777263)
 	resourceMap.put("float bottom_font_size", 16777231)
 	resourceMap.put("float component_title_size", 16777232)
 	resourceMap.put("float component_title_weight", 16777233)
 	resourceMap.put("media app_icon", 16777217)
 	resourceMap.put("media background", 16777234)
+	resourceMap.put("media banner_campus_map", 16777260)
+	resourceMap.put("media banner_full_text_search", 16777261)
+	resourceMap.put("media banner_info_gate", 16777262)
 	resourceMap.put("media foreground", 16777235)
 	resourceMap.put("media ic_public_app", 16777236)
 	resourceMap.put("media ic_public_app_filled", 16777237)

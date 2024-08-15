@@ -1,9 +1,9 @@
-import { webview } from '@kit.ArkWeb'
+import { webview } from '@kit.ArkWeb';
 import { BusinessError } from '@kit.BasicServicesKit';
 
 @Entry
 @Component
-export struct  PayElcWeb{
+export struct PayElcWeb {
   private webviewController: webview.WebviewController = new webview.WebviewController();
   private webResult: string = '';
 
@@ -16,8 +16,8 @@ export struct  PayElcWeb{
   }
 
   build() {
-    Column(){
-      Stack({alignContent: Alignment.BottomEnd}){
+    Column() {
+      Stack({ alignContent: Alignment.BottomEnd }) {
         Web({
           src: 'http://cwsf.whut.edu.cn/nyyPayElecPages51274E035',
           controller: this.webviewController

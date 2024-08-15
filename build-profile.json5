@@ -1,20 +1,34 @@
 {
   "app": {
-
     "products": [
       {
         "name": "default",
         "signingConfig": "default",
         "compatibleSdkVersion": "5.0.0(12)",
-        "runtimeOS": "HarmonyOS",
+        "runtimeOS": "HarmonyOS"
       }
     ],
     "buildModeSet": [
       {
-        "name": "debug",
+        "name": "debug"
       },
       {
         "name": "release"
+      }
+    ],
+    "signingConfigs": [
+      {
+        "name": "default",
+        "type": "HarmonyOS",
+        "material": {
+          "storePassword": "0000001B59E7EE1EFE5DBDCE3B72CEE25F990A54817B44FFDCA2ECAB274271C777D1804ADD35165D5C8A04",
+          "certpath": "E:/Desktop/learn/TESTHarmonyOS/Debug_cer.cer",
+          "keyAlias": "myApplication_debug_true",
+          "keyPassword": "0000001BF87CF4DF7DBDB83FD2D0C5AC16F7BDB1754A2AF58DABF0AB643FB0EF3ACDD9E0E981231234ACBB",
+          "profile": "E:/Desktop/learn/TESTHarmonyOS/Debug_profileDebug (2).p7b",
+          "signAlg": "SHA256withECDSA",
+          "storeFile": "E:/Desktop/learn/TESTHarmonyOS/myApplication_debug_true.p12"
+        }
       }
     ]
   },

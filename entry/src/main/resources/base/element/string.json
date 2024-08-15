@@ -39,6 +39,18 @@
     {
       "name": "tool_electric_charge",
       "value": "Electric Charge"
+    },
+    {
+      "name": "text_service",
+      "value": "Service"
+    },
+    {
+      "name": "text_course_table",
+      "value": "Course Table"
+    },
+    {
+      "name": "text_home",
+      "value": "Home"
     }
   ]
 }

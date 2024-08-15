@@ -1,12 +1,6 @@
-import { hilog } from '@kit.PerformanceAnalysisKit'
-import { http } from '@kit.NetworkKit';
-import { url } from '@kit.ArkTS';
 import { webview } from '@kit.ArkWeb';
-import { getElectricCharge } from '../common/utils/PayElectricCharge'
-import { DormitoryLocation } from '../model/DormitoryLocation'
-import axios, { AxiosResponse } from '@ohos/axios';
-import { router } from '@kit.ArkUI';
-import { BusinessError } from '@kit.BasicServicesKit';
+import { getElectricCharge } from '../common/utils/PayElectricCharge';
+import { DormitoryLocation } from '../model/DormitoryLocation';
 
 @Component
 export struct Tools {
@@ -26,18 +20,22 @@ export struct Tools {
           .fontFamily('HarmonyHeiTi-Bold')
           .lineHeight(33)
       }
+
       Button($r('app.string.tool_electric_charge'))
         .onClick(() => {
           getElectricCharge(this.webviewController, new DormitoryLocation('', '', '', ''))
 
-            // router.pushUrl({
-            //   url: 'pages/PayElecPage',
-            //   params: ''
-            // })
+          // router.pushUrl({
+          //   url: 'pages/PayElecPage',
+          //   params: ''
+          // })
 
         })
-      Web({src: 'http://cwsf.whut.edu.cn/nyyPayElecPages51274E035', controller: this.webviewController})
-        .visibility(Visibility.Hidden)
+      Web({
+        src: 'https://zhlgd.whut.edu.cn/tpass/login?service=http%3A%2F%2Fcwsf.whut.edu.cn%2FcasLogin',
+        controller: this.webviewController
+      })
+        .visibility(Visibility.Visible)
     }
   }
 }

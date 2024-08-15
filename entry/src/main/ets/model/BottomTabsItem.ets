@@ -1,4 +1,4 @@
-export interface  BottomTabsItem {
+export interface BottomTabsItem {
   icon: Resource;
   iconSelected: Resource;
   text: Resource;

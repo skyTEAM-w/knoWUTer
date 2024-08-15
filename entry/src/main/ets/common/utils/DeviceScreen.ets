@@ -13,8 +13,7 @@
  * limitations under the License.
  */
 
-import { display } from '@kit.ArkUI';
-import { window } from '@kit.ArkUI';
+import { display, window } from '@kit.ArkUI';
 import { common } from '@kit.AbilityKit';
 import { CommonConstants as Const } from '../constants/CommonConstants';
 

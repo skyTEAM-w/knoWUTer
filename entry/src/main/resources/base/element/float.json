@@ -11,6 +11,10 @@
     {
       "name": "component_title_weight",
       "value": "700"
+    },
+    {
+      "name": "border_radius",
+      "value": "16"
     }
   ]
 }

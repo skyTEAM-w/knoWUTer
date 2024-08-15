@@ -1,4 +1,4 @@
-import {BottomTabsItem} from './BottomTabsItem'
+import { BottomTabsItem } from './BottomTabsItem'
 
 export const BottomTabsList: Array<BottomTabsItem> = [
   {

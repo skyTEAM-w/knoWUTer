@@ -138,7 +138,7 @@ export class CommonConstants {
   /**
    * Page transition exit delay.
    */
-  static readonly EXIT_DELAY: number = 100;
+  static readonly EXIT_DELAY: number = 50;
   /**
    * Swiper transition duration.
    */

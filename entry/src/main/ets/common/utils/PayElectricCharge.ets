@@ -1,5 +1,5 @@
-import { webview } from '@kit.ArkWeb'
-import { DormitoryLocation } from '../../model/DormitoryLocation'
+import { webview } from '@kit.ArkWeb';
+import { DormitoryLocation } from '../../model/DormitoryLocation';
 import { BusinessError } from '@kit.BasicServicesKit';
 
 export function getElectricCharge(webviewController: webview.WebviewController, dormitoryLocation: DormitoryLocation) {
@@ -23,5 +23,74 @@ export function getElectricCharge(webviewController: webview.WebviewController, 
       })
     }
   })
-
+  webviewController.runJavaScript('var selectElement = document.getElementById("building");\n' +
+    '            selectElement.value = "000004"; // 修改选项\n' +
+    '\n' +
+    '            // 创建一个新的事件\n' +
+    '            var event = new Event(\'change\');\n' +
+    '            // 手动触发 onchange 事件\n' +
+    '            selectElement.dispatchEvent(event);', (error, result) => {
+    if (error) {
+      console.error(`run JavaScript error, ErrorCode: ${(error as BusinessError).code},  Message: ${(error as BusinessError).message}`);
+      return;
+    }
+    if (result) {
+      let webResult = result;
+      console.info(`The test() return value is: ${webResult}`);
+      AlertDialog.show({
+        message: webResult + webviewController.getUrl()
+      })
+    }
+  })
+  webviewController.runJavaScript('var selectElement = document.getElementById("floorid");\n' +
+    '            selectElement.value = "1"; // 修改选项\n' +
+    '\n' +
+    '            // 创建一个新的事件\n' +
+    '            var event = new Event(\'change\');\n' +
+    '            // 手动触发 onchange 事件\n' +
+    '            selectElement.dispatchEvent(event);', (error, result) => {
+    if (error) {
+      console.error(`run JavaScript error, ErrorCode: ${(error as BusinessError).code},  Message: ${(error as BusinessError).message}`);
+      return;
+    }
+    if (result) {
+      let webResult = result;
+      console.info(`The test() return value is: ${webResult}`);
+      AlertDialog.show({
+        message: webResult + webviewController.getUrl()
+      })
+    }
+  })
+  webviewController.runJavaScript('var selectElement = document.getElementById("roomid");\n' +
+    '            selectElement.value = "00000397"; // 修改选项\n' +
+    '\n' +
+    '            // 创建一个新的事件\n' +
+    '            var event = new Event(\'change\');\n' +
+    '            // 手动触发 onchange 事件\n' +
+    '            selectElement.dispatchEvent(event);', (error, result) => {
+    if (error) {
+      console.error(`run JavaScript error, ErrorCode: ${(error as BusinessError).code},  Message: ${(error as BusinessError).message}`);
+      return;
+    }
+    if (result) {
+      let webResult = result;
+      console.info(`The test() return value is: ${webResult}`);
+      AlertDialog.show({
+        message: webResult + webviewController.getUrl()
+      })
+    }
+  })
+  webviewController.runJavaScript('document.documentElement.outerText', (error, result) => {
+    if (error) {
+      console.error(`run JavaScript error, ErrorCode: ${(error as BusinessError).code},  Message: ${(error as BusinessError).message}`);
+      return;
+    }
+    if (result) {
+      let webResult = result;
+      console.info(`The test() return value is: ${webResult}`);
+      AlertDialog.show({
+        message: webResult + webviewController.getUrl()
+      })
+    }
+  })
 }

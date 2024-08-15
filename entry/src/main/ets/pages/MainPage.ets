@@ -1,8 +1,9 @@
-import { BottomTabsList } from '../viewmodel/BottomTabsModel';
+import { BottomTabsList } from '../model/BottomTabsModel';
 import { Home } from '../view/HomeComponent';
 import { Tools } from '../view/ToolComponent';
-import { CommonConstants } from '../common/constants/CommonConstants';
-import { webview } from '@kit.ArkWeb'
+import { Service } from '../view/ServiceComponent';
+import { CourseTable } from '../view/CourseTableComponent';
+
 
 @Entry
 @Component
@@ -27,26 +28,20 @@ struct Index {
     .width('100%')
     .height('100%')
     .justifyContent(FlexAlign.Center)
-    .border({ width: { top: 0.5 }, color: "#FF182431"})
-    .backgroundColor($r('app.color.bottom_tab_background_color'))
-  }
-
-  pageTransition() {
-    PageTransitionEnter({ duration: CommonConstants.DURATION})
-      .slide(SlideEffect.Left)
-    PageTransitionExit({ delay: CommonConstants.EXIT_DELAY })
-      .opacity(0)
+    .border({ width: { top: 0.5 }, color: "#FF182431" })
+    .backgroundColor(Color.Transparent)
+    .blur(BlurStyle.Thin)
   }
 
   build() {
     Flex({ direction: FlexDirection.Column, alignItems: ItemAlign.End, justifyContent: FlexAlign.End }) {
       Tabs({ barPosition: BarPosition.End, index: this.bottomTabIndex, controller: this.bottomTabController }) {
         TabContent() {
-
+          CourseTable()
         }.tabBar(this.TabBuilder(0, 'Map'))
 
         TabContent() {
-
+          Service()
         }.tabBar(this.TabBuilder(1, 'Zone'))
 
         TabContent() {
@@ -70,6 +65,9 @@ struct Index {
         this.bottomTabIndex = index;
       })
       .height('100%')
+      .barOverlap(true)
+      .barBackgroundColor(Color.Transparent)
+      .barBackgroundBlurStyle(BlurStyle.Thin)
     }
     .width('100%')
   }

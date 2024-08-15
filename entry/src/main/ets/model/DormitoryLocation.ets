@@ -10,5 +10,4 @@ export class DormitoryLocation {
     this.Floor = Floor;
     this.Room = Room;
   }
-
 }
