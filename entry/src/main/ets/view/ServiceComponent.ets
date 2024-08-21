@@ -1,5 +1,5 @@
 import { ServiceBanner } from './ServiceBanner'
-'
+import { ServiceBlocks } from './ServiceBlocks'
 
 @Component
 export struct Service {
@@ -18,6 +18,7 @@ export struct Service {
         Scroll() {
           Column() {
             ServiceBanner()
+            ServiceBlocks()
           }
         }
         .layoutWeight(1)

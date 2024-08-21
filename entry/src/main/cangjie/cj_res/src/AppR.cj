@@ -25,7 +25,10 @@ public class AppColor {
 	public var bottom_tab_background_color = 16777227
 	public var bottom_text_color_normal = 16777228
 	public var bottom_text_color_selected = 16777229
+	public var service_block_background = 16777264
 	public var start_window_background = 16777230
+	public var swiper_dot_color = 16777265
+	public var swiper_dot_color_selected = 16777266
 }
 
 public class AppFloat {
@@ -94,7 +97,10 @@ public func updateAllRes() {
 	resourceMap.put("color bottom_tab_background_color", 16777227)
 	resourceMap.put("color bottom_text_color_normal", 16777228)
 	resourceMap.put("color bottom_text_color_selected", 16777229)
+	resourceMap.put("color service_block_background", 16777264)
 	resourceMap.put("color start_window_background", 16777230)
+	resourceMap.put("color swiper_dot_color", 16777265)
+	resourceMap.put("color swiper_dot_color_selected", 16777266)
 	resourceMap.put("float border_radius", 16777263)
 	resourceMap.put("float bottom_font_size", 16777231)
 	resourceMap.put("float component_title_size", 16777232)

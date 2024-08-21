@@ -1,7 +1,6 @@
 import { ServiceBannerClass } from '../model/ServiceBannerClass';
 import { bufferToString } from '../common/utils/BufferUtil';
 import { router } from '@kit.ArkUI';
-import { ServiceUrl } from '../model/ServiceUrl';
 
 @Component
 export struct ServiceBanner {
@@ -27,10 +26,9 @@ export struct ServiceBanner {
           .borderRadius($r('app.float.border_radius'))
           .padding({ top: 11, left: 16, right: 16 })
           .onClick(() => {
-            let serviceSelected: ServiceUrl = item;
             router.pushUrl({
               url: 'pages/WebViewPage',
-              params: serviceSelected
+              params: item
             });
             console.log(item.url);
           })
@@ -40,7 +38,7 @@ export struct ServiceBanner {
     .loop(true)
     .indicator(
       new DotIndicator()
-        .color('#4b1644d0')
-        .selectedColor('#fffac640'))
+        .color($r('app.color.swiper_dot_color'))
+        .selectedColor($r('app.color.swiper_dot_color_selected')))
   }
 }
