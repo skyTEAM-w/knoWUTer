@@ -21,13 +21,13 @@
         "name": "default",
         "type": "HarmonyOS",
         "material": {
-          "storePassword": "0000001B59E7EE1EFE5DBDCE3B72CEE25F990A54817B44FFDCA2ECAB274271C777D1804ADD35165D5C8A04",
-          "certpath": "E:/Desktop/learn/TESTHarmonyOS/Debug_cer.cer",
+          "storePassword": "0000001B1CD821483F4AFC960963748AAC8A580046A38C0507428585182699A3583D9B02C116FC9239D7F1",
+          "certpath": "D:/learn/Debug_cer.cer",
           "keyAlias": "myApplication_debug_true",
-          "keyPassword": "0000001BF87CF4DF7DBDB83FD2D0C5AC16F7BDB1754A2AF58DABF0AB643FB0EF3ACDD9E0E981231234ACBB",
-          "profile": "E:/Desktop/learn/TESTHarmonyOS/Debug_profileDebug (2).p7b",
+          "keyPassword": "0000001BDDF4A750CFE0BDECE25EB1FCD94144604DACAAD90DD1C665BAE69EA3C2DA697074FD31248FC979",
+          "profile": "D:/learn/Debug_profileDebug (2).p7b",
           "signAlg": "SHA256withECDSA",
-          "storeFile": "E:/Desktop/learn/TESTHarmonyOS/myApplication_debug_true.p12"
+          "storeFile": "D:/learn/myApplication_debug_true.p12"
         }
       }
     ]

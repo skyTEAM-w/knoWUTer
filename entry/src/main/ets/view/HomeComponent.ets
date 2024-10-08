@@ -18,15 +18,23 @@ export struct Home {
         .onClick(() => {
           this.webviewController.backward()
         })
+      Scroll(){
+        Column(){
+          Web({ src: "https://zhlgd.whut.edu.cn/tpass/login", controller: this.webviewController })
+            .domStorageAccess(true)
+            .javaScriptAccess(true)
+            .onTitleReceive(() => {
+              this.cookie =
+                webview.WebCookieManager.fetchCookieSync("https://zhlgd.whut.edu.cn/tp_up/view?m=up#act=portal/viewhome")
+                  .toString();
+            })
+          Blank()
+            .height('12%')
+        }
 
-      Web({ src: "https://zhlgd.whut.edu.cn/tpass/login", controller: this.webviewController })
-        .domStorageAccess(true)
-        .javaScriptAccess(true)
-        .onTitleReceive(() => {
-          this.cookie =
-            webview.WebCookieManager.fetchCookieSync("https://zhlgd.whut.edu.cn/tp_up/view?m=up#act=portal/viewhome")
-              .toString();
-        })
+      }
+      .scrollBar(BarState.Off)
+
     }
   }
 }

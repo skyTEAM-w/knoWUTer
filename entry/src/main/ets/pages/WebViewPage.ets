@@ -12,13 +12,16 @@ struct WebViewPage {
 
   build() {
     Column({space: 5}) {
-      Flex({justifyContent: FlexAlign.SpaceBetween, alignItems: ItemAlign.Auto}) {
-        Image($r("app.media.ic_arrow_left"))
-          .height('80%')
-          .objectFit(ImageFit.Contain)
-          .onClick(() => {
-            router.back()
-          })
+      Flex({justifyContent: FlexAlign.SpaceBetween, alignItems: ItemAlign.Stretch}) {
+        Row(){
+          Image($r("app.media.ic_arrow_left"))
+            .height('80%')
+            .objectFit(ImageFit.Contain)
+            .onClick(() => {
+              router.back()
+            })
+        }
+
         Text(this.webUrl)
           .textOverflow({ overflow: TextOverflow.Ellipsis })
           .maxLines(1)
@@ -28,12 +31,15 @@ struct WebViewPage {
           .textAlign(TextAlign.Center)
           .backgroundColor($r('app.color.normal_background_grey'))
           .borderRadius(10)
-        Image($r("app.media.ic_arrow_right_up_and_square"))
-          .height('80%')
-          .objectFit(ImageFit.Contain)
-          .onClick(() => {
-            copyText(this.webUrl)
-          })
+        Row(){
+          Image($r("app.media.ic_arrow_right_up_and_square"))
+            .height('80%')
+            .objectFit(ImageFit.Contain)
+            .onClick(() => {
+              copyText(this.webUrl)
+            })
+        }
+
       }
       .height(33)
       .width('95%')

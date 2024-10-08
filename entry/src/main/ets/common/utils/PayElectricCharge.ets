@@ -93,4 +93,13 @@ export function getElectricCharge(webviewController: webview.WebviewController, 
       })
     }
   })
+  webviewController.runJavaScript('document.getElementById("RemainPower").outerText', (error, result) => {
+    if (result) {
+      let webResult = result;
+      console.info(`The test() return value is: ${webResult}`);
+      AlertDialog.show({
+        message: webResult
+      })
+    }
+  })
 }
