@@ -3,7 +3,7 @@
   "description": "Please describe the basic information.",
   "dependencies": {
     "@ohos/axios": "^2.2.2",
-    "@pura/harmony-utils": "1.0.6",
+    "@pura/harmony-utils": "^1.0.6",
     "@ohos/htmltoxml": "2.0.0",
     "@ohos/sanitize-html": "2.0.0"
   },

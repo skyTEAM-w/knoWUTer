@@ -27,6 +27,10 @@
     {
       "name": "service_block_background",
       "value": "#00489A"
+    },
+    {
+      "name": "normal_background_grey",
+      "value": "#288A8888"
     }
   ]
 }
