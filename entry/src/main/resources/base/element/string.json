@@ -51,6 +51,10 @@
     {
       "name": "text_home",
       "value": "Home"
+    },
+    {
+      "name": "text_user_setting",
+      "value": "User"
     }
   ]
 }

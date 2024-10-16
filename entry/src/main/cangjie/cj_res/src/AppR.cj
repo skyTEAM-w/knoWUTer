@@ -18,6 +18,7 @@ public class AppString {
 	public var text_home = 16777227
 	public var text_service = 16777228
 	public var text_tools = 16777229
+	public var text_user_setting = 16777271
 	public var tool_electric_charge = 16777230
 }
 
@@ -96,6 +97,7 @@ public func updateAllRes() {
 	resourceMap.put("string text_home", 16777227)
 	resourceMap.put("string text_service", 16777228)
 	resourceMap.put("string text_tools", 16777229)
+	resourceMap.put("string text_user_setting", 16777271)
 	resourceMap.put("string tool_electric_charge", 16777230)
 	resourceMap.put("color bottom_tab_background_color", 16777231)
 	resourceMap.put("color bottom_text_color_normal", 16777232)

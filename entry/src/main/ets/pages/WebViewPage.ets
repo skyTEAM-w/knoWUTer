@@ -17,9 +17,11 @@ struct WebViewPage {
           Image($r("app.media.ic_arrow_left"))
             .height('80%')
             .objectFit(ImageFit.Contain)
+            .backgroundColor($r('app.color.normal_background_grey'))
             .onClick(() => {
               router.back()
             })
+            .borderRadius($r('app.float.border_radius'))
         }
 
         Text(this.webUrl)
@@ -30,7 +32,7 @@ struct WebViewPage {
           .height('100%')
           .textAlign(TextAlign.Center)
           .backgroundColor($r('app.color.normal_background_grey'))
-          .borderRadius(10)
+          .borderRadius(8)
         Row(){
           Image($r("app.media.ic_arrow_right_up_and_square"))
             .height('80%')

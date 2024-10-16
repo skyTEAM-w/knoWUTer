@@ -3,6 +3,7 @@ import { Home } from '../view/HomeComponent';
 import { Tools } from '../view/ToolComponent';
 import { Service } from '../view/ServiceComponent';
 import { CourseTable } from '../view/CourseTableComponent';
+import { User } from '../view/UserComponent';
 
 
 @Entry
@@ -53,7 +54,7 @@ struct Index {
         }.tabBar(this.TabBuilder(3, 'Train'))
 
         TabContent() {
-
+          User()
         }.tabBar(this.TabBuilder(4, 'Train'))
 
       }

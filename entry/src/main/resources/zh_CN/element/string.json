@@ -51,6 +51,10 @@
     {
       "name": "text_home",
       "value": "主页"
+    },
+    {
+      "name": "text_user_setting",
+      "value": "我的设置"
     }
   ]
 }
