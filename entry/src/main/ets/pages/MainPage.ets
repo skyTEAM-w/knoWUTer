@@ -35,41 +35,44 @@ struct Index {
   }
 
   build() {
-    Flex({ direction: FlexDirection.Column, alignItems: ItemAlign.End, justifyContent: FlexAlign.End }) {
-      Tabs({ barPosition: BarPosition.End, index: this.bottomTabIndex, controller: this.bottomTabController }) {
-        TabContent() {
-          CourseTable()
-        }.tabBar(this.TabBuilder(0, 'Map'))
+    Navigation() {
+      Flex({ direction: FlexDirection.Column, alignItems: ItemAlign.End, justifyContent: FlexAlign.End }) {
+        Tabs({ barPosition: BarPosition.End, index: this.bottomTabIndex, controller: this.bottomTabController }) {
+          TabContent() {
+            CourseTable()
+          }.tabBar(this.TabBuilder(0, 'Map'))
 
-        TabContent() {
-          Service()
-        }.tabBar(this.TabBuilder(1, 'Zone'))
+          TabContent() {
+            Service()
+          }.tabBar(this.TabBuilder(1, 'Zone'))
 
-        TabContent() {
-          Home()
-        }.tabBar(this.TabBuilder(2, 'Train'))
+          TabContent() {
+            Home()
+          }.tabBar(this.TabBuilder(2, 'Train'))
 
-        TabContent() {
-          Tools()
-        }.tabBar(this.TabBuilder(3, 'Train'))
+          TabContent() {
+            Tools()
+          }.tabBar(this.TabBuilder(3, 'Train'))
 
-        TabContent() {
-          User()
-        }.tabBar(this.TabBuilder(4, 'Train'))
+          TabContent() {
+            User()
+          }.tabBar(this.TabBuilder(4, 'Train'))
 
+        }
+        .width('100%')
+        .vertical(false)
+        .barHeight('10%')
+        .scrollable(false)
+        .onChange((index: number) => {
+          this.bottomTabIndex = index;
+        })
+        .height('100%')
+        .barOverlap(true)
+        .barBackgroundColor(Color.Transparent)
+        .barBackgroundBlurStyle(BlurStyle.Thin)
       }
       .width('100%')
-      .vertical(false)
-      .barHeight('10%')
-      .scrollable(false)
-      .onChange((index: number) => {
-        this.bottomTabIndex = index;
-      })
-      .height('100%')
-      .barOverlap(true)
-      .barBackgroundColor(Color.Transparent)
-      .barBackgroundBlurStyle(BlurStyle.Thin)
     }
-    .width('100%')
+    .hideToolBar(true)
   }
 }

@@ -21,13 +21,26 @@
         "name": "default",
         "type": "HarmonyOS",
         "material": {
-          "storePassword": "0000001B1CD821483F4AFC960963748AAC8A580046A38C0507428585182699A3583D9B02C116FC9239D7F1",
-          "certpath": "D:/learn/Debug_cer.cer",
-          "keyAlias": "myApplication_debug_true",
-          "keyPassword": "0000001BDDF4A750CFE0BDECE25EB1FCD94144604DACAAD90DD1C665BAE69EA3C2DA697074FD31248FC979",
-          "profile": "D:/learn/Debug_profileDebug (2).p7b",
+          "certpath": "C:\\Users\\Lenovo\\.ohos\\config\\default_WHUTHelper_vMvF5ss3QK3gBXpPcOPQr4H01_HNBegYDLgB4gArjZs=.cer",
+          "storePassword": "0000001B805ACA8C04728E4B907DC534A9DA78694092AA3BF43961CA13698C009F947145A09E663A82AF96",
+          "keyAlias": "debugKey",
+          "keyPassword": "0000001BF8692C4F3A10A8BF2192FCDACC133EB9E86C98617B67516EAC487EECD4A162292E8913A3DFFD26",
+          "profile": "C:\\Users\\Lenovo\\.ohos\\config\\default_WHUTHelper_vMvF5ss3QK3gBXpPcOPQr4H01_HNBegYDLgB4gArjZs=.p7b",
           "signAlg": "SHA256withECDSA",
-          "storeFile": "D:/learn/myApplication_debug_true.p12"
+          "storeFile": "C:\\Users\\Lenovo\\.ohos\\config\\default_WHUTHelper_vMvF5ss3QK3gBXpPcOPQr4H01_HNBegYDLgB4gArjZs=.p12"
+        }
+      },
+      {
+        "name": "Legion",
+        "type": "HarmonyOS",
+        "material": {
+          "certpath": "C:\\Users\\Lenovo\\.ohos\\config\\Legion_WHUTHelper_vMvF5ss3QK3gBXpPcOPQr4H01_HNBegYDLgB4gArjZs=.cer",
+          "storePassword": "0000001B7BFCD66A33A0415B6CA961B5D1BA4F709EAE9EEE64CCC4EDC73EA459709299EA3A50A1E7C9B23C",
+          "keyAlias": "debugKey",
+          "keyPassword": "0000001BD1A3AB0BCB5109983FDB8C6D270C9AA710DAD892FC64C0F3129C6447F8B6CDFB3C9E8A2870164F",
+          "profile": "C:\\Users\\Lenovo\\.ohos\\config\\Legion_WHUTHelper_vMvF5ss3QK3gBXpPcOPQr4H01_HNBegYDLgB4gArjZs=.p7b",
+          "signAlg": "SHA256withECDSA",
+          "storeFile": "C:\\Users\\Lenovo\\.ohos\\config\\Legion_WHUTHelper_vMvF5ss3QK3gBXpPcOPQr4H01_HNBegYDLgB4gArjZs=.p12"
         }
       }
     ]

@@ -742,7 +742,29 @@ public class SysColor {
     public let comp_background_list_card = 125831127
     public let ohos_id_color_border_button = 125831141
     public let ohos_id_shadow_focus_button = 125831142
+    public let ohos_id_color_border_small_button = 125831144
     public let ohos_id_color_focus_bg_text_button = 125831149
+    public let ohos_id_color_border_dialog = 125831153
+    public let ohos_id_color_border_text_input = 125831158
+    public let ohos_id_color_focused_bg_checkbox = 125831164
+    public let ohos_id_focused_border_color_unselected_checkbox = 125831165
+    public let ohos_id_focused_bg_color_unselected_checkbox = 125831166
+    public let ohos_id_button_focus_border_color = 125831188
+    public let ohos_id_linear_focus_border_color = 125831192
+    public let ohos_id_stack_focus_border_color = 125831195
+    public let ohos_id_color_focused_bg_radio = 125831199
+    public let ohos_id_color_bg_with_blur_dialog = 125831204
+    public let ohos_id_color_focused_select = 125831224
+    public let ohos_id_color_focus_board_switch = 125831227
+    public let ohos_id_color_border_switch = 125831229
+    public let ohos_id_color_border_status_button_checked = 125831230
+    public let ohos_id_color_border_status_button_unchecked = 125831231
+    public let ohos_id_bgcolor_focus_status_button_unchecked = 125831232
+    public let ohos_id_bgcolor_focus_status_button_checked = 125831233
+    public let ohos_id_text_color_focus_status_button = 125831234
+    public let ohos_id_color_border_menu = 125831235
+    public let ohos_id_color_focused_bg_menu_item = 125831237
+    public let ohos_id_color_focused_text_menu_item = 125831238
     public let container_modal_background = 125832716
     public let container_modal_unfocus_background = 125832717
     public let ohos_id_normalbtn_unfocus_bg = 125832718
@@ -753,6 +775,12 @@ public class SysColor {
     public let ohos_id_closebtn_focus_bg = 125832723
     public let ohos_id_closebtn_press_bg = 125832724
     public let ohos_id_normalbtn_press_bg = 125832725
+    public let ohos_id_color_focus_unselected_dot_swiper = 125832728
+    public let ohos_id_color_focus_bg_swiper = 125832729
+    public let ohos_id_switch_unchecked_bgColor = 125832731
+    public let ohos_id_color_focus_ring_unchecked_radio = 125832736
+    public let ohos_id_color_focus_bg_unchecked_radio = 125832737
+    public let ohos_id_normal_button_focus_bgcolor = 125832759
     public let ohos_id_swiper_dot_active_color = 125832760
     public let ohos_id_swiper_dot_color = 125832761
     public let ohos_id_swiper_mask_color_start = 125832762
@@ -761,10 +789,6 @@ public class SysColor {
     public let dataPanel_color_subheading_separator = 125833505
     public let color_sidebarcontainer_sub_bg = 125833506
     public let comp_background_warning_secondary = 125833518
-    public let dialog_outer_border_color = 125833688
-    public let dialog_inner_border_color = 125833690
-    public let toast_outer_border_color = 125833696
-    public let toast_inner_border_color = 125833698
 }
 
 public class SysFloat {
@@ -1597,6 +1621,17 @@ public class SysFloat {
     public let ohos_id_shadow_focus_button = 125831146
     public let ohos_id_scale_focus_button = 125831147
     public let ohos_id_width_border_button = 125831148
+    public let ohos_id_width_border_dialog = 125831152
+    public let ohos_id_text_align_dialog_title = 125831154
+    public let ohos_id_text_align_dialog_content = 125831155
+    public let ohos_id_min_width_dialog = 125831156
+    public let ohos_id_ratio_height_dialog = 125831157
+    public let ohos_id_width_border_text_input = 125831159
+    public let ohos_id_padding_error_tips_text_input = 125831160
+    public let ohos_id_width_border_error_text_input = 125831161
+    public let ohos_id_show_icon_text_input = 125831162
+    public let ohos_id_size_focused_bg_checkbox = 125831163
+    public let ohos_id_device_columns_dialog = 125831167
     public let ohos_id_textfield_underline_padding_horizontal = 125831168
     public let ohos_id_textfield_underline_padding_vertical = 125831169
     public let ohos_id_textfield_content_height = 125831170
@@ -1609,7 +1644,21 @@ public class SysFloat {
     public let ohos_id_floating_shadow_m = 125831183
     public let ohos_id_dialog_background_shadow_on = 125831184
     public let ohos_id_dialog_background_shadow_off = 125831185
+    public let ohos_id_button_focus_border_width = 125831189
+    public let ohos_id_button_focus_effect_type = 125831190
+    public let ohos_id_button_default_light_illiminated = 125831191
+    public let ohos_id_linear_focus_border_width = 125831193
+    public let ohos_id_linear_focus_effect_type = 125831194
+    public let ohos_id_stack_focus_border_width = 125831196
+    public let ohos_id_stack_focus_effect_type = 125831197
+    public let ohos_id_padding_dot_swiper = 125831198
+    public let ohos_id_size_focused_bg_radio = 125831200
+    public let ohos_id_text_fadeout_width = 125831201
     public let dialog_divider_show = 125831202
+    public let ohos_id_align_dialog = 125831205
+    public let ohos_id_shadow_dialog = 125831206
+    public let ohos_id_padding_top_title_dialog = 125831207
+    public let ohos_id_padding_single_title_dialog = 125831208
     public let ohos_id_dialog_maxsize_scale_landscape = 125831217
     public let ohos_id_dialog_maxsize_scale_portrait = 125831218
     public let ohos_id_dialog_scroll_flex_align = 125831219
@@ -1617,8 +1666,16 @@ public class SysFloat {
     public let ohos_id_picker_show_count_landscape = 125831221
     public let ohos_id_picker_show_count_portrait = 125831222
     public let ohos_id_dialog_alignment = 125831223
+    public let ohos_id_scale_swiper_indicator = 125831225
+    public let ohos_id_width_border_switch = 125831228
+    public let ohos_id_width_border_menu = 125831236
+    public let ohos_id_menu_item_top_bottom_margin = 125831239
+    public let ohos_id_shadow_focused_menu_item = 125831240
+    public let ohos_id_target_security_space_menu = 125831241
+    public let ohos_id_content_align_menu_item = 125831242
     public let ohos_id_toast_content_limit_max_width = 125832714
     public let ohos_min_edge_antialiasing = 125832727
+    public let ohos_id_height_bg_swiper = 125832730
     public let ohos_id_badge_text_age_font_size = 125832732
     public let ohos_id_badge_age_size = 125832733
     public let ohos_id_badge_age_add_padding = 125832734
@@ -1672,35 +1729,6 @@ public class SysFloat {
     public let sub_tab_bar_origin_font_size_scale = 125833684
     public let sub_tab_bar_left_right_margin = 125833685
     public let sub_tab_bar_indicatorstyle_margin_top = 125833686
-    public let dialog_double_border_enable = 125833687
-    public let dialog_outer_border_width = 125833689
-    public let dialog_inner_border_width = 125833691
-    public let popup_outer_border_width = 125833692
-    public let popup_inner_border_width = 125833693
-    public let popup_border_radius = 125833694
-    public let toast_double_border_enable = 125833695
-    public let toast_outer_border_width = 125833697
-    public let toast_inner_border_width = 125833699
-    public let toast_padding_new = 125833700
-    public let toast_padding_old = 125833701
-    public let toast_border_radius_new = 125833702
-    public let toast_border_radius_old = 125833703
-    public let ohos_id_radius_default_lg_shadow = 125833724
-    public let ohos_id_radius_floating_sm_shadow = 125833725
-    public let ohos_id_radius_floating_md_shadow = 125833726
-    public let ohos_id_radius_default_lg_shadow_dark = 125833727
-    public let ohos_id_radius_floating_sm_shadow_dark = 125833728
-    public let ohos_id_radius_floating_md_shadow_dark = 125833729
-    public let ohos_id_radius_default_xs_shadow_dark = 125833730
-    public let ohos_id_radius_default_sm_shadow_dark = 125833731
-    public let ohos_id_radius_default_md_shadow_dark = 125833732
-    public let menu_item_child_min_height_token = 125833734
-    public let menu_item_vertical_padding_token = 125833735
-    public let menu_item_group_title_text_font_size_token = 125833736
-    public let menu_default_radius_token = 125833737
-    public let menu_border_radius_token = 125833738
-    public let inner_border_radius_token = 125833739
-    public let sub_tab_bar_third_large_font_size_scale = 125833933
 }
 
 public class SysString {
@@ -1908,16 +1936,9 @@ public class SysString {
     public let menu_normal_placement = 125833496
     public let menu_back_blur = 125833497
     public let form_disable_time_limit = 125833498
-    public let textfield_accessibility_property_clear = 125833510
+    public let textfield_accessibility_property_delete = 125833510
     public let textfield_accessibility_show_password = 125833526
-    public let textfield_accessibility_hide_password = 125833527
-    public let ohos_toolbar_more = 125833704
-    public let save_button_description_export_to_gallery = 125834011
-    public let save_button_description_quick_save_to_gallery = 125834012
-    public let save_button_description_quick_resave_to_gallery = 125834013
-    public let textfield_accessibility_clear = 125834014
-    public let ohos_lab_short_term_write_imagevideo = 125834220
-    public let ohos_desc_short_term_write_imagevideo = 125834221
+    public let textfield_accessibility_handle_password = 125833527
 }
 
 public class SysMedia {
