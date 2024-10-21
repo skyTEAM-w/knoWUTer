@@ -1,1 +1,9 @@
-{}
+{
+  "routerMap" : [
+    {
+      "name": "WebViewPage",
+      "pageSourceFile": "src/main/ets/view/WebViewPage.ets",
+      "buildFunction": "WebViewPageBuilder"
+    }
+  ]
+}

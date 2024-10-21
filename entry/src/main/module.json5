@@ -39,6 +39,7 @@
         "name": "ohos.permission.INTERNET"
       }
     ],
+    "routerMap": "$profile:route_map",
     "extensionAbilities": [
       {
         "name": "EntryBackupAbility",

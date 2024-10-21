@@ -10,6 +10,8 @@ import { User } from '../view/UserComponent';
 @Component
 struct Index {
   @State bottomTabIndex: number = 2;
+  @Provide('WebViewStack')webViewStack:NavPathStack = new NavPathStack();
+  @Provide('appPathStack')appPathStack: NavPathStack = new NavPathStack();
   private bottomTabController: TabsController = new TabsController();
 
   @Builder
@@ -35,7 +37,7 @@ struct Index {
   }
 
   build() {
-    Navigation() {
+    Navigation(this.appPathStack) {
       Flex({ direction: FlexDirection.Column, alignItems: ItemAlign.End, justifyContent: FlexAlign.End }) {
         Tabs({ barPosition: BarPosition.End, index: this.bottomTabIndex, controller: this.bottomTabController }) {
           TabContent() {
@@ -67,9 +69,9 @@ struct Index {
           this.bottomTabIndex = index;
         })
         .height('100%')
-        .barOverlap(true)
-        .barBackgroundColor(Color.Transparent)
-        .barBackgroundBlurStyle(BlurStyle.Thin)
+        // .barOverlap(true)
+        // .barBackgroundColor(Color.Transparent)
+        // .barBackgroundBlurStyle(BlurStyle.Thin)
       }
       .width('100%')
     }

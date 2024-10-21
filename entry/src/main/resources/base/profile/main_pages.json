@@ -1,7 +1,6 @@
 {
   "src": [
     "pages/MainPage",
-    "pages/PayElecPage",
-    "pages/WebViewPage"
+    "pages/PayElecPage"
   ]
 }

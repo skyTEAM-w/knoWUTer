@@ -28,8 +28,6 @@ export struct Home {
                 webview.WebCookieManager.fetchCookieSync("https://zhlgd.whut.edu.cn/tp_up/view?m=up#act=portal/viewhome")
                   .toString();
             })
-          Blank()
-            .height('12%')
         }
 
       }
