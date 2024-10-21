@@ -8,13 +8,14 @@ import { it } from '@ohos/hypium';
 @Component
 export struct Service {
   @Consume('WebViewStack') webViewStack: NavPathStack;
+  @Consume('appPathStack') appPathStack: NavPathStack;
 
   jumpWebView(item: ServiceUrl):void {
-    this.webViewStack.pushPathByName('WebViewPage',
+    this.appPathStack.pushPathByName('WebViewPage',
     new Object({
       webUrl: item,
       onDestinationBack: () => {
-        this.webViewStack.pop();
+        this.appPathStack.pop();
         return false;
       }
     }))

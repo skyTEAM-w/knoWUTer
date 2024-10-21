@@ -69,9 +69,9 @@ struct Index {
           this.bottomTabIndex = index;
         })
         .height('100%')
-        // .barOverlap(true)
-        // .barBackgroundColor(Color.Transparent)
-        // .barBackgroundBlurStyle(BlurStyle.Thin)
+        .barOverlap(true)
+        .barBackgroundColor(Color.Transparent)
+        .barBackgroundBlurStyle(BlurStyle.Thin)
       }
       .width('100%')
     }
