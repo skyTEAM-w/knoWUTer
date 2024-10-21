@@ -10,8 +10,8 @@ import { User } from '../view/UserComponent';
 @Component
 struct Index {
   @State bottomTabIndex: number = 2;
-  @Provide('WebViewStack')webViewStack:NavPathStack = new NavPathStack();
-  @Provide('appPathStack')appPathStack: NavPathStack = new NavPathStack();
+  @Provide('WebViewStack') webViewStack: NavPathStack = new NavPathStack();
+  @Provide('appPathStack') appPathStack: NavPathStack = new NavPathStack();
   private bottomTabController: TabsController = new TabsController();
 
   @Builder

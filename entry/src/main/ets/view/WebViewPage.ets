@@ -1,21 +1,22 @@
-import { promptAction, router } from '@kit.ArkUI';
+import { promptAction } from '@kit.ArkUI';
 import { webview } from '@kit.ArkWeb';
 import { ServiceUrl } from '../model/ServiceUrl';
-import {ServiceBlockClass} from '../model/ServiceBlockClass'
+import { ServiceBlockClass } from '../model/ServiceBlockClass';
 import { pasteboard } from '@kit.BasicServicesKit';
 
 @Component
 struct WebViewPage {
   @State serviceUrl: ServiceUrl = new ServiceBlockClass('', '');
   @State webUrl: string = '';
-  onDestinationBack?: () => boolean = () => false;
   private webViewController: webview.WebviewController = new webview.WebviewController();
+
+  onDestinationBack?: () => boolean = () => false;
 
   build() {
     NavDestination() {
-      Column({space: 5}) {
-        Flex({justifyContent: FlexAlign.SpaceBetween, alignItems: ItemAlign.Stretch}) {
-          Row(){
+      Column({ space: 5 }) {
+        Flex({ justifyContent: FlexAlign.SpaceBetween, alignItems: ItemAlign.Stretch }) {
+          Row() {
             Image($r("app.media.ic_arrow_back"))
               .height('100%')
               .objectFit(ImageFit.Contain)
@@ -34,7 +35,7 @@ struct WebViewPage {
             .textAlign(TextAlign.Center)
             .backgroundColor($r('app.color.normal_background_grey'))
             .borderRadius(8)
-          Row(){
+          Row() {
             Image($r("app.media.ic_arrow_right_up_and_square"))
               .height('80%')
               .objectFit(ImageFit.Contain)
@@ -46,6 +47,7 @@ struct WebViewPage {
         }
         .height(33)
         .width('95%')
+
         Web({
           src: this.serviceUrl.url,
           controller: this.webViewController

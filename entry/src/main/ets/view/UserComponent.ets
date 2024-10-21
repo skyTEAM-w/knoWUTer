@@ -15,5 +15,4 @@ export struct User {
     }
 
   }
-
 }

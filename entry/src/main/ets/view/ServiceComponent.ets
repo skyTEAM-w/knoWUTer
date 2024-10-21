@@ -10,15 +10,15 @@ export struct Service {
   @Consume('WebViewStack') webViewStack: NavPathStack;
   @Consume('appPathStack') appPathStack: NavPathStack;
 
-  jumpWebView(item: ServiceUrl):void {
+  jumpWebView(item: ServiceUrl): void {
     this.appPathStack.pushPathByName('WebViewPage',
-    new Object({
-      webUrl: item,
-      onDestinationBack: () => {
-        this.appPathStack.pop();
-        return false;
-      }
-    }))
+      new Object({
+        webUrl: item,
+        onDestinationBack: () => {
+          this.appPathStack.pop();
+          return false;
+        }
+      }))
   }
 
   build() {
@@ -35,8 +35,8 @@ export struct Service {
 
         Scroll() {
           Column() {
-            ServiceBanner({handleClick: (item: ServiceUrl) => this.jumpWebView(item)})
-            ServiceBlocks({handleClick: (item: ServiceUrl) => this.jumpWebView(item)})
+            ServiceBanner({ handleClick: (item: ServiceUrl) => this.jumpWebView(item) })
+            ServiceBlocks({ handleClick: (item: ServiceUrl) => this.jumpWebView(item) })
           }
         }
         .layoutWeight(1)
@@ -52,7 +52,8 @@ export struct Service {
 @Component
 export struct ServiceBlocks {
   @State blockList: ServiceBlockClass[] = [];
-  handleClick: (item: ServiceUrl) => void = () => {}
+  handleClick: (item: ServiceUrl) => void = () => {
+  }
 
   aboutToAppear(): void {
     this.getBlockFromJson();
@@ -105,7 +106,8 @@ export struct ServiceBlocks {
 @Component
 export struct ServiceBanner {
   @State bannerList: ServiceBannerClass[] = [];
-  handleClick: (item: ServiceUrl) => void = () => {}
+  handleClick: (item: ServiceUrl) => void = () => {
+  }
 
   aboutToAppear(): void {
     this.getBannerDataFromJSON();
