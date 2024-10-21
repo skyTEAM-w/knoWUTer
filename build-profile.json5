@@ -21,26 +21,26 @@
         "name": "default",
         "type": "HarmonyOS",
         "material": {
-          "certpath": "C:\\Users\\Lenovo\\.ohos\\config\\default_WHUTHelper_vMvF5ss3QK3gBXpPcOPQr4H01_HNBegYDLgB4gArjZs=.cer",
-          "storePassword": "0000001B805ACA8C04728E4B907DC534A9DA78694092AA3BF43961CA13698C009F947145A09E663A82AF96",
+          "certpath": "C:\\Users\\Administrator\\.ohos\\config\\default_WHUTHelper_cp8-8MMRKniAzlzI6QW88MSuSrliDt6GEcPahalEzdI=.cer",
+          "storePassword": "0000001B20B551F851EBC65BFC311FF60638F44033447CFCFBD14C2D816CA324EC4A38933EB9B2B96CE4BD",
           "keyAlias": "debugKey",
-          "keyPassword": "0000001BF8692C4F3A10A8BF2192FCDACC133EB9E86C98617B67516EAC487EECD4A162292E8913A3DFFD26",
-          "profile": "C:\\Users\\Lenovo\\.ohos\\config\\default_WHUTHelper_vMvF5ss3QK3gBXpPcOPQr4H01_HNBegYDLgB4gArjZs=.p7b",
+          "keyPassword": "0000001B779C9421A248669FE985FCB27B58F46FD56A5B7B3FB93114F522B5871C5F13FB2DD8167F0F4FEB",
+          "profile": "C:\\Users\\Administrator\\.ohos\\config\\default_WHUTHelper_cp8-8MMRKniAzlzI6QW88MSuSrliDt6GEcPahalEzdI=.p7b",
           "signAlg": "SHA256withECDSA",
-          "storeFile": "C:\\Users\\Lenovo\\.ohos\\config\\default_WHUTHelper_vMvF5ss3QK3gBXpPcOPQr4H01_HNBegYDLgB4gArjZs=.p12"
+          "storeFile": "C:\\Users\\Administrator\\.ohos\\config\\default_WHUTHelper_cp8-8MMRKniAzlzI6QW88MSuSrliDt6GEcPahalEzdI=.p12"
         }
       },
       {
         "name": "Legion",
         "type": "HarmonyOS",
         "material": {
-          "certpath": "C:\\Users\\Lenovo\\.ohos\\config\\Legion_WHUTHelper_vMvF5ss3QK3gBXpPcOPQr4H01_HNBegYDLgB4gArjZs=.cer",
-          "storePassword": "0000001B7BFCD66A33A0415B6CA961B5D1BA4F709EAE9EEE64CCC4EDC73EA459709299EA3A50A1E7C9B23C",
+          "certpath": "C:/Users/Administrator/.ohos/config/Legion_WHUTHelper_cp8-8MMRKniAzlzI6QW88MSuSrliDt6GEcPahalEzdI=.cer",
+          "storePassword": "0000001BCD055C766C1625A4C3BAD13D6E9C094A5D1CDB7260E4FAA7B807176C06586088855DD49F0748F1",
           "keyAlias": "debugKey",
-          "keyPassword": "0000001BD1A3AB0BCB5109983FDB8C6D270C9AA710DAD892FC64C0F3129C6447F8B6CDFB3C9E8A2870164F",
-          "profile": "C:\\Users\\Lenovo\\.ohos\\config\\Legion_WHUTHelper_vMvF5ss3QK3gBXpPcOPQr4H01_HNBegYDLgB4gArjZs=.p7b",
+          "keyPassword": "0000001BF886F46161E7A5B55143E6797755A3D97A987D4AFBE5D696829EE070FED7F86D5009932566AC51",
+          "profile": "C:/Users/Administrator/.ohos/config/Legion_WHUTHelper_cp8-8MMRKniAzlzI6QW88MSuSrliDt6GEcPahalEzdI=.p7b",
           "signAlg": "SHA256withECDSA",
-          "storeFile": "C:\\Users\\Lenovo\\.ohos\\config\\Legion_WHUTHelper_vMvF5ss3QK3gBXpPcOPQr4H01_HNBegYDLgB4gArjZs=.p12"
+          "storeFile": "C:/Users/Administrator/.ohos/config/Legion_WHUTHelper_cp8-8MMRKniAzlzI6QW88MSuSrliDt6GEcPahalEzdI=.p12"
         }
       }
     ]

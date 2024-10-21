@@ -74,5 +74,6 @@ struct Index {
       .width('100%')
     }
     .hideToolBar(true)
+    .mode(NavigationMode.Stack)
   }
 }
