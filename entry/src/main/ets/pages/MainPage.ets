@@ -12,6 +12,10 @@ struct Index {
   @State bottomTabIndex: number = 2;
   @Provide('WebViewStack') webViewStack: NavPathStack = new NavPathStack();
   @Provide('appPathStack') appPathStack: NavPathStack = new NavPathStack();
+
+  @StorageProp('bottomRectHeight') bottomRectHeight: number = 0;
+  @StorageProp('topRectHeight') topRectHeight: number = 0;
+
   private bottomTabController: TabsController = new TabsController();
 
   @Builder
@@ -33,7 +37,8 @@ struct Index {
     .justifyContent(FlexAlign.Center)
     .border({ width: { top: 0.5 }, color: "#FF182431" })
     .backgroundColor(Color.Transparent)
-    .blur(BlurStyle.Thin)
+    .blur(BlurStyle.Thick)
+    .expandSafeArea([SafeAreaType.SYSTEM], [SafeAreaEdge.BOTTOM])
   }
 
   build() {

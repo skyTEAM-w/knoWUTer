@@ -1,5 +1,6 @@
 package cj_res_entry
 
+
 public class SysColor {
     public let ohos_id_color_foreground = 125829120
     public let ohos_id_color_foreground_dark = 125829121
@@ -2024,8 +2025,9 @@ public class SysMedia {
 }
 
 public class sys {
-    public static let color = SysColor()
-    public static let float = SysFloat()
-    public static let string = SysString()
-    public static let media = SysMedia()
+   public static let color = SysColor()
+   public static let float = SysFloat()
+   public static let string = SysString()
+   public static let media = SysMedia()
 }
+

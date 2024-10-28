@@ -64,6 +64,8 @@ export struct Service {
         Column() {
           Scroll() {
             Column() {
+              Blank()
+                .height(56)
               ServiceBanner({
                 bannerList: this.serviceModel.swiperData,
                 handleClick: (item: ServiceUrl) => this.jumpWebView(item)
@@ -84,11 +86,13 @@ export struct Service {
           .layoutWeight(1)
           .scrollBar(BarState.Off)
           .align(Alignment.TopStart)
+          .edgeEffect(EdgeEffect.Spring)
         }
       }
       .mode(NavigationMode.Stack)
       .title($r('app.string.text_service'), {
-        barStyle: BarStyle.STANDARD
+        barStyle: BarStyle.STACK,
+        backgroundBlurStyle: BlurStyle.Thick
       })
       .titleMode(NavigationTitleMode.Mini)
       .hideTitleBar(false)
