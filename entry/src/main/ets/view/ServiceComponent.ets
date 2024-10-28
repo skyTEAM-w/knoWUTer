@@ -1,17 +1,22 @@
 import { ServiceBlockClass } from '../model/ServiceBlockClass';
 import { ServiceBannerClass } from '../model/ServiceBannerClass';
-import { ServiceListClass } from '../model/ServiceListClass'
-import { ServiceUrl } from '../model/ServiceUrl'
+import { ServiceListClass } from '../model/ServiceListClass';
+import { ServiceUrl } from '../model/ServiceUrl';
 import { bufferToString } from '../common/utils/BufferUtil';
 import { LengthMetrics } from '@kit.ArkUI';
+import { ServiceModel } from '../model/ServiceModel';
+import LazyDataSource from '../common/model/LazyDataSource';
 
 
 @Component
 export struct Service {
   @Consume('WebViewStack') webViewStack: NavPathStack;
   @Consume('appPathStack') appPathStack: NavPathStack;
+  @State serviceModel: ServiceModel = new ServiceModel();
 
-  private scrollerForScroll: Scroller = new Scroller();
+  aboutToAppear(): void {
+    this.getServiceModelFromJSON();
+  }
 
   jumpWebView(item: ServiceUrl): void {
     this.appPathStack.pushPathByName('WebViewPage',
@@ -24,6 +29,23 @@ export struct Service {
       }))
   }
 
+  getServiceModelFromJSON() {
+    getContext(this).resourceManager.getRawFileContent("ServiceBannerData.json").then(value => {
+      this.serviceModel.swiperData = JSON.parse(bufferToString(value.buffer)) as ServiceBannerClass[];
+    });
+    getContext(this).resourceManager.getRawFileContent("ServiceBlockData.json").then(value => {
+      let jsonObj = JSON.parse(bufferToString(value.buffer)) as ServiceBlockClass[];
+      jsonObj.forEach((item: ServiceBlockClass) => {
+        this.serviceModel.blockData.pushData(item)
+      })
+    });
+    getContext(this).resourceManager.getRawFileContent("ServiceListData.json").then(value => {
+      let jsonObj = JSON.parse(bufferToString(value.buffer)) as ServiceListClass[];
+      jsonObj.forEach((item: ServiceListClass) => {
+        this.serviceModel.listData.pushData(item)
+      })
+    })
+  }
 
   @Builder
   NavigationTitle() {
@@ -40,13 +62,20 @@ export struct Service {
     Column() {
       Navigation(this.webViewStack) {
         Column() {
-          Scroll(this.scrollerForScroll) {
+          Scroll() {
             Column() {
-              Blank()
-                .height(112)
-              ServiceBanner({ handleClick: (item: ServiceUrl) => this.jumpWebView(item) })
-              ServiceBlocks({ handleClick: (item: ServiceUrl) => this.jumpWebView(item) })
-              ServiceList({ handleClick: (item: ServiceUrl) => this.jumpWebView(item) })
+              ServiceBanner({
+                bannerList: this.serviceModel.swiperData,
+                handleClick: (item: ServiceUrl) => this.jumpWebView(item)
+              })
+              ServiceBlocks({
+                blockList: this.serviceModel.blockData,
+                handleClick: (item: ServiceUrl) => this.jumpWebView(item)
+              })
+              ServiceList({
+                listList: this.serviceModel.listData,
+                handleClick: (item: ServiceUrl) => this.jumpWebView(item)
+              })
               Blank()
                 .height('15%')
             }
@@ -55,34 +84,23 @@ export struct Service {
           .layoutWeight(1)
           .scrollBar(BarState.Off)
           .align(Alignment.TopStart)
-          .edgeEffect(EdgeEffect.Spring)
         }
       }
       .mode(NavigationMode.Stack)
       .title($r('app.string.text_service'), {
-        barStyle: BarStyle.STACK,
-        backgroundBlurStyle: BlurStyle.Thick
+        barStyle: BarStyle.STANDARD
       })
-      .titleMode(NavigationTitleMode.Free)
+      .titleMode(NavigationTitleMode.Mini)
       .hideTitleBar(false)
+      .hideBackButton(true)
     }
   }
 }
 
 @Component
 export struct ServiceBlocks {
-  @State blockList: ServiceBlockClass[] = [];
+  @ObjectLink blockList: LazyDataSource<ServiceBlockClass>;
   handleClick: (item: ServiceUrl) => void = () => {
-  }
-
-  aboutToAppear(): void {
-    this.getBlockFromJson();
-  }
-
-  getBlockFromJson() {
-    getContext(this).resourceManager.getRawFileContent('ServiceBlockData.json').then(value => {
-      this.blockList = JSON.parse(bufferToString(value.buffer)) as ServiceBlockClass[];
-    })
   }
 
   build() {
@@ -99,17 +117,17 @@ export struct ServiceBlocks {
         justifyContent: FlexAlign.SpaceBetween,
         space: { main: LengthMetrics.px(10), cross: LengthMetrics.px(20) }
       }) {
-        ForEach(this.blockList, (item: ServiceBlockClass) => {
+        LazyForEach(this.blockList, (item: ServiceBlockClass, index: number) => {
           Row() {
             Text(item.title)
               .fontSize(16)
               .textAlign(TextAlign.Center)
               .fontWeight(500)
+              .fontColor((index % 2 === 0) ? $r('app.color.whut_yellow') : $r('app.color.whut_blue'))
           }
           .width('49%')
           .height(88)
-          .backgroundColor($r('app.color.service_block_background'))
-          .backgroundBlurStyle(BlurStyle.Thick)
+          .backgroundColor((index % 2 === 0) ? $r('app.color.whut_blue') : $r('app.color.whut_yellow'))
           .borderRadius(16)
           .justifyContent(FlexAlign.Center)
           .onClick(() => {
@@ -118,26 +136,20 @@ export struct ServiceBlocks {
           })
         })
       }
-      .padding({ top: 11, left: 16, right: 16, bottom:11 })
+      .padding({
+        top: 11,
+        left: 16,
+        right: 16,
+        bottom: 11
+      })
     }
   }
 }
 
 @Component
 export struct ServiceBanner {
-  @State bannerList: ServiceBannerClass[] = [];
+  @Prop bannerList: ServiceBannerClass[];
   handleClick: (item: ServiceUrl) => void = () => {
-  }
-
-  aboutToAppear(): void {
-    this.getBannerDataFromJSON();
-  }
-
-  getBannerDataFromJSON() {
-    getContext(this).resourceManager.getRawFileContent('ServiceBannerData.json').then(value => {
-      this.bannerList = JSON.parse(bufferToString(value.buffer)) as ServiceBannerClass[];
-    })
-    console.log(this.bannerList.toString())
   }
 
   build() {
@@ -165,25 +177,13 @@ export struct ServiceBanner {
 
 @Component
 export struct ServiceList {
-
-  @State listList: ServiceListClass[] = [];
+  @ObjectLink listList: LazyDataSource<ServiceListClass>;
   handleClick: (item: ServiceUrl) => void = () => {
-  }
-
-  aboutToAppear(): void {
-    this.getBannerDataFromJSON();
-  }
-
-  getBannerDataFromJSON() {
-    getContext(this).resourceManager.getRawFileContent('ServiceListData.json').then(value => {
-      this.listList = JSON.parse(bufferToString(value.buffer)) as ServiceListClass[];
-    })
-    console.log(this.listList.toString())
   }
 
   @Builder
   ServiceListItem(item: ServiceListClass) {
-    Row({space: 5}) {
+    Row({ space: 5 }) {
       Image($r(item.imageUrl))
         .objectFit(ImageFit.Contain)
         .height('90%')
@@ -208,14 +208,19 @@ export struct ServiceList {
         .textAlign(TextAlign.Start)
         .padding({ left: 16, right: 16, top: 11 })
         .width('100%')
-      List({space: 5}) {
-        ForEach(this.listList, (item: ServiceListClass, index: number) => {
+      List({ space: 5 }) {
+        LazyForEach(this.listList, (item: ServiceListClass, index: number) => {
           ListItem() {
             this.ServiceListItem(item)
           }
         })
       }
-      .padding({ top: 11, left: 16, right: 16, bottom:11 })
+      .padding({
+        top: 11,
+        left: 16,
+        right: 16,
+        bottom: 11
+      })
     }
   }
 }

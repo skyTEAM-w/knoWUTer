@@ -9,7 +9,6 @@ struct WebViewPage {
   @State serviceUrl: ServiceUrl = new ServiceBlockClass('', '');
   @State webUrl: string = '';
   private webViewController: webview.WebviewController = new webview.WebviewController();
-
   onDestinationBack?: () => boolean = () => false;
 
   build() {

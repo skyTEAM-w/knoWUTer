@@ -71,7 +71,7 @@ struct Index {
         .height('100%')
         .barOverlap(true)
         .barBackgroundColor(Color.Transparent)
-        .barBackgroundBlurStyle(BlurStyle.Thin)
+        .barBackgroundBlurStyle(BlurStyle.Thick)
       }
       .width('100%')
     }
