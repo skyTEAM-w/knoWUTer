@@ -63,7 +63,7 @@ struct Index {
         }
         .width('100%')
         .vertical(false)
-        .barHeight('10%')
+        .barHeight('8%')
         .scrollable(false)
         .onChange((index: number) => {
           this.bottomTabIndex = index;

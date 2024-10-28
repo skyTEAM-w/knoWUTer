@@ -11,6 +11,8 @@ export struct Service {
   @Consume('WebViewStack') webViewStack: NavPathStack;
   @Consume('appPathStack') appPathStack: NavPathStack;
 
+  private scrollerForScroll: Scroller = new Scroller();
+
   jumpWebView(item: ServiceUrl): void {
     this.appPathStack.pushPathByName('WebViewPage',
       new Object({
@@ -22,34 +24,48 @@ export struct Service {
       }))
   }
 
+
+  @Builder
+  NavigationTitle() {
+    Text($r('app.string.text_service'))
+      .fontSize($r('app.float.component_title_size'))
+      .fontWeight(700)
+      .width('100%')
+      .padding({ left: 16 })
+      .fontFamily('HarmonyHeiTi-Bold')
+      .lineHeight(33)
+  }
+
   build() {
-    Navigation(this.webViewStack) {
-      Column() {
-        Text($r('app.string.text_service'))
-          .fontSize($r('app.float.component_title_size'))
-          .fontWeight(700)
-          .width('100%')
-          .textAlign(TextAlign.Start)
-          .padding({ left: 16 })
-          .fontFamily('HarmonyHeiTi-Bold')
-          .lineHeight(33)
+    Column() {
+      Navigation(this.webViewStack) {
+        Column() {
+          Scroll(this.scrollerForScroll) {
+            Column() {
+              Blank()
+                .height(112)
+              ServiceBanner({ handleClick: (item: ServiceUrl) => this.jumpWebView(item) })
+              ServiceBlocks({ handleClick: (item: ServiceUrl) => this.jumpWebView(item) })
+              ServiceList({ handleClick: (item: ServiceUrl) => this.jumpWebView(item) })
+              Blank()
+                .height('15%')
+            }
 
-        Scroll() {
-          Column() {
-            ServiceBanner({ handleClick: (item: ServiceUrl) => this.jumpWebView(item) })
-            ServiceBlocks({ handleClick: (item: ServiceUrl) => this.jumpWebView(item) })
-            ServiceList({ handleClick: (item: ServiceUrl) => this.jumpWebView(item) })
-            Blank()
-              .height('15%')
           }
-
+          .layoutWeight(1)
+          .scrollBar(BarState.Off)
+          .align(Alignment.TopStart)
+          .edgeEffect(EdgeEffect.Spring)
         }
-        .layoutWeight(1)
-        .scrollBar(BarState.Off)
-        .align(Alignment.TopStart)
       }
+      .mode(NavigationMode.Stack)
+      .title($r('app.string.text_service'), {
+        barStyle: BarStyle.STACK,
+        backgroundBlurStyle: BlurStyle.Thick
+      })
+      .titleMode(NavigationTitleMode.Free)
+      .hideTitleBar(false)
     }
-    .mode(NavigationMode.Stack)
   }
 }
 
