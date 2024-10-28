@@ -1,0 +1,52 @@
+[
+  {
+    "serviceName": "软件资源服务平台",
+    "url": "https://software.whut.edu.cn/index.html",
+    "serviceType": "normal",
+    "imageUrl": "app.media.service_software_resource_center",
+    "inMainPage": "true"
+  },
+  {
+    "serviceName": "财务无纸化报销",
+    "url": "http://lxcg.whut.edu.cn/expense/expense",
+    "serviceType": "office",
+    "imageUrl": "app.media.service_financial_paperless_reimbursement",
+    "inMainPage": "true"
+  },
+  {
+    "serviceName": "财务综合服务系统",
+    "url": "http://218.197.101.232:8080/FINPortal/myindex.action",
+    "serviceType": "office",
+    "imageUrl": "app.media.service_financial_integrated_service_system",
+    "inMainPage": "true"
+  },
+  {
+    "serviceName": "外事综合管理信息系统",
+    "url": "https://int.whut.edu.cn/",
+    "serviceType": "office",
+    "imageUrl": "app.media.service_foreign_affairs",
+    "inMainPage": "true"
+  },
+  {
+    "serviceName": "学院平台",
+    "url": "https://xypt.whut.edu.cn/ep/view",
+    "serviceType": "normal",
+    "imageUrl": "app.media.service_school_platform",
+    "inMainPage": "true"
+  },
+  {
+    "serviceName": "理工智课",
+    "url": "https://infra.ai-augmented.com/api/auth/cas/casDirectLogin?schoolCertify=10497",
+    "serviceType": "education",
+    "imageUrl": "app.media.service_xiaoya",
+    "inMainPage": "true"
+  },
+  {
+    "serviceName": "智慧学工",
+    "url": "https://talent.whut.edu.cn/",
+    "serviceType": "education",
+    "imageUrl": "app.media.service_talent_xuegong",
+    "inMainPage": "true"
+  }
+
+]

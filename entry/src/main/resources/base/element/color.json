@@ -31,6 +31,14 @@
     {
       "name": "normal_background_grey",
       "value": "#288A8888"
+    },
+    {
+      "name": "whut_blue",
+      "value": "#00489A"
+    },
+    {
+      "name": "whut_yellow",
+      "value": "#FAC640"
     }
   ]
 }

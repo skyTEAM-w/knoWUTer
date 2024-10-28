@@ -1,9 +1,10 @@
 import { ServiceBlockClass } from '../model/ServiceBlockClass';
 import { ServiceBannerClass } from '../model/ServiceBannerClass';
+import { ServiceListClass } from '../model/ServiceListClass'
 import { ServiceUrl } from '../model/ServiceUrl'
 import { bufferToString } from '../common/utils/BufferUtil';
-import { LengthMetrics, router } from '@kit.ArkUI';
-import { it } from '@ohos/hypium';
+import { LengthMetrics } from '@kit.ArkUI';
+
 
 @Component
 export struct Service {
@@ -37,7 +38,11 @@ export struct Service {
           Column() {
             ServiceBanner({ handleClick: (item: ServiceUrl) => this.jumpWebView(item) })
             ServiceBlocks({ handleClick: (item: ServiceUrl) => this.jumpWebView(item) })
+            ServiceList({ handleClick: (item: ServiceUrl) => this.jumpWebView(item) })
+            Blank()
+              .height('15%')
           }
+
         }
         .layoutWeight(1)
         .scrollBar(BarState.Off)
@@ -45,7 +50,6 @@ export struct Service {
       }
     }
     .mode(NavigationMode.Stack)
-
   }
 }
 
@@ -98,7 +102,7 @@ export struct ServiceBlocks {
           })
         })
       }
-      .padding({ top: 11, left: 16, right: 16 })
+      .padding({ top: 11, left: 16, right: 16, bottom:11 })
     }
   }
 }
@@ -140,5 +144,62 @@ export struct ServiceBanner {
       new DotIndicator()
         .color($r('app.color.swiper_dot_color'))
         .selectedColor($r('app.color.swiper_dot_color_selected')))
+  }
+}
+
+@Component
+export struct ServiceList {
+
+  @State listList: ServiceListClass[] = [];
+  handleClick: (item: ServiceUrl) => void = () => {
+  }
+
+  aboutToAppear(): void {
+    this.getBannerDataFromJSON();
+  }
+
+  getBannerDataFromJSON() {
+    getContext(this).resourceManager.getRawFileContent('ServiceListData.json').then(value => {
+      this.listList = JSON.parse(bufferToString(value.buffer)) as ServiceListClass[];
+    })
+    console.log(this.listList.toString())
+  }
+
+  @Builder
+  ServiceListItem(item: ServiceListClass) {
+    Row({space: 5}) {
+      Image($r(item.imageUrl))
+        .objectFit(ImageFit.Contain)
+        .height('90%')
+      Text(item.serviceName)
+    }
+    .onClick(() => {
+      this.handleClick(item)
+    })
+    .height(44)
+    .width('100%')
+    .backgroundColor($r('app.color.normal_background_grey'))
+    .blur(BlurStyle.Thin)
+    .borderRadius(8)
+  }
+
+  build() {
+    Column() {
+      Text('集成站点')
+        .fontSize(18)
+        .fontWeight(700)
+        .fontFamily('HarmonyHeiTi-medium')
+        .textAlign(TextAlign.Start)
+        .padding({ left: 16, right: 16, top: 11 })
+        .width('100%')
+      List({space: 5}) {
+        ForEach(this.listList, (item: ServiceListClass, index: number) => {
+          ListItem() {
+            this.ServiceListItem(item)
+          }
+        })
+      }
+      .padding({ top: 11, left: 16, right: 16, bottom:11 })
+    }
   }
 }
