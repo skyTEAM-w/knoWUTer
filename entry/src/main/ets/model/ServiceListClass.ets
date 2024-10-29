@@ -1,14 +1,14 @@
 import { ServiceUrl } from './ServiceUrl';
-import { ServiceType } from '../common/constants/CommonEnums';
+import { ServiceShowType, ServiceType } from '../common/constants/CommonEnums';
 
 export class ServiceListClass implements ServiceUrl {
   serviceName: string = '';
   url: string = '';
   serviceType: ServiceType = ServiceType.NULL;
   imageUrl: string = '';
-  inMainPage: boolean = false;
+  inMainPage: ServiceShowType = ServiceShowType.FALSE;
 
-  constructor(serviceName: string, url: string, serviceType: ServiceType, imageUrl: string, inMainPage: boolean) {
+  constructor(serviceName: string, url: string, serviceType: ServiceType, imageUrl: string, inMainPage: ServiceShowType) {
     this.serviceName = serviceName;
     this.url = url;
     this.serviceType = serviceType;

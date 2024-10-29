@@ -4,6 +4,11 @@
       "name": "WebViewPage",
       "pageSourceFile": "src/main/ets/view/WebViewPage.ets",
       "buildFunction": "WebViewPageBuilder"
+    },
+    {
+      "name": "AllServiceList",
+      "pageSourceFile": "src/main/ets/view/AllServiceList.ets",
+      "buildFunction": "AllServiceListBuilder"
     }
   ]
 }

@@ -6,11 +6,12 @@ import { bufferToString } from '../common/utils/BufferUtil';
 import { LengthMetrics } from '@kit.ArkUI';
 import { ServiceModel } from '../model/ServiceModel';
 import LazyDataSource from '../common/model/LazyDataSource';
+import { ServiceShowType } from '../common/constants/CommonEnums';
 
 
 @Component
 export struct Service {
-  @Consume('WebViewStack') webViewStack: NavPathStack;
+  @Consume('serviceStack') serviceStack: NavPathStack;
   @Consume('appPathStack') appPathStack: NavPathStack;
   @State serviceModel: ServiceModel = new ServiceModel();
 
@@ -27,6 +28,17 @@ export struct Service {
           return false;
         }
       }))
+  }
+
+  jumpServiceList() {
+    this.serviceStack.pushPathByName('AllServiceList', new Object({
+      ServiceModel: this.serviceModel,
+      onDestinationBack: () => {
+        this.serviceStack.pop();
+        return false;
+      }
+    }
+    ))
   }
 
   getServiceModelFromJSON() {
@@ -69,31 +81,54 @@ export struct Service {
         .width('100%')
     }
     .backgroundColor($r('app.color.start_window_background'))
-    .padding({ left: 16, right: 16, top: 11 })
+    .padding({
+      left: 16,
+      right: 16,
+      top: 5,
+      bottom: 5
+    })
     .justifyContent(FlexAlign.Start)
   }
 
   @Builder
   ServiceListHeader() {
-    Row() {
+    Flex({ justifyContent: FlexAlign.SpaceBetween, alignItems: ItemAlign.Center }) {
       Text('集成站点')
         .fontSize(18)
         .fontWeight(700)
         .fontFamily('HarmonyHeiTi-medium')
         .textAlign(TextAlign.Start)
         .width('100%')
+      Row() {
+        Text('更多')
+          .fontSize(12)
+          .opacity(0.6)
+          .textAlign(TextAlign.Start)
+        SymbolGlyph($r('sys.symbol.chevron_right'))
+          .fontWeight(FontWeight.Normal)
+          .opacity(0.6)
+      }
+      .alignItems(VerticalAlign.Center)
+      .justifyContent(FlexAlign.Center)
+      .onClick(() => {
+        this.jumpServiceList()
+      })
     }
     .backgroundColor($r('app.color.start_window_background'))
-    .padding({ left: 16, right: 16, top: 11 })
-    .justifyContent(FlexAlign.Start)
+    .padding({
+      left: 16,
+      right: 16,
+      top: 5,
+      bottom: 5
+    })
   }
 
   build() {
     Column() {
-      Navigation(this.webViewStack) {
+      Navigation(this.serviceStack) {
         Column() {
           List() {
-            ListItemGroup(){
+            ListItemGroup() {
               ListItem() {
                 ServiceBanner({
                   bannerList: this.serviceModel.swiperData,
@@ -102,7 +137,8 @@ export struct Service {
               }
 
             }
-            ListItemGroup({header: this.ServiceBlockHeader()}) {
+
+            ListItemGroup({ header: this.ServiceBlockHeader() }) {
               ListItem() {
                 ServiceBlocks({
                   blockList: this.serviceModel.blockData,
@@ -110,7 +146,8 @@ export struct Service {
                 })
               }
             }
-            ListItemGroup({header: this.ServiceListHeader()}) {
+
+            ListItemGroup({ header: this.ServiceListHeader() }) {
               ListItem() {
                 ServiceList({
                   listList: this.serviceModel.listData,
@@ -118,7 +155,8 @@ export struct Service {
                 })
               }
             }
-            ListItem(){
+
+            ListItem() {
               Column()
                 .height('15%')
             }
@@ -195,7 +233,12 @@ export struct ServiceBanner {
           .objectFit(ImageFit.Contain)
           .width('100%')
           .borderRadius($r('app.float.border_radius'))
-          .padding({ top: 11, left: 16, right: 16 })
+          .padding({
+            top: 11,
+            left: 16,
+            right: 16,
+            bottom: 5
+          })
           .onClick(() => {
             this.handleClick(item)
             console.log(item.url);
@@ -224,7 +267,7 @@ export struct ServiceList {
         .objectFit(ImageFit.Contain)
         .height('90%')
         .width('10%')
-      Column(){
+      Column() {
         Text(item.serviceName)
           .fontColor(Color.White)
           .fontWeight(400)
@@ -242,14 +285,14 @@ export struct ServiceList {
     .width('100%')
     .backgroundColor($r('app.color.normal_background_grey'))
     .borderRadius(8)
-    .padding({left: 5})
+    .padding({ left: 5 })
   }
 
   build() {
     Column() {
-      List({ space: 5 }) {
+      Column({ space: 5 }) {
         LazyForEach(this.listList, (item: ServiceListClass, index: number) => {
-          ListItem() {
+          if (item.inMainPage === ServiceShowType.TRUE) {
             this.ServiceListItem(item)
           }
         })

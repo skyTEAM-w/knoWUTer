@@ -63,13 +63,25 @@ public class AppMedia {
 	public var ic_public_home = 16777259
 	public var ic_public_home_filled = 16777260
 	public var layered_image = 16777261
+	public var service_dangxiao = 16777284
+	public var service_daxingshebei = 16777289
 	public var service_financial_integrated_service_system = 16777273
 	public var service_financial_paperless_reimbursement = 16777274
 	public var service_foreign_affairs = 16777275
+	public var service_jiaofei = 16777291
+	public var service_kejiguanliyufuwu = 16777282
+	public var service_library_reservation = 16777293
+	public var service_ligongzhixing = 16777292
+	public var service_map = 16777290
+	public var service_mashangpingtai = 16777287
+	public var service_material_lm = 16777286
+	public var service_meeting_reservation = 16777283
 	public var service_school_platform = 16777276
+	public var service_shiyanshixunjian = 16777288
 	public var service_software_resource_center = 16777277
 	public var service_talent_xuegong = 16777278
 	public var service_xiaoya = 16777279
+	public var service_yanjiusheng = 16777285
 	public var service_zhiboketang = 16777280
 	public var startIcon = 16777262
 	public var startIcon_whut = 16777263
@@ -144,13 +156,25 @@ public func updateAllRes() {
 	resourceMap.put("media ic_public_home", 16777259)
 	resourceMap.put("media ic_public_home_filled", 16777260)
 	resourceMap.put("media layered_image", 16777261)
+	resourceMap.put("media service_dangxiao", 16777284)
+	resourceMap.put("media service_daxingshebei", 16777289)
 	resourceMap.put("media service_financial_integrated_service_system", 16777273)
 	resourceMap.put("media service_financial_paperless_reimbursement", 16777274)
 	resourceMap.put("media service_foreign_affairs", 16777275)
+	resourceMap.put("media service_jiaofei", 16777291)
+	resourceMap.put("media service_kejiguanliyufuwu", 16777282)
+	resourceMap.put("media service_library_reservation", 16777293)
+	resourceMap.put("media service_ligongzhixing", 16777292)
+	resourceMap.put("media service_map", 16777290)
+	resourceMap.put("media service_mashangpingtai", 16777287)
+	resourceMap.put("media service_material_lm", 16777286)
+	resourceMap.put("media service_meeting_reservation", 16777283)
 	resourceMap.put("media service_school_platform", 16777276)
+	resourceMap.put("media service_shiyanshixunjian", 16777288)
 	resourceMap.put("media service_software_resource_center", 16777277)
 	resourceMap.put("media service_talent_xuegong", 16777278)
 	resourceMap.put("media service_xiaoya", 16777279)
+	resourceMap.put("media service_yanjiusheng", 16777285)
 	resourceMap.put("media service_zhiboketang", 16777280)
 	resourceMap.put("media startIcon", 16777262)
 	resourceMap.put("media startIcon_whut", 16777263)

@@ -8,19 +8,19 @@ import { common, Want } from '@kit.AbilityKit';
 @Component
 struct WebViewPage {
   @State serviceUrl: ServiceUrl = new ServiceBlockClass('', '');
-  @State webUrl: string = '';
+  @State webTitle: string = '';
   private webViewController: webview.WebviewController = new webview.WebviewController();
   onDestinationBack?: () => boolean = () => false;
 
   @Builder
   WebViewMenu() {
     Menu() {
-      MenuItem({content: "复制链接"})
+      MenuItem({ content: "复制链接" })
         .onClick(() => {
-          copyText(this.webUrl)
+          copyText(this.webViewController.getUrl())
         })
-      MenuItem({content: "在浏览器打开"})
-        .onClick(()=>{
+      MenuItem({ content: "在浏览器打开" })
+        .onClick(() => {
           let context = getContext(this) as common.UIAbilityContext;
           startBrowsableAbility(context, this.serviceUrl.url)
         })
@@ -42,7 +42,7 @@ struct WebViewPage {
           }
 
           Row() {
-            Text(this.webUrl)
+            Text(this.webTitle)
               .textOverflow({ overflow: TextOverflow.Ellipsis })
               .maxLines(1)
               .ellipsisMode(EllipsisMode.END)
@@ -75,8 +75,11 @@ struct WebViewPage {
           .domStorageAccess(true)
           .zoomAccess(true)
           .onPageBegin(() => {
+            this.webTitle = this.webViewController.getUrl()
+          })
+          .onPageEnd(() => {
             console.log("view: " + this.serviceUrl.url)
-            this.webUrl = this.webViewController.getUrl()
+            this.webTitle = this.webViewController.getTitle()
           }
           )
       }

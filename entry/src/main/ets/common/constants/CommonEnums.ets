@@ -5,3 +5,7 @@ export enum ServiceType {
   NORMAL = 'normal',
   NULL = ''
 }
+export enum ServiceShowType {
+  TRUE = 'true',
+  FALSE = 'false'
+}

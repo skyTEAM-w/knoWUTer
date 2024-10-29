@@ -9,14 +9,14 @@
   {
     "serviceName": "财务无纸化报销",
     "url": "http://lxcg.whut.edu.cn/expense/expense",
-    "serviceType": "office",
+    "serviceType": "finance",
     "imageUrl": "app.media.service_financial_paperless_reimbursement",
     "inMainPage": "true"
   },
   {
     "serviceName": "财务综合服务系统",
     "url": "http://218.197.101.232:8080/FINPortal/myindex.action",
-    "serviceType": "office",
+    "serviceType": "finance",
     "imageUrl": "app.media.service_financial_integrated_service_system",
     "inMainPage": "true"
   },
@@ -54,5 +54,90 @@
     "serviceType": "education",
     "imageUrl": "app.media.service_zhiboketang",
     "inMainPage": "true"
+  },
+  {
+    "serviceName": "科技管理与信息服务平台",
+    "url": "https://202.114.90.228/srm-web/systemsso/login_ssoLogin.html",
+    "serviceType": "office",
+    "imageUrl": "app.media.service_kejiguanliyufuwu",
+    "inMainPage": "true"
+  },
+  {
+    "serviceName": "会议及参观预约",
+    "url": "https://huiyi.whut.edu.cn/login",
+    "serviceType": "normal",
+    "imageUrl": "app.media.service_meeting_reservation",
+    "inMainPage": "true"
+  },
+  {
+    "serviceName": "网上党校",
+    "url": "http://218.197.101.119/",
+    "serviceType": "normal",
+    "imageUrl": "app.media.service_dangxiao",
+    "inMainPage": "true"
+  },
+  {
+    "serviceName": "研究生系统",
+    "url": "http://218.197.101.24",
+    "serviceType": "office",
+    "imageUrl": "app.media.service_yanjiusheng",
+    "inMainPage": "true"
+  },
+  {
+    "serviceName": "材料+大模型",
+    "url": "https://pass.fifedu.com/iplat-pass-whut/thirdLogin/whut/login?service=https://ilearning.fifedu.com/api/courselibrary/main/index",
+    "serviceType": "education",
+    "imageUrl": "app.media.service_material_lm",
+    "inMainPage": "false"
+  },
+  {
+    "serviceName": "码上平台",
+    "url": "https://pass.fifedu.com/iplat-pass-whut/thirdLogin/whut/login?app=xhms",
+    "serviceType": "education",
+    "imageUrl": "app.media.service_mashangpingtai",
+    "inMainPage": "false"
+  },
+  {
+    "serviceName": "实验室安全巡检",
+    "url": "https://aqjc.whut.edu.cn/#/empty/no/index",
+    "serviceType": "office",
+    "imageUrl": "app.media.service_shiyanshixunjian",
+    "inMainPage": "false"
+  },
+  {
+    "serviceName": "校大型设备共享平台",
+    "url": "http://yqkf.whut.edu.cn/caslogin.aspx",
+    "serviceType": "education",
+    "imageUrl": "app.media.service_daxingshebei",
+    "inMainPage": "false"
+  },
+  {
+    "serviceName": "校园地图",
+    "url": "http://gis.whut.edu.cn/mobile/index.html",
+    "serviceType": "normal",
+    "imageUrl": "app.media.service_map",
+    "inMainPage": "false"
+  },
+  {
+    "serviceName": "校园缴费平台",
+    "url": "http://cwsf.whut.edu.cn/casLogin",
+    "serviceType": "finance",
+    "imageUrl": "app.media.service_jiaofei",
+    "inMainPage": "false"
+  },
+  {
+    "serviceName": "理工帜行",
+    "url": "https://lgzx.whut.edu.cn/biz/index",
+    "serviceType": "normal",
+    "imageUrl": "app.media.service_ligongzhixing",
+    "inMainPage": "false"
+  },
+  {
+
+    "serviceName": "图书馆预约",
+    "url": "http://lib.whut.edu.cn/engine2/general/more?t=0D60C5799302032F9F82DD6246263BE483CA7331E700813E980C0F86933B0CC88B870A04EC18DB1036F87843C5A08D82",
+    "serviceType": "normal",
+    "imageUrl": "app.media.service_library_reservation",
+    "inMainPage": "false"
   }
 ]
