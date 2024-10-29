@@ -27,6 +27,7 @@ public class AppColor {
 	public var bottom_text_color_selected = 16777233
 	public var normal_background_grey = 16777234
 	public var service_block_background = 16777235
+	public var service_list_background = 16777281
 	public var start_window_background = 16777236
 	public var swiper_dot_color = 16777237
 	public var swiper_dot_color_selected = 16777238
@@ -69,6 +70,7 @@ public class AppMedia {
 	public var service_software_resource_center = 16777277
 	public var service_talent_xuegong = 16777278
 	public var service_xiaoya = 16777279
+	public var service_zhiboketang = 16777280
 	public var startIcon = 16777262
 	public var startIcon_whut = 16777263
 	public var startIcon_whut_f = 16777268
@@ -112,6 +114,7 @@ public func updateAllRes() {
 	resourceMap.put("color bottom_text_color_selected", 16777233)
 	resourceMap.put("color normal_background_grey", 16777234)
 	resourceMap.put("color service_block_background", 16777235)
+	resourceMap.put("color service_list_background", 16777281)
 	resourceMap.put("color start_window_background", 16777236)
 	resourceMap.put("color swiper_dot_color", 16777237)
 	resourceMap.put("color swiper_dot_color_selected", 16777238)
@@ -148,6 +151,7 @@ public func updateAllRes() {
 	resourceMap.put("media service_software_resource_center", 16777277)
 	resourceMap.put("media service_talent_xuegong", 16777278)
 	resourceMap.put("media service_xiaoya", 16777279)
+	resourceMap.put("media service_zhiboketang", 16777280)
 	resourceMap.put("media startIcon", 16777262)
 	resourceMap.put("media startIcon_whut", 16777263)
 	resourceMap.put("media startIcon_whut_f", 16777268)

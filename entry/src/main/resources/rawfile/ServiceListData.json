@@ -47,5 +47,12 @@
     "serviceType": "education",
     "imageUrl": "app.media.service_talent_xuegong",
     "inMainPage": "true"
+  },
+  {
+    "serviceName": "智播课堂",
+    "url": "https://classroom.lgzk.whut.edu.cn/",
+    "serviceType": "education",
+    "imageUrl": "app.media.service_zhiboketang",
+    "inMainPage": "true"
   }
 ]

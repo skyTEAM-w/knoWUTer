@@ -2,7 +2,8 @@ import { promptAction } from '@kit.ArkUI';
 import { webview } from '@kit.ArkWeb';
 import { ServiceUrl } from '../model/ServiceUrl';
 import { ServiceBlockClass } from '../model/ServiceBlockClass';
-import { pasteboard } from '@kit.BasicServicesKit';
+import { BusinessError, pasteboard } from '@kit.BasicServicesKit';
+import { common, Want } from '@kit.AbilityKit';
 
 @Component
 struct WebViewPage {
@@ -10,6 +11,21 @@ struct WebViewPage {
   @State webUrl: string = '';
   private webViewController: webview.WebviewController = new webview.WebviewController();
   onDestinationBack?: () => boolean = () => false;
+
+  @Builder
+  WebViewMenu() {
+    Menu() {
+      MenuItem({content: "复制链接"})
+        .onClick(() => {
+          copyText(this.webUrl)
+        })
+      MenuItem({content: "在浏览器打开"})
+        .onClick(()=>{
+          let context = getContext(this) as common.UIAbilityContext;
+          startBrowsableAbility(context, this.serviceUrl.url)
+        })
+    }
+  }
 
   build() {
     NavDestination() {
@@ -25,23 +41,27 @@ struct WebViewPage {
               .borderRadius($r('app.float.border_radius'))
           }
 
-          Text(this.webUrl)
-            .textOverflow({ overflow: TextOverflow.Ellipsis })
-            .maxLines(1)
-            .ellipsisMode(EllipsisMode.END)
-            .width('80%')
-            .height('100%')
-            .textAlign(TextAlign.Center)
-            .backgroundColor($r('app.color.normal_background_grey'))
-            .borderRadius(8)
+          Row() {
+            Text(this.webUrl)
+              .textOverflow({ overflow: TextOverflow.Ellipsis })
+              .maxLines(1)
+              .ellipsisMode(EllipsisMode.END)
+              .width('95%')
+              .height('100%')
+              .textAlign(TextAlign.Center)
+
+          }
+          .justifyContent(FlexAlign.Center)
+          .width('80%')
+          .backgroundColor($r('app.color.normal_background_grey'))
+          .borderRadius(8)
+
           Row() {
             Image($r("app.media.ic_arrow_right_up_and_square"))
               .height('80%')
               .objectFit(ImageFit.Contain)
-              .onClick(() => {
-                copyText(this.webUrl)
-              })
           }
+          .bindMenu(this.WebViewMenu())
 
         }
         .height(33)
@@ -53,6 +73,7 @@ struct WebViewPage {
         })
           .javaScriptAccess(true)
           .domStorageAccess(true)
+          .zoomAccess(true)
           .onPageBegin(() => {
             console.log("view: " + this.serviceUrl.url)
             this.webUrl = this.webViewController.getUrl()
@@ -80,6 +101,21 @@ function copyText(text: string) {
       promptAction.showToast({ message: '复制失败' });
     }
   })
+}
+
+function startBrowsableAbility(context: common.UIAbilityContext, url: string): void {
+  let want: Want = {
+    action: 'ohos.want.action.viewData',
+    entities: ['entity.system.browsable'],
+    uri: url,
+  };
+  context.startAbility(want)
+    .then(() => {
+      console.error('Start browsableAbility successfully.');
+    })
+    .catch((err: BusinessError) => {
+      console.error(`Failed to startAbility. Code: ${err.code}, message: ${err.message}`);
+    });
 }
 
 @Builder

@@ -58,31 +58,73 @@ export struct Service {
       .lineHeight(33)
   }
 
+  @Builder
+  ServiceBlockHeader() {
+    Row() {
+      Text('常用服务')
+        .fontSize(18)
+        .fontWeight(700)
+        .fontFamily('HarmonyHeiTi-medium')
+        .textAlign(TextAlign.Start)
+        .width('100%')
+    }
+    .backgroundColor($r('app.color.start_window_background'))
+    .padding({ left: 16, right: 16, top: 11 })
+    .justifyContent(FlexAlign.Start)
+  }
+
+  @Builder
+  ServiceListHeader() {
+    Row() {
+      Text('集成站点')
+        .fontSize(18)
+        .fontWeight(700)
+        .fontFamily('HarmonyHeiTi-medium')
+        .textAlign(TextAlign.Start)
+        .width('100%')
+    }
+    .backgroundColor($r('app.color.start_window_background'))
+    .padding({ left: 16, right: 16, top: 11 })
+    .justifyContent(FlexAlign.Start)
+  }
+
   build() {
     Column() {
       Navigation(this.webViewStack) {
         Column() {
-          Scroll() {
-            Column() {
-              Blank()
-                .height(56)
-              ServiceBanner({
-                bannerList: this.serviceModel.swiperData,
-                handleClick: (item: ServiceUrl) => this.jumpWebView(item)
-              })
-              ServiceBlocks({
-                blockList: this.serviceModel.blockData,
-                handleClick: (item: ServiceUrl) => this.jumpWebView(item)
-              })
-              ServiceList({
-                listList: this.serviceModel.listData,
-                handleClick: (item: ServiceUrl) => this.jumpWebView(item)
-              })
-              Blank()
+          List() {
+            ListItemGroup(){
+              ListItem() {
+                ServiceBanner({
+                  bannerList: this.serviceModel.swiperData,
+                  handleClick: (item: ServiceUrl) => this.jumpWebView(item)
+                })
+              }
+
+            }
+            ListItemGroup({header: this.ServiceBlockHeader()}) {
+              ListItem() {
+                ServiceBlocks({
+                  blockList: this.serviceModel.blockData,
+                  handleClick: (item: ServiceUrl) => this.jumpWebView(item)
+                })
+              }
+            }
+            ListItemGroup({header: this.ServiceListHeader()}) {
+              ListItem() {
+                ServiceList({
+                  listList: this.serviceModel.listData,
+                  handleClick: (item: ServiceUrl) => this.jumpWebView(item)
+                })
+              }
+            }
+            ListItem(){
+              Column()
                 .height('15%')
             }
 
           }
+          .sticky(StickyStyle.Header)
           .layoutWeight(1)
           .scrollBar(BarState.Off)
           .align(Alignment.TopStart)
@@ -90,11 +132,8 @@ export struct Service {
         }
       }
       .mode(NavigationMode.Stack)
-      .title($r('app.string.text_service'), {
-        barStyle: BarStyle.STACK,
-        backgroundBlurStyle: BlurStyle.Thick
-      })
-      .titleMode(NavigationTitleMode.Mini)
+      .title($r('app.string.text_service'))
+      .titleMode(NavigationTitleMode.Free)
       .hideTitleBar(false)
       .hideBackButton(true)
     }
@@ -109,13 +148,6 @@ export struct ServiceBlocks {
 
   build() {
     Column() {
-      Text('常用服务')
-        .fontSize(18)
-        .fontWeight(700)
-        .fontFamily('HarmonyHeiTi-medium')
-        .textAlign(TextAlign.Start)
-        .padding({ left: 16, right: 16, top: 11 })
-        .width('100%')
       Flex({
         wrap: FlexWrap.Wrap,
         justifyContent: FlexAlign.SpaceBetween,
@@ -191,7 +223,17 @@ export struct ServiceList {
       Image($r(item.imageUrl))
         .objectFit(ImageFit.Contain)
         .height('90%')
-      Text(item.serviceName)
+        .width('10%')
+      Column(){
+        Text(item.serviceName)
+          .fontColor(Color.White)
+          .fontWeight(400)
+      }
+      .justifyContent(FlexAlign.Center)
+      .height('95%')
+      .width('88%')
+      .backgroundColor($r('app.color.service_list_background'))
+      .borderRadius(8)
     }
     .onClick(() => {
       this.handleClick(item)
@@ -199,19 +241,12 @@ export struct ServiceList {
     .height(44)
     .width('100%')
     .backgroundColor($r('app.color.normal_background_grey'))
-    .blur(BlurStyle.Thin)
     .borderRadius(8)
+    .padding({left: 5})
   }
 
   build() {
     Column() {
-      Text('集成站点')
-        .fontSize(18)
-        .fontWeight(700)
-        .fontFamily('HarmonyHeiTi-medium')
-        .textAlign(TextAlign.Start)
-        .padding({ left: 16, right: 16, top: 11 })
-        .width('100%')
       List({ space: 5 }) {
         LazyForEach(this.listList, (item: ServiceListClass, index: number) => {
           ListItem() {

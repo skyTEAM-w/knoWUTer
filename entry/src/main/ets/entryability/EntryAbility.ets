@@ -23,17 +23,7 @@ export default class EntryAbility extends UIAbility {
       }
       hilog.info(0x0000, 'testTag', 'Succeeded in loading the content.');
     });
-    let windowClass: window.Window = windowStage.getMainWindowSync(); // 获取应用主窗口
-    // 1. 设置窗口全屏
-    let type = window.AvoidAreaType.TYPE_NAVIGATION_INDICATOR; // 以导航条避让为例
-    let avoidArea = windowClass.getWindowAvoidArea(type);
-    let bottomRectHeight = avoidArea.bottomRect.height; // 获取到导航条区域的高度
-    AppStorage.setOrCreate('bottomRectHeight', bottomRectHeight);
 
-    type = window.AvoidAreaType.TYPE_SYSTEM; // 以状态栏避让为例
-    avoidArea = windowClass.getWindowAvoidArea(type);
-    let topRectHeight = avoidArea.topRect.height; // 获取状态栏区域高度
-    AppStorage.setOrCreate('topRectHeight', topRectHeight);
   }
 
   onWindowStageDestroy(): void {

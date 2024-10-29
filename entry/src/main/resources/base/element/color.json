@@ -39,6 +39,10 @@
     {
       "name": "whut_yellow",
       "value": "#FAC640"
+    },
+    {
+      "name": "service_list_background",
+      "value": "#F000489A"
     }
   ]
 }
