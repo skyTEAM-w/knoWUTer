@@ -21,26 +21,13 @@
         "name": "default",
         "type": "HarmonyOS",
         "material": {
-          "certpath": "C:\\Users\\Lenovo\\.ohos\\config\\default_WHUTHelper_vMvF5ss3QK3gBXpPcOPQr4H01_HNBegYDLgB4gArjZs=.cer",
-          "storePassword": "0000001BEE6EF75508766459343A494BF46F5CA321C6EE6C43DB160BA70FCDBD014AF97B7C09CB6E6D885A",
+          "certpath": "C:\\Users\\Administrator\\.ohos\\config\\default_WHUTHelper_cp8-8MMRKniAzlzI6QW88MSuSrliDt6GEcPahalEzdI=.cer",
+          "storePassword": "0000001B9AEECE2AE29DE68F8FAEA2EE97DD840029BD27AF04B725E6FB98C933C8E233C41A0F08114590F8",
           "keyAlias": "debugKey",
-          "keyPassword": "0000001BC039139E3AFFED52BC469DC97B7F9E9BB2584360D81B39EA53CF5E953C1F03FCBB6A1CAEE170E6",
-          "profile": "C:\\Users\\Lenovo\\.ohos\\config\\default_WHUTHelper_vMvF5ss3QK3gBXpPcOPQr4H01_HNBegYDLgB4gArjZs=.p7b",
+          "keyPassword": "0000001B5B1095A6946FD2865A4B7F4DDFD6CA4604FB9AD3BC2516333FE019E907757D593B3FF7A003B8BC",
+          "profile": "C:\\Users\\Administrator\\.ohos\\config\\default_WHUTHelper_cp8-8MMRKniAzlzI6QW88MSuSrliDt6GEcPahalEzdI=.p7b",
           "signAlg": "SHA256withECDSA",
-          "storeFile": "C:\\Users\\Lenovo\\.ohos\\config\\default_WHUTHelper_vMvF5ss3QK3gBXpPcOPQr4H01_HNBegYDLgB4gArjZs=.p12"
-        }
-      },
-      {
-        "name": "Legion",
-        "type": "HarmonyOS",
-        "material": {
-          "certpath": "C:\\Users\\Lenovo\\.ohos\\config\\Legion_WHUTHelper_vMvF5ss3QK3gBXpPcOPQr4H01_HNBegYDLgB4gArjZs=.cer",
-          "storePassword": "0000001B53BC656E36F1374C3E738983E115E27FC9B973723CC1C54C555C93FF337574D72CADE23850CBAB",
-          "keyAlias": "debugKey",
-          "keyPassword": "0000001BF585D1158905E2D78DF8E8CB4C432BB6E784024429EEA7D2C51E838F236314018BE3071D23176A",
-          "profile": "C:\\Users\\Lenovo\\.ohos\\config\\Legion_WHUTHelper_vMvF5ss3QK3gBXpPcOPQr4H01_HNBegYDLgB4gArjZs=.p7b",
-          "signAlg": "SHA256withECDSA",
-          "storeFile": "C:\\Users\\Lenovo\\.ohos\\config\\Legion_WHUTHelper_vMvF5ss3QK3gBXpPcOPQr4H01_HNBegYDLgB4gArjZs=.p12"
+          "storeFile": "C:\\Users\\Administrator\\.ohos\\config\\default_WHUTHelper_cp8-8MMRKniAzlzI6QW88MSuSrliDt6GEcPahalEzdI=.p12"
         }
       }
     ]
