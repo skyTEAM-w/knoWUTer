@@ -92,13 +92,12 @@ export struct Service {
 
   @Builder
   ServiceListHeader() {
-    Flex({ justifyContent: FlexAlign.SpaceBetween, alignItems: ItemAlign.Center }) {
+    Row() {
       Text('集成站点')
         .fontSize(18)
         .fontWeight(700)
         .fontFamily('HarmonyHeiTi-medium')
         .textAlign(TextAlign.Start)
-        .width('100%')
       Row() {
         Text('更多')
           .fontSize(12)
@@ -114,6 +113,9 @@ export struct Service {
         this.jumpServiceList()
       })
     }
+    .alignItems(VerticalAlign.Center)
+    .justifyContent(FlexAlign.SpaceBetween)
+    .width('100%')
     .backgroundColor($r('app.color.start_window_background'))
     .padding({
       left: 16,

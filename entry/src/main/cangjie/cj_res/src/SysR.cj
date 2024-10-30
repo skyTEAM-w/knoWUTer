@@ -765,6 +765,7 @@ public class SysColor {
     public let dialog_inner_border_color = 125833690
     public let toast_outer_border_color = 125833696
     public let toast_inner_border_color = 125833698
+    public let ohos_id_dialog_mask_color_end_dark = 125834222
 }
 
 public class SysFloat {
@@ -1651,13 +1652,6 @@ public class SysFloat {
     public let sidebarcontainer_width = 125833507
     public let dialog_title_max_scale_aging = 125833508
     public let dialog_default_scale_aging = 125833509
-    public let list_container_height_level1 = 125833511
-    public let list_container_height_level2 = 125833512
-    public let list_container_height_level3 = 125833513
-    public let list_container_height_level4 = 125833514
-    public let list_container_height_level5 = 125833515
-    public let list_container_height_level6 = 125833516
-    public let list_container_height_level7 = 125833517
     public let dialog_content_max_scale_aging = 125833520
     public let dialog_content_landscape_max_scale_aging = 125833521
     public let dialog_button_max_scale_aging = 125833522

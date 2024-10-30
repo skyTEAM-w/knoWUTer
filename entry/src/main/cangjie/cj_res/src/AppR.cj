@@ -49,8 +49,6 @@ public class AppMedia {
 	public var banner_full_text_search = 16777245
 	public var banner_info_gate = 16777246
 	public var foreground = 16777247
-	public var ic_arrow_back = 16777267
-	public var ic_arrow_right_up_and_square = 16777249
 	public var ic_public_app = 16777250
 	public var ic_public_app_filled = 16777251
 	public var ic_public_calendar = 16777252
@@ -142,8 +140,6 @@ public func updateAllRes() {
 	resourceMap.put("media banner_full_text_search", 16777245)
 	resourceMap.put("media banner_info_gate", 16777246)
 	resourceMap.put("media foreground", 16777247)
-	resourceMap.put("media ic_arrow_back", 16777267)
-	resourceMap.put("media ic_arrow_right_up_and_square", 16777249)
 	resourceMap.put("media ic_public_app", 16777250)
 	resourceMap.put("media ic_public_app_filled", 16777251)
 	resourceMap.put("media ic_public_calendar", 16777252)

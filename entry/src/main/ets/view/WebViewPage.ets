@@ -27,18 +27,25 @@ struct WebViewPage {
     }
   }
 
+  @Builder
+  WebViewToolBar() {
+    Row() {
+      SymbolGlyph($r('sys.symbol.card_badge_yuansign_arrow_counterclockwise'))
+    }
+    .height('15%')
+  }
+
   build() {
     NavDestination() {
-      Column({ space: 5 }) {
+      Column() {
         Flex({ justifyContent: FlexAlign.SpaceBetween, alignItems: ItemAlign.Stretch }) {
           Row() {
-            Image($r("app.media.ic_arrow_back"))
+            SymbolGlyph($r("sys.symbol.chevron_left"))
+              .fontSize(30)
               .height('100%')
-              .objectFit(ImageFit.Contain)
               .onClick(() => {
                 this.onDestinationBack?.();
               })
-              .borderRadius($r('app.float.border_radius'))
           }
 
           Row() {
@@ -57,13 +64,14 @@ struct WebViewPage {
           .borderRadius(8)
 
           Row() {
-            Image($r("app.media.ic_arrow_right_up_and_square"))
+            SymbolGlyph($r("sys.symbol.arrow_right_up_and_square"))
+              .fontSize(25)
               .height('80%')
-              .objectFit(ImageFit.Contain)
           }
           .bindMenu(this.WebViewMenu())
 
         }
+        .padding({bottom: 5})
         .height(33)
         .width('95%')
 
@@ -80,9 +88,9 @@ struct WebViewPage {
           .onPageEnd(() => {
             console.log("view: " + this.serviceUrl.url)
             this.webTitle = this.webViewController.getTitle()
-          }
-          )
+          })
       }
+      .height('100%')
     }
     .hideTitleBar(true)
     .onReady((webViewStackContext: NavDestinationContext) => {

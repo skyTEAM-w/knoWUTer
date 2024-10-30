@@ -1,6 +1,7 @@
 import { AbilityConstant, UIAbility, Want } from '@kit.AbilityKit';
 import { hilog } from '@kit.PerformanceAnalysisKit';
 import { window } from '@kit.ArkUI';
+import { relationalStore } from '@kit.ArkData';
 
 export default class EntryAbility extends UIAbility {
   onCreate(want: Want, launchParam: AbilityConstant.LaunchParam): void {
@@ -15,6 +16,19 @@ export default class EntryAbility extends UIAbility {
   onWindowStageCreate(windowStage: window.WindowStage): void {
     // Main window is created, set main page for this ability
     hilog.info(0x0000, 'testTag', '%{public}s', 'Ability onWindowStageCreate');
+
+    const STORE_CONFIG: relationalStore.StoreConfig = {
+      name: 'ApplicationDB.db',
+      securityLevel: relationalStore.SecurityLevel.S3
+    };
+
+    relationalStore.getRdbStore(this.context, STORE_CONFIG, (err, store) => {
+      if (err) {
+        console.error(`Failed to get RdbStore. Code:${err.code}, message:${err.message}`);
+        return;
+      }
+      console.info('Succeeded in getting RdbStore.');
+    })
 
     windowStage.loadContent('pages/MainPage', (err) => {
       if (err.code) {

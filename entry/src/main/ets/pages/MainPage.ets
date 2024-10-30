@@ -4,6 +4,7 @@ import { Tools } from '../view/ToolComponent';
 import { Service } from '../view/ServiceComponent';
 import { CourseTable } from '../view/CourseTableComponent';
 import { User } from '../view/UserComponent';
+import { UserSettingUtil } from '../common/utils/UserSettingUtil';
 
 
 @Entry
@@ -15,6 +16,10 @@ struct Index {
   @StorageProp('bottomRectHeight') bottomRectHeight: number = 0;
   @StorageProp('topRectHeight') topRectHeight: number = 0;
   private bottomTabController: TabsController = new TabsController();
+
+  onPageShow(): void {
+    UserSettingUtil.getInstance().checkAllSetting();
+  }
 
   @Builder
   TabBuilder(index: number, name: string) {

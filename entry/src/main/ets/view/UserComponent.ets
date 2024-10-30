@@ -1,5 +1,18 @@
+import { SettingTwoStatus, UserPreferenceType } from '../common/constants/CommonEnums';
+import {PreferencesUtil} from '../common/utils/PreferencesUtil';
+import { UserSettingUtil } from '../common/utils/UserSettingUtil';
+
 @Component
 export struct User {
+
+  @State customSettingOfService: SettingTwoStatus = AppStorage.get<SettingTwoStatus>('customServiceListConfig') || SettingTwoStatus.OFF
+
+  userSettingUtil: UserSettingUtil = UserSettingUtil.getInstance();
+
+  aboutToAppear(): void {
+
+  }
+
   build() {
     Navigation() {
       Column() {
@@ -11,6 +24,20 @@ export struct User {
           .padding({ left: 16 })
           .fontFamily('HarmonyHeiTi-Bold')
           .lineHeight(33)
+
+        Row() {
+          Text('使用自定义的服务列表')
+          Toggle({type: ToggleType.Switch, isOn: this.customSettingOfService === SettingTwoStatus.ON})
+            .size({ width: 40, height: 20 })
+            .selectedColor('#007DFF')
+            .onChange((isOn) => {
+              this.userSettingUtil.saveCustomServiceListSetting(isOn ?
+              SettingTwoStatus.ON : SettingTwoStatus.OFF)
+            })
+        }
+        .width('100%')
+        .padding({left: 16, right: 16})
+        .justifyContent(FlexAlign.SpaceBetween)
       }
     }
 
