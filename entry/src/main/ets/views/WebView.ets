@@ -1,15 +1,18 @@
 import { promptAction } from '@kit.ArkUI';
 import { webview } from '@kit.ArkWeb';
-import { ServiceUrl } from '../model/ServiceUrl';
-import { ServiceBlockClass } from '../model/ServiceBlockClass';
+import { ServiceUrl } from '../viewmodel/ServiceUrl';
+import { ServiceBlockClass } from '../viewmodel/ServiceBlockClass';
 import { BusinessError, pasteboard } from '@kit.BasicServicesKit';
 import { common, Want } from '@kit.AbilityKit';
+import { importElectricity } from '../common/utils/PayElectricCharge';
+import { WebUrl } from '../model/WebUrl';
 
 @Component
 struct WebViewPage {
-  @State serviceUrl: ServiceUrl = new ServiceBlockClass('', '');
+  @State webUrl: WebUrl = new ServiceBlockClass('', '');
   @State webTitle: string = '';
   private webViewController: webview.WebviewController = new webview.WebviewController();
+  isImport: Boolean = false;
   onDestinationBack?: () => boolean = () => false;
 
   @Builder
@@ -22,7 +25,7 @@ struct WebViewPage {
       MenuItem({ content: "在浏览器打开" })
         .onClick(() => {
           let context = getContext(this) as common.UIAbilityContext;
-          startBrowsableAbility(context, this.serviceUrl.url)
+          startBrowsableAbility(context, this.webUrl.url)
         })
     }
   }
@@ -63,20 +66,33 @@ struct WebViewPage {
           .backgroundColor($r('app.color.normal_background_grey'))
           .borderRadius(8)
 
-          Row() {
-            SymbolGlyph($r("sys.symbol.arrow_right_up_and_square"))
-              .fontSize(25)
-              .height('80%')
+          if (!this.isImport) {
+            Row() {
+              SymbolGlyph($r("sys.symbol.arrow_right_up_and_square"))
+                .fontSize(25)
+                .height('80%')
+            }
+            .bindMenu(this.WebViewMenu())
+          } else  {
+            Row() {
+              SymbolGlyph($r("sys.symbol.arrowshape_down_to_line_fill"))
+                .fontSize(25)
+                .height('80%')
+            }
+            .onClick(() => {
+              importElectricity(this.webViewController);
+              this.onDestinationBack?.();
+            })
           }
-          .bindMenu(this.WebViewMenu())
+
 
         }
         .padding({bottom: 5})
-        .height(33)
+        .height(44)
         .width('95%')
 
         Web({
-          src: this.serviceUrl.url,
+          src: this.webUrl.url,
           controller: this.webViewController
         })
           .javaScriptAccess(true)
@@ -86,7 +102,7 @@ struct WebViewPage {
             this.webTitle = this.webViewController.getUrl()
           })
           .onPageEnd(() => {
-            console.log("view: " + this.serviceUrl.url)
+            console.log("view: " + this.webUrl.url)
             this.webTitle = this.webViewController.getTitle()
           })
       }
@@ -95,8 +111,11 @@ struct WebViewPage {
     .hideTitleBar(true)
     .onReady((webViewStackContext: NavDestinationContext) => {
       let param = webViewStackContext.pathInfo.param as Record<string, object>;
-      this.serviceUrl = param.webUrl as ServiceUrl;
+      this.webUrl = param.webUrl as ServiceUrl;
       this.onDestinationBack = param.onDestinationBack as () => boolean;
+      if (param.isImport !== null) {
+        this.isImport = param.isImport as Boolean;
+      }
     })
   }
 }

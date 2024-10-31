@@ -1,9 +1,11 @@
 import { webview } from '@kit.ArkWeb';
 import { getElectricCharge } from '../common/utils/PayElectricCharge';
+import { ElectricityInquiryTool } from '../components/ElectricityInquiryComponent';
 import { DormitoryLocation } from '../model/DormitoryLocation';
 
 @Component
 export struct Tools {
+  @Consume('appPathStack') appPathStack: NavPathStack;
   @StorageLink('Cookie') cookie: string = '';
   private webviewController: webview.WebviewController = new webview.WebviewController();
   private webResult: string = '';
@@ -21,9 +23,11 @@ export struct Tools {
           .lineHeight(33)
       }
 
+      ElectricityInquiryTool()
+
       Button($r('app.string.tool_electric_charge'))
         .onClick(() => {
-          getElectricCharge(this.webviewController, new DormitoryLocation('', '', '', ''))
+          getElectricCharge(this.webviewController, new DormitoryLocation())
 
           // router.pushUrl({
           //   url: 'pages/PayElecPage',

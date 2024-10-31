@@ -1,10 +1,11 @@
-import { BottomTabsList } from '../model/BottomTabsModel';
-import { Home } from '../view/HomeComponent';
-import { Tools } from '../view/ToolComponent';
-import { Service } from '../view/ServiceComponent';
-import { CourseTable } from '../view/CourseTableComponent';
-import { User } from '../view/UserComponent';
+import { BottomTabsList } from '../viewmodel/BottomTabsModel';
+import { Home } from '../views/HomeView';
+import { Tools } from '../views/ToolView';
+import { Service } from '../views/ServiceView';
+import { CourseTable } from '../views/CourseTableView';
+import { User } from '../views/UserView';
 import { UserSettingUtil } from '../common/utils/UserSettingUtil';
+import { DBUtil } from '../common/utils/DBUtil';
 
 
 @Entry
@@ -19,6 +20,7 @@ struct Index {
 
   onPageShow(): void {
     UserSettingUtil.getInstance().checkAllSetting();
+    DBUtil.getInstance();
   }
 
   @Builder

@@ -1,7 +1,7 @@
 import { ServiceType } from '../common/constants/CommonEnums';
-import { ServiceListClass } from '../model/ServiceListClass';
-import { ServiceModel } from '../model/ServiceModel';
-import { ServiceUrl } from '../model/ServiceUrl';
+import { ServiceListClass } from '../viewmodel/ServiceListClass';
+import { ServiceModel } from '../viewmodel/ServiceModel';
+import { ServiceUrl } from '../viewmodel/ServiceUrl';
 
 @Component
 export struct AllServiceList {
@@ -44,7 +44,7 @@ export struct AllServiceList {
     })
     .height(44)
     .width('100%')
-    .backgroundColor($r('app.color.normal_background_grey'))
+    .justifyContent(FlexAlign.SpaceBetween)
     .borderRadius(8)
     .padding({ left: 5})
   }

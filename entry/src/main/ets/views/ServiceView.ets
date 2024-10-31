@@ -1,10 +1,10 @@
-import { ServiceBlockClass } from '../model/ServiceBlockClass';
-import { ServiceBannerClass } from '../model/ServiceBannerClass';
-import { ServiceListClass } from '../model/ServiceListClass';
-import { ServiceUrl } from '../model/ServiceUrl';
+import { ServiceBlockClass } from '../viewmodel/ServiceBlockClass';
+import { ServiceBannerClass } from '../viewmodel/ServiceBannerClass';
+import { ServiceListClass } from '../viewmodel/ServiceListClass';
+import { ServiceUrl } from '../viewmodel/ServiceUrl';
 import { bufferToString } from '../common/utils/BufferUtil';
 import { LengthMetrics } from '@kit.ArkUI';
-import { ServiceModel } from '../model/ServiceModel';
+import { ServiceModel } from '../viewmodel/ServiceModel';
 import LazyDataSource from '../common/model/LazyDataSource';
 import { ServiceShowType } from '../common/constants/CommonEnums';
 
@@ -286,6 +286,7 @@ export struct ServiceList {
     .height(44)
     .width('100%')
     .backgroundColor($r('app.color.normal_background_grey'))
+    .justifyContent(FlexAlign.SpaceBetween)
     .borderRadius(8)
     .padding({ left: 5 })
   }

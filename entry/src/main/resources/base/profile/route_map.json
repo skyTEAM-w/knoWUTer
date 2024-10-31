@@ -2,12 +2,12 @@
   "routerMap": [
     {
       "name": "WebViewPage",
-      "pageSourceFile": "src/main/ets/view/WebViewPage.ets",
+      "pageSourceFile": "src/main/ets/views/WebView.ets",
       "buildFunction": "WebViewPageBuilder"
     },
     {
       "name": "AllServiceList",
-      "pageSourceFile": "src/main/ets/view/AllServiceList.ets",
+      "pageSourceFile": "src/main/ets/views/AllServiceListView.ets",
       "buildFunction": "AllServiceListBuilder"
     }
   ]
