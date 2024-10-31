@@ -80,8 +80,14 @@ struct WebViewPage {
                 .height('80%')
             }
             .onClick(() => {
-              importElectricity(this.webViewController);
-              this.onDestinationBack?.();
+              importElectricity(this.webViewController).then((flag) => {
+                if (flag) {
+                  promptAction.showToast({message: '导入成功'})
+                  this.onDestinationBack?.();
+                } else {
+                  promptAction.showToast({message: '导入失败，请确认是否选择完全'})
+                }
+              })
             })
           }
 

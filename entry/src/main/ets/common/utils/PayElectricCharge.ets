@@ -109,6 +109,81 @@ export function getElectricCharge(webviewController: webview.WebviewController, 
   })
 }
 
+// export function importElectricity(webviewController: webview.WebviewController) {
+//
+//   webviewController.runJavaScript('var selectElement = document.getElementById("areaid"); ' +
+//     '[selectElement.value, selectElement.options[selectElement.selectedIndex].text];').then((result) => {
+//     if (result) {
+//       console.info(`The test() return value is: ${result}`);
+//       let resultArray: string[] = JSON.parse(result);
+//       myDormitory.AreaId = resultArray[0].toString();
+//       myDormitory.Area = resultArray[1].toString();
+//       webviewController.runJavaScript('var selectElement = document.getElementById("building"); ' +
+//         '[selectElement.value, selectElement.options[selectElement.selectedIndex].text];').then((result) => {
+//         if (result) {
+//           console.info(`The test() return value is: ${result}`);
+//           let resultArray: string[] = JSON.parse(result);
+//           myDormitory.BuildingId = resultArray[0].toString();
+//           myDormitory.Building = resultArray[1].toString();
+//           webviewController.runJavaScript('var selectElement = document.getElementById("roomid"); ' +
+//             '[selectElement.value, selectElement.options[selectElement.selectedIndex].text];').then((result) => {
+//             if (result) {
+//               console.info(`The test() return value is: ${result}`);
+//               let resultArray: string[] = JSON.parse(result);
+//               myDormitory.RoomId = resultArray[0].toString();
+//               myDormitory.Room = resultArray[1].toString();
+//               webviewController.runJavaScript('var selectElement = document.getElementById("floorid"); ' +
+//                 '[selectElement.value, selectElement.options[selectElement.selectedIndex].text];').then((result) => {
+//                 if (result) {
+//                   console.info(`The test() return value is: ${result}`);
+//                   let resultArray: string[] = JSON.parse(result);
+//                   myDormitory.FloorId = resultArray[0].toString();
+//                   myDormitory.Floor = resultArray[1].toString();
+//                   webviewController.runJavaScript('document.getElementById("RemainPower").outerText').then((result) => {
+//                     if (result) {
+//                       remainPower = result;
+//                       webviewController.runJavaScript('document.getElementById("MeterOverdue").outerText')
+//                         .then((result) => {
+//                           if (result) {
+//                             remainMoney = result;
+//                             console.info(JSON.stringify(myDormitory))
+//                             console.info('INSERT INTO DormitoryLocation (Area, AreaId, Building, BuildingId, Floor, FloorId, Room, RoomId, ElectricFee, RemainingElectric)\n' +
+//                               'VALUES (' + myDormitory.Area + ',' +
+//                               '' + myDormitory.AreaId + ',' +
+//                               '' + myDormitory.Building + ',' +
+//                               '' + myDormitory.BuildingId + ',' +
+//                               '' + myDormitory.Floor + ',' +
+//                               '' + myDormitory.FloorId + ',' +
+//                               '' + myDormitory.Room + ',' +
+//                               '' + myDormitory.RoomId + ',' +
+//                               '' + remainMoney + ',' +
+//                               '' + remainPower + ');')
+//                             DBUtil.getInstance().creatTable('INSERT INTO DormitoryLocation (Area, AreaId, Building, BuildingId, Floor, FloorId, Room, RoomId, ElectricFee, RemainingElectric)\n' +
+//                               'VALUES ('+myDormitory.Area+ ',' +
+//                               ''+myDormitory.AreaId+',' +
+//                               ''+myDormitory.Building+',' +
+//                               ''+myDormitory.BuildingId+',' +
+//                               ''+myDormitory.Floor+',' +
+//                               ''+myDormitory.FloorId+',' +
+//                               ''+myDormitory.Room+',' +
+//                               ''+myDormitory.RoomId+',' +
+//                               ''+remainMoney+',' +
+//                               ''+remainPower+');')
+//                           }
+//                         })
+//                     }
+//                   })
+//                 }
+//               })
+//             }
+//           })
+//         }
+//       })
+//     }
+//   })
+//
+// }
+
 async function getSelectValue(selectId: string, webviewController: webview.WebviewController): Promise<string[]> {
   const result: string = await webviewController.runJavaScript(`var selectElement = document.getElementById("${selectId}"); [selectElement.value, selectElement.options[selectElement.selectedIndex].text];`);
   if (result) {
@@ -118,7 +193,7 @@ async function getSelectValue(selectId: string, webviewController: webview.Webvi
   return [];
 }
 
-export async function importElectricity(webviewController: webview.WebviewController) {
+export async function importElectricity(webviewController: webview.WebviewController): Promise<boolean> {
   const areaIdArray = await getSelectValue("areaid", webviewController);
   myDormitory.AreaId = areaIdArray[0]?.toString() || '';
   myDormitory.Area = areaIdArray[1]?.toString() || '';
@@ -146,7 +221,9 @@ export async function importElectricity(webviewController: webview.WebviewContro
     console.info(`Remaining Money: ${remainMoney}`);
   }
 
-  console.info(JSON.stringify(myDormitory));
+  if (JSON.stringify(myDormitory).includes('请选择')) {
+    return false;
+  }
 
   const insertQuery = `INSERT INTO DormitoryLocation (Area, AreaId, Building, BuildingId, Floor, FloorId, Room, RoomId, ElectricFee, RemainingElectric)
                          VALUES ('${myDormitory.Area}', '${myDormitory.AreaId}', '${myDormitory.Building}', '${myDormitory.BuildingId}',
@@ -155,4 +232,6 @@ export async function importElectricity(webviewController: webview.WebviewContro
 
   console.info(insertQuery)
   DBUtil.getInstance().creatTable(insertQuery);
+
+  return true;
 }
