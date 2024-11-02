@@ -7,6 +7,7 @@ import { LengthMetrics } from '@kit.ArkUI';
 import { ServiceModel } from '../viewmodel/ServiceModel';
 import LazyDataSource from '../common/model/LazyDataSource';
 import { ServiceShowType } from '../common/constants/CommonEnums';
+import { NavigationTitleBar } from '../common/components/NavigationTitleBar';
 
 
 @Component
@@ -60,14 +61,21 @@ export struct Service {
   }
 
   @Builder
-  NavigationTitle() {
-    Text($r('app.string.text_service'))
-      .fontSize($r('app.float.component_title_size'))
-      .fontWeight(700)
-      .width('100%')
-      .padding({ left: 16 })
-      .fontFamily('HarmonyHeiTi-Bold')
-      .lineHeight(33)
+  NavigationTitle(title: ResourceStr) {
+    Column() {
+      Text(title)
+        .fontSize($r('app.float.component_title_size'))
+        .fontWeight(700)
+        .width('100%')
+        .padding({ left: 16 })
+        .fontFamily('HarmonyHeiTi-Bold')
+        .lineHeight(33)
+        .textAlign(TextAlign.Start)
+    }
+    .width('100%')
+    .renderFit(RenderFit.CENTER)
+    .backgroundBlurStyle(BlurStyle.Thick)
+    .padding({top: AppStorage.get<number>('statusBarHeight')})
   }
 
   @Builder
@@ -130,6 +138,10 @@ export struct Service {
       Navigation(this.serviceStack) {
         Column() {
           List() {
+            ListItem() {
+              Column()
+                .height($r('app.float.navigation_title_bar_half_height'))
+            }
             ListItemGroup() {
               ListItem() {
                 ServiceBanner({
@@ -172,8 +184,11 @@ export struct Service {
         }
       }
       .mode(NavigationMode.Stack)
-      .title($r('app.string.text_service'))
-      .titleMode(NavigationTitleMode.Free)
+      .title({builder: NavigationTitleBar($r('app.string.text_service')),
+        height: $r('app.float.navigation_title_bar_height')}, {
+        barStyle: BarStyle.STACK
+      })
+      .titleMode(NavigationTitleMode.Mini)
       .hideTitleBar(false)
       .hideBackButton(true)
     }
@@ -203,6 +218,7 @@ export struct ServiceBlocks {
           }
           .width('49%')
           .height(88)
+          .clickEffect({level: ClickEffectLevel.HEAVY})
           .backgroundColor((index % 2 === 0) ? $r('app.color.whut_blue') : $r('app.color.whut_yellow'))
           .borderRadius(16)
           .justifyContent(FlexAlign.Center)
@@ -285,6 +301,7 @@ export struct ServiceList {
     })
     .height(44)
     .width('100%')
+    .clickEffect({level: ClickEffectLevel.HEAVY})
     .backgroundColor($r('app.color.normal_background_grey'))
     .justifyContent(FlexAlign.SpaceBetween)
     .borderRadius(8)

@@ -2,28 +2,28 @@ import { BottomTabsItem } from './BottomTabsItem'
 
 export const BottomTabsList: Array<BottomTabsItem> = [
   {
-    icon: $r('app.media.ic_public_calendar'),
-    iconSelected: $r('app.media.ic_public_calendar_filled'),
+    icon: $r('sys.symbol.calendar'),
+    iconSelected: $r('sys.symbol.calendar_fill'),
     text: $r('app.string.bottom_text_course')
   },
   {
-    icon: $r('app.media.ic_public_app'),
-    iconSelected: $r('app.media.ic_public_app_filled'),
+    icon: $r('sys.symbol.square_grid_2x2'),
+    iconSelected: $r('sys.symbol.square_fill_grid_2x2'),
     text: $r('app.string.bottom_text_service')
   },
   {
-    icon: $r('app.media.ic_public_home'),
-    iconSelected: $r('app.media.ic_public_home_filled'),
+    icon: $r('sys.symbol.house'),
+    iconSelected: $r('sys.symbol.house_fill'),
     text: $r('app.string.bottom_text_home')
   },
   {
-    icon: $r('app.media.ic_public_folder'),
-    iconSelected: $r('app.media.ic_public_folder_filled'),
+    icon: $r('sys.symbol.briefcase'),
+    iconSelected: $r('sys.symbol.briefcase_fill'),
     text: $r('app.string.bottom_text_tools')
   },
   {
-    icon: $r('app.media.ic_public_contacts'),
-    iconSelected: $r('app.media.ic_public_contacts_filled'),
+    icon: $r('sys.symbol.person'),
+    iconSelected: $r('sys.symbol.person_fill'),
     text: $r('app.string.bottom_text_user')
   }
 ]

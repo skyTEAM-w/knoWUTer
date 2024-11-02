@@ -43,6 +43,10 @@
     {
       "name": "service_list_background",
       "value": "#F000489A"
+    },
+    {
+      "name": "whut_blue_background",
+      "value": "#0C00489A"
     }
   ]
 }

@@ -1,3 +1,4 @@
+@Observed
 export class DormitoryLocation {
   private _Area: string = '';
 

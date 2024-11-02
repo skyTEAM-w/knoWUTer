@@ -55,6 +55,10 @@
     {
       "name": "text_user_setting",
       "value": "我的设置"
+    },
+    {
+      "name": "all_service",
+      "value": "全部服务"
     }
   ]
 }

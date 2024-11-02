@@ -1,3 +1,4 @@
+import { TopNavigationView } from '../common/components/TopNavigationBar';
 import { ServiceType } from '../common/constants/CommonEnums';
 import { ServiceListClass } from '../viewmodel/ServiceListClass';
 import { ServiceModel } from '../viewmodel/ServiceModel';
@@ -123,60 +124,68 @@ export struct AllServiceList {
 
   build() {
     NavDestination() {
-      List({space: 10}) {
-        ListItemGroup({header: this.NormalSceneHeader()}) {
-          LazyForEach(this.serviceModel.listData, (item: ServiceListClass) => {
-            ListItem() {
-              if (item.serviceType === ServiceType.NORMAL) {
-                this.ServiceListItem(item)
+      Column() {
+        TopNavigationView({title: $r('app.string.all_service'),
+          onBackClick: () => {
+            this.appPathStack.pop();
+          }})
+        List({space: 10}) {
+          ListItemGroup({header: this.NormalSceneHeader()}) {
+            LazyForEach(this.serviceModel.listData, (item: ServiceListClass) => {
+              ListItem() {
+                if (item.serviceType === ServiceType.NORMAL) {
+                  this.ServiceListItem(item)
+                }
               }
-            }
-          })
-        }
-        ListItemGroup({header: this.OfficeSceneHeader()})
-        {
-          LazyForEach(this.serviceModel.listData, (item: ServiceListClass) => {
-            ListItem() {
-              if (item.serviceType === ServiceType.OFFICE) {
-                this.ServiceListItem(item)
+            })
+          }
+          ListItemGroup({header: this.OfficeSceneHeader()})
+          {
+            LazyForEach(this.serviceModel.listData, (item: ServiceListClass) => {
+              ListItem() {
+                if (item.serviceType === ServiceType.OFFICE) {
+                  this.ServiceListItem(item)
+                }
               }
-            }
-          })
-        }
-        ListItemGroup({header: this.EducationSceneHeader()})
-        {
-          LazyForEach(this.serviceModel.listData, (item: ServiceListClass) => {
-            ListItem() {
-              if (item.serviceType === ServiceType.EDUCATION) {
-                this.ServiceListItem(item)
+            })
+          }
+          ListItemGroup({header: this.EducationSceneHeader()})
+          {
+            LazyForEach(this.serviceModel.listData, (item: ServiceListClass) => {
+              ListItem() {
+                if (item.serviceType === ServiceType.EDUCATION) {
+                  this.ServiceListItem(item)
+                }
               }
-            }
-          })
-        }
-        ListItemGroup({header: this.FinanceSceneHeader()})
-        {
-          LazyForEach(this.serviceModel.listData, (item: ServiceListClass) => {
-            ListItem() {
-              if (item.serviceType === ServiceType.FINANCE) {
-                this.ServiceListItem(item)
+            })
+          }
+          ListItemGroup({header: this.FinanceSceneHeader()})
+          {
+            LazyForEach(this.serviceModel.listData, (item: ServiceListClass) => {
+              ListItem() {
+                if (item.serviceType === ServiceType.FINANCE) {
+                  this.ServiceListItem(item)
+                }
               }
-            }
-          })
+            })
+          }
+          ListItem() {
+            Column()
+              .height('15%')
+          }
         }
-        ListItem() {
-          Column()
-            .height('15%')
-        }
+        .scrollBar(BarState.Off)
+        .padding({
+          top: 11,
+          left: 16,
+          right: 16,
+          bottom: 11
+        })
       }
-      .scrollBar(BarState.Off)
-      .padding({
-        top: 11,
-        left: 16,
-        right: 16,
-        bottom: 11
-      })
+      .padding({top: AppStorage.get<number>('statusBarHeight')})
+
     }
-    .title('全部服务')
+    .hideTitleBar(true)
     .onReady((serviceListNavContext: NavDestinationContext) => {
       let param = serviceListNavContext.pathInfo.param as Record<string, object>;
       this.serviceModel = param.ServiceModel as ServiceModel;

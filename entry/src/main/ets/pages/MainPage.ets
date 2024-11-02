@@ -14,8 +14,6 @@ struct Index {
   @State bottomTabIndex: number = 2;
   @Provide('serviceStack') serviceStack: NavPathStack = new NavPathStack();
   @Provide('appPathStack') appPathStack: NavPathStack = new NavPathStack();
-  @StorageProp('bottomRectHeight') bottomRectHeight: number = 0;
-  @StorageProp('topRectHeight') topRectHeight: number = 0;
   private bottomTabController: TabsController = new TabsController();
 
   onPageShow(): void {
@@ -26,10 +24,8 @@ struct Index {
   @Builder
   TabBuilder(index: number, name: string) {
     Column() {
-      Image(this.bottomTabIndex === index ? BottomTabsList[index].iconSelected : BottomTabsList[index].icon)
-        .width('40%')
-        .height('40%')
-        .objectFit(ImageFit.Contain)
+      SymbolGlyph(this.bottomTabIndex === index ? BottomTabsList[index].iconSelected : BottomTabsList[index].icon)
+        .fontSize(25)
 
       Text(BottomTabsList[index].text)
         .fontSize($r('app.float.bottom_font_size'))
@@ -39,11 +35,11 @@ struct Index {
     }
     .width('100%')
     .height('100%')
-    .justifyContent(FlexAlign.Center)
     .border({ width: { top: 0.5 }, color: "#FF182431" })
     .backgroundColor(Color.Transparent)
     .blur(BlurStyle.Thick)
-    .expandSafeArea([SafeAreaType.SYSTEM], [SafeAreaEdge.BOTTOM])
+    .padding({bottom: AppStorage.get<number>('naviIndicatorHeight'),
+      top: 8})
   }
 
   build() {
@@ -73,7 +69,7 @@ struct Index {
         }
         .width('100%')
         .vertical(false)
-        .barHeight('8%')
+        .barHeight('10%')
         .scrollable(false)
         .onChange((index: number) => {
           this.bottomTabIndex = index;

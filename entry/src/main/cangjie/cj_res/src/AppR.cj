@@ -5,6 +5,7 @@ import std.collection.*
 public class AppString {
 	public var EntryAbility_desc = 16777218
 	public var EntryAbility_label = 16777219
+	public var all_service = 16777296
 	public var app_name = 16777216
 	public var bottom_text_course = 16777220
 	public var bottom_text_home = 16777221
@@ -32,6 +33,7 @@ public class AppColor {
 	public var swiper_dot_color = 16777237
 	public var swiper_dot_color_selected = 16777238
 	public var whut_blue = 16777248
+	public var whut_blue_background = 16777249
 	public var whut_yellow = 16777272
 }
 
@@ -40,6 +42,14 @@ public class AppFloat {
 	public var bottom_font_size = 16777240
 	public var component_title_size = 16777241
 	public var component_title_weight = 16777242
+	public var interactive_button_height = 16777297
+	public var lg_padding_margin = 16777298
+	public var navigation_height = 16777299
+	public var navigation_title_bar_half_height = 16777294
+	public var navigation_title_bar_height = 16777267
+	public var page_left_and_right_padding = 16777295
+	public var title_text_size = 16777300
+	public var xxl_padding_margin = 16777301
 }
 
 public class AppMedia {
@@ -49,17 +59,7 @@ public class AppMedia {
 	public var banner_full_text_search = 16777245
 	public var banner_info_gate = 16777246
 	public var foreground = 16777247
-	public var ic_public_app = 16777250
-	public var ic_public_app_filled = 16777251
-	public var ic_public_calendar = 16777252
-	public var ic_public_calendar_filled = 16777253
-	public var ic_public_contacts = 16777254
-	public var ic_public_contacts_filled = 16777255
-	public var ic_public_download = 16777256
-	public var ic_public_folder = 16777257
-	public var ic_public_folder_filled = 16777258
-	public var ic_public_home = 16777259
-	public var ic_public_home_filled = 16777260
+	public var ic_back = 16777302
 	public var layered_image = 16777261
 	public var service_dangxiao = 16777284
 	public var service_daxingshebei = 16777289
@@ -105,6 +105,7 @@ public func updateAllRes() {
 	let resourceMap: HashMap<String, Int64> = HashMap<String, Int64>()
 	resourceMap.put("string EntryAbility_desc", 16777218)
 	resourceMap.put("string EntryAbility_label", 16777219)
+	resourceMap.put("string all_service", 16777296)
 	resourceMap.put("string app_name", 16777216)
 	resourceMap.put("string bottom_text_course", 16777220)
 	resourceMap.put("string bottom_text_home", 16777221)
@@ -129,28 +130,27 @@ public func updateAllRes() {
 	resourceMap.put("color swiper_dot_color", 16777237)
 	resourceMap.put("color swiper_dot_color_selected", 16777238)
 	resourceMap.put("color whut_blue", 16777248)
+	resourceMap.put("color whut_blue_background", 16777249)
 	resourceMap.put("color whut_yellow", 16777272)
 	resourceMap.put("float border_radius", 16777239)
 	resourceMap.put("float bottom_font_size", 16777240)
 	resourceMap.put("float component_title_size", 16777241)
 	resourceMap.put("float component_title_weight", 16777242)
+	resourceMap.put("float interactive_button_height", 16777297)
+	resourceMap.put("float lg_padding_margin", 16777298)
+	resourceMap.put("float navigation_height", 16777299)
+	resourceMap.put("float navigation_title_bar_half_height", 16777294)
+	resourceMap.put("float navigation_title_bar_height", 16777267)
+	resourceMap.put("float page_left_and_right_padding", 16777295)
+	resourceMap.put("float title_text_size", 16777300)
+	resourceMap.put("float xxl_padding_margin", 16777301)
 	resourceMap.put("media app_icon", 16777217)
 	resourceMap.put("media background", 16777243)
 	resourceMap.put("media banner_campus_map", 16777244)
 	resourceMap.put("media banner_full_text_search", 16777245)
 	resourceMap.put("media banner_info_gate", 16777246)
 	resourceMap.put("media foreground", 16777247)
-	resourceMap.put("media ic_public_app", 16777250)
-	resourceMap.put("media ic_public_app_filled", 16777251)
-	resourceMap.put("media ic_public_calendar", 16777252)
-	resourceMap.put("media ic_public_calendar_filled", 16777253)
-	resourceMap.put("media ic_public_contacts", 16777254)
-	resourceMap.put("media ic_public_contacts_filled", 16777255)
-	resourceMap.put("media ic_public_download", 16777256)
-	resourceMap.put("media ic_public_folder", 16777257)
-	resourceMap.put("media ic_public_folder_filled", 16777258)
-	resourceMap.put("media ic_public_home", 16777259)
-	resourceMap.put("media ic_public_home_filled", 16777260)
+	resourceMap.put("media ic_back", 16777302)
 	resourceMap.put("media layered_image", 16777261)
 	resourceMap.put("media service_dangxiao", 16777284)
 	resourceMap.put("media service_daxingshebei", 16777289)

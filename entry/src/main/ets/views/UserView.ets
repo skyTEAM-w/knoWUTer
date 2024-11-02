@@ -1,3 +1,4 @@
+import { NavigationTitleBar } from '../common/components/NavigationTitleBar';
 import { SettingTwoStatus, UserPreferenceType } from '../common/constants/CommonEnums';
 import {PreferencesUtil} from '../common/utils/PreferencesUtil';
 import { UserSettingUtil } from '../common/utils/UserSettingUtil';
@@ -13,18 +14,29 @@ export struct User {
 
   }
 
+  @Builder
+  NavigationTitle(title: ResourceStr) {
+    Column() {
+      Text(title)
+        .fontSize($r('app.float.component_title_size'))
+        .fontWeight(700)
+        .width('100%')
+        .padding({ left: 16 })
+        .fontFamily('HarmonyHeiTi-Bold')
+        .lineHeight(33)
+        .textAlign(TextAlign.Start)
+    }
+    .width('100%')
+    .renderFit(RenderFit.CENTER)
+    .backgroundBlurStyle(BlurStyle.Thick)
+    .padding({top: AppStorage.get<number>('statusBarHeight')})
+  }
+
   build() {
     Navigation() {
       Column() {
-        Text($r('app.string.text_user_setting'))
-          .fontSize($r('app.float.component_title_size'))
-          .fontWeight(700)
-          .width('100%')
-          .textAlign(TextAlign.Start)
-          .padding({ left: 16 })
-          .fontFamily('HarmonyHeiTi-Bold')
-          .lineHeight(33)
-
+        Blank()
+          .height($r('app.float.navigation_title_bar_half_height'))
         Row() {
           Text('使用自定义的服务列表')
           Toggle({type: ToggleType.Switch, isOn: this.customSettingOfService === SettingTwoStatus.ON})
@@ -36,10 +48,18 @@ export struct User {
             })
         }
         .width('100%')
-        .padding({left: 16, right: 16})
+
         .justifyContent(FlexAlign.SpaceBetween)
       }
+      .padding({left: 16, right: 16})
     }
-
+    .mode(NavigationMode.Stack)
+    .title({builder: NavigationTitleBar($r('app.string.text_user_setting')),
+      height: $r('app.float.navigation_title_bar_height')}, {
+      barStyle: BarStyle.STACK
+    })
+    .titleMode(NavigationTitleMode.Mini)
+    .hideTitleBar(false)
+    .hideBackButton(true)
   }
 }

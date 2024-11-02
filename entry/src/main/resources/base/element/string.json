@@ -55,6 +55,10 @@
     {
       "name": "text_user_setting",
       "value": "User"
+    },
+    {
+      "name": "all_service",
+      "value": "All Service"
     }
   ]
 }

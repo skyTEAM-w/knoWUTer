@@ -1,5 +1,7 @@
 import { webview } from '@kit.ArkWeb';
+import { NavigationTitleBar } from '../common/components/NavigationTitleBar';
 import { getElectricCharge } from '../common/utils/PayElectricCharge';
+import { AcademicCalender } from '../components/AcademicCalendarComponent';
 import { ElectricityInquiryTool } from '../components/ElectricityInquiryComponent';
 import { DormitoryLocation } from '../model/DormitoryLocation';
 
@@ -10,36 +12,58 @@ export struct Tools {
   private webviewController: webview.WebviewController = new webview.WebviewController();
   private webResult: string = '';
 
+  @Builder
+  NavigationTitle(title: ResourceStr) {
+    Column() {
+      Text(title)
+        .fontSize($r('app.float.component_title_size'))
+        .fontWeight(700)
+        .width('100%')
+        .fontFamily('HarmonyHeiTi-Bold')
+        .lineHeight(33)
+        .textAlign(TextAlign.Start)
+    }
+    .width('100%')
+    .renderFit(RenderFit.CENTER)
+    .backgroundBlurStyle(BlurStyle.Thick)
+    .padding({top: AppStorage.get<number>('statusBarHeight')})
+  }
+
   build() {
     Navigation() {
-      Column() {
-        Text($r('app.string.text_tools'))
-          .fontSize($r('app.float.component_title_size'))
-          .fontWeight(700)
-          .width('100%')
-          .textAlign(TextAlign.Start)
-          .padding({ left: 16 })
-          .fontFamily('HarmonyHeiTi-Bold')
-          .lineHeight(33)
+      List({space: 10}) {
+        ListItem() {
+          Column()
+            .height($r('app.float.navigation_title_bar_half_height'))
+        }
+        ListItem() {
+          ElectricityInquiryTool({webViewController: this.webviewController})
+        }
+        ListItem() {
+          AcademicCalender()
+        }
       }
+      .padding({ left: 16, right: 16 })
+      // Column() {
+      //   Text($r('app.string.text_tools'))
+      //     .fontSize($r('app.float.component_title_size'))
+      //     .fontWeight(700)
+      //     .width('100%')
+      //     .textAlign(TextAlign.Start)
+      //     .fontFamily('HarmonyHeiTi-Bold')
+      //     .lineHeight(33)
+      // }
 
-      ElectricityInquiryTool()
 
-      Button($r('app.string.tool_electric_charge'))
-        .onClick(() => {
-          getElectricCharge(this.webviewController, new DormitoryLocation())
-
-          // router.pushUrl({
-          //   url: 'pages/PayElecPage',
-          //   params: ''
-          // })
-
-        })
-      Web({
-        src: 'https://zhlgd.whut.edu.cn/tpass/login?service=http%3A%2F%2Fcwsf.whut.edu.cn%2FcasLogin',
-        controller: this.webviewController
-      })
-        .visibility(Visibility.Visible)
     }
+    .mode(NavigationMode.Stack)
+    .title({builder: NavigationTitleBar($r('app.string.text_tools')),
+      height: $r('app.float.navigation_title_bar_height')}, {
+      barStyle: BarStyle.STACK
+    })
+    .titleMode(NavigationTitleMode.Mini)
+    .hideTitleBar(false)
+    .hideBackButton(true)
+
   }
 }

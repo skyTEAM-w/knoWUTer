@@ -1,18 +1,22 @@
-import { promptAction } from '@kit.ArkUI';
+import { DownloadFileButton, DownloadIconStyle, promptAction } from '@kit.ArkUI';
 import { webview } from '@kit.ArkWeb';
 import { ServiceUrl } from '../viewmodel/ServiceUrl';
 import { ServiceBlockClass } from '../viewmodel/ServiceBlockClass';
 import { BusinessError, pasteboard } from '@kit.BasicServicesKit';
 import { common, Want } from '@kit.AbilityKit';
-import { importElectricity } from '../common/utils/PayElectricCharge';
+import { getElectricCharge, importElectricity } from '../common/utils/PayElectricCharge';
 import { WebUrl } from '../model/WebUrl';
+import { DormitoryLocation } from '../model/DormitoryLocation';
 
 @Component
 struct WebViewPage {
   @State webUrl: WebUrl = new ServiceBlockClass('', '');
   @State webTitle: string = '';
   private webViewController: webview.WebviewController = new webview.WebviewController();
+
+  dormitoryLocation: DormitoryLocation = new DormitoryLocation();
   isImport: Boolean = false;
+  isRefresh: Boolean = false;
   onDestinationBack?: () => boolean = () => false;
 
   @Builder
@@ -66,7 +70,7 @@ struct WebViewPage {
           .backgroundColor($r('app.color.normal_background_grey'))
           .borderRadius(8)
 
-          if (!this.isImport) {
+          if (!this.isImport && !this.isRefresh) {
             Row() {
               SymbolGlyph($r("sys.symbol.arrow_right_up_and_square"))
                 .fontSize(25)
@@ -75,19 +79,30 @@ struct WebViewPage {
             .bindMenu(this.WebViewMenu())
           } else  {
             Row() {
-              SymbolGlyph($r("sys.symbol.arrowshape_down_to_line_fill"))
-                .fontSize(25)
-                .height('80%')
-            }
-            .onClick(() => {
-              importElectricity(this.webViewController).then((flag) => {
-                if (flag) {
-                  promptAction.showToast({message: '导入成功'})
-                  this.onDestinationBack?.();
-                } else {
-                  promptAction.showToast({message: '导入失败，请确认是否选择完全'})
+              DownloadFileButton({
+                contentOptions: {
+                  icon: DownloadIconStyle.FULL_FILLED
+                },
+                styleOptions: {
+                  iconColor: Color.Black,
+                  iconSize: 24,
                 }
               })
+            }
+            .onClick(() => {
+              if (this.isImport) {
+                importElectricity(this.webViewController).then((flag) => {
+                  if (flag) {
+                    promptAction.showToast({message: '导入成功'})
+                    this.onDestinationBack?.();
+                  } else {
+                    promptAction.showToast({message: '导入失败，请确认是否选择完全'})
+                  }
+                })
+              } else if (this.isRefresh){
+                getElectricCharge(this.webViewController, this.dormitoryLocation);
+              }
+
             })
           }
 
@@ -112,6 +127,7 @@ struct WebViewPage {
             this.webTitle = this.webViewController.getTitle()
           })
       }
+      .padding({top: AppStorage.get<number>('statusBarHeight')})
       .height('100%')
     }
     .hideTitleBar(true)
@@ -121,6 +137,12 @@ struct WebViewPage {
       this.onDestinationBack = param.onDestinationBack as () => boolean;
       if (param.isImport !== null) {
         this.isImport = param.isImport as Boolean;
+      }
+      if (param.isRefresh !== null) {
+        this.isRefresh = param.isRefresh as Boolean;
+      }
+      if (param.dormitoryLocation !== null) {
+        this.dormitoryLocation = param.dormitoryLocation as DormitoryLocation;
       }
     })
   }
