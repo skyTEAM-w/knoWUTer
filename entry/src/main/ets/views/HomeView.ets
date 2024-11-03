@@ -9,15 +9,17 @@ export struct Home {
   build() {
     Navigation() {
       Column() {
+        Blank().height($r('app.float.navigation_title_bar_half_height'))
         Scroll() {
           Column() {
             Web({ src: "https://zhlgd.whut.edu.cn/tpass/login", controller: this.webviewController })
               .domStorageAccess(true)
               .javaScriptAccess(true)
-              .onTitleReceive(() => {
+              .onPageEnd(() => {
                 this.cookie =
                   webview.WebCookieManager.fetchCookieSync("https://zhlgd.whut.edu.cn/tp_up/view?m=up#act=portal/viewhome")
                     .toString();
+                console.info(this.cookie);
               })
           }
 

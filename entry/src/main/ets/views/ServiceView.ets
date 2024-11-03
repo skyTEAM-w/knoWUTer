@@ -176,7 +176,6 @@ export struct Service {
             }
 
           }
-          .sticky(StickyStyle.Header)
           .layoutWeight(1)
           .scrollBar(BarState.Off)
           .align(Alignment.TopStart)
@@ -188,7 +187,6 @@ export struct Service {
         height: $r('app.float.navigation_title_bar_height')}, {
         barStyle: BarStyle.STACK
       })
-      .titleMode(NavigationTitleMode.Mini)
       .hideTitleBar(false)
       .hideBackButton(true)
     }

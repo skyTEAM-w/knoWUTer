@@ -47,6 +47,18 @@
     {
       "name": "whut_blue_background",
       "value": "#0C00489A"
+    },
+    {
+      "name": "whut_yellow_background",
+      "value": "#0CFAC640"
+    },
+    {
+      "name": "whut_blue_background_selected",
+      "value": "#4000489A"
+    },
+    {
+      "name": "whut_yellow_background_selected",
+      "value": "#40FAC640"
     }
   ]
 }

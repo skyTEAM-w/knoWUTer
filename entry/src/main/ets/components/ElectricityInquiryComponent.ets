@@ -5,6 +5,9 @@ import { ElectricityFeeUrl } from '../model/ElectricityFeeUrl';
 import { DownloadFileButton, DownloadIconStyle, promptAction } from '@kit.ArkUI';
 import { getElectricCharge } from '../common/utils/PayElectricCharge';
 import { webview } from '@kit.ArkWeb';
+import { it } from '@ohos/hypium';
+import { JSON } from '@kit.ArkTS';
+import { faceDetector } from '@kit.CoreVisionKit';
 
 @Component
 export struct ElectricityInquiryTool {
@@ -16,6 +19,7 @@ export struct ElectricityInquiryTool {
   @State electricityFee: string | undefined = undefined;
   @State isRefresh: boolean = false;
   private webViewController: webview.WebviewController = new webview.WebviewController();
+  private scroller: ListScroller = new ListScroller()
 
   jumpWebView() {
     this.isShow = false;
@@ -53,6 +57,10 @@ export struct ElectricityInquiryTool {
   }
 
   checkSelectedDormitory() {
+    if (this.selectedDormitoryIndex === -1) {
+      promptAction.showToast({message: '未选择宿舍'});
+      return;
+    }
     this.isShow = false;
     this.selectedDormitory = this.tableSet.getData(this.selectedDormitoryIndex);
     this.electricityFee = DBUtil.getInstance().queryDormitoryElectricityFee(this.selectedDormitory) as string;
@@ -61,12 +69,11 @@ export struct ElectricityInquiryTool {
   @Builder
   DormitoryBindSheet() {
     if (!this.isRefresh) {
-      List() {
+      List({scroller: this.scroller}) {
         ListItemGroup({ header: this.DormitoryHistorySheetHeader(), space: 5 }) {
           LazyForEach(this.tableSet, (item: DormitoryLocation, index: number) => {
-            ListItem() {
-              this.DormitoryHistorySheetItem(item, index)
-            }
+              DormitoryItem({dormitoryItem: item, selectedDormitoryIndex: this.selectedDormitoryIndex,
+                mIndex: index, tableSet: this.tableSet})
           })
         }
       }
@@ -205,40 +212,40 @@ export struct ElectricityInquiryTool {
 
   build() {
     Column() {
+      Text('电费查询')
+        .fontSize(18)
+        .fontWeight(700)
+        .fontFamily('HarmonyHeiTi-medium')
+        .textAlign(TextAlign.Start)
+        .width('100%')
+        .padding({bottom: 5})
 
       Row() {
-        Text('电费查询')
-          .fontSize(18)
-          .fontWeight(700)
-          .fontFamily('HarmonyHeiTi-medium')
+        Text(this.selectedDormitory !== undefined ? `${this.selectedDormitory.Room}` : '请选择')
           .textAlign(TextAlign.Start)
+          .fontSize(16)
+          .height(20)
+          .borderRadius(8)
         SymbolGlyph($r('sys.symbol.arrow_counterclockwise_clock'))
           .fontSize(20)
           .fontWeight(FontWeight.Medium)
-          .onClick(() => {
-            this.isShow = true;
-            console.info('bind sheet')
-          })
-          .bindSheet($$this.isShow, this.DormitoryBindSheet, {
-            title: this.BindSheetTitle(),
-            detents: [SheetSize.MEDIUM, SheetSize.LARGE, 200],
-            scrollSizeMode: ScrollSizeMode.CONTINUOUS,
-            preferType: SheetType.CENTER,
-            onDisappear: () => {
-              this.isRefresh = false;
-            }
-          })
+
       }
+      .onClick(() => {
+        this.isShow = true;
+        console.info('bind sheet')
+      })
+      .bindSheet($$this.isShow, this.DormitoryBindSheet, {
+        title: this.BindSheetTitle(),
+        detents: [SheetSize.MEDIUM, SheetSize.LARGE, 200],
+        scrollSizeMode: ScrollSizeMode.CONTINUOUS,
+        preferType: SheetType.CENTER,
+        onDisappear: () => {
+          this.isRefresh = false;
+        }
+      })
       .justifyContent(FlexAlign.SpaceBetween)
       .width('100%')
-      .padding({bottom: 5})
-
-      Text(this.selectedDormitory !== undefined ? `${this.selectedDormitory.Room}` : '请选择')
-        .textAlign(TextAlign.Start)
-        .fontSize(16)
-        .height(20)
-        .width('100%')
-        .borderRadius(8)
 
       Divider()
         .padding({ top: 5, bottom: 5 })
@@ -280,12 +287,114 @@ export struct ElectricityInquiryTool {
     .borderWidth(1)
     .borderStyle(BorderStyle.Solid)
     .width('100%')
-    .clickEffect({level: ClickEffectLevel.MIDDLE})
+    .clickEffect({level: ClickEffectLevel.LIGHT})
     .padding({
       left: 16,
       right: 16,
       top: 10,
       bottom: 10
+    })
+  }
+}
+
+@Component
+struct DormitoryItem {
+  @ObjectLink dormitoryItem: DormitoryLocation;
+  @Link selectedDormitoryIndex: number;
+  @ObjectLink tableSet: LazyDataSource<DormitoryLocation>;
+  @State enterDeleteArea: boolean = false;
+  private startTrigger: number = 0;
+  mIndex: number = -1;
+
+  @Builder
+  ListItemSwiper() {
+    Row() {
+      SymbolGlyph(this.dormitoryItem.isStar ? $r('sys.symbol.star_fill') : $r('sys.symbol.star'))
+        .fontSize(25)
+        .fontWeight(FontWeight.Medium)
+        .fontColor([$r('app.color.whut_yellow')])
+        .margin("10vp")
+        .symbolEffect(new ReplaceSymbolEffect(EffectScope.WHOLE), this.startTrigger)
+        .onClick(() => this.checkStarDormitory())
+      SymbolGlyph(this.enterDeleteArea ? $r('sys.symbol.trash_fill') : $r('sys.symbol.trash'))
+        .fontSize(25)
+        .fontWeight(FontWeight.Medium)
+        .fontColor([Color.Red])
+        .margin("10vp")
+    }.padding($r('sys.float.corner_radius_level2')).justifyContent(FlexAlign.SpaceEvenly)
+  }
+
+  checkStarDormitory() {
+    this.startTrigger++;
+    this.dormitoryItem.isStar = !this.dormitoryItem.isStar;
+    this.tableSet.changeData(this.mIndex, this.dormitoryItem);
+    console.info(JSON.stringify(this.dormitoryItem))
+    DBUtil.getInstance().updateDormitoryStarStatus(this.dormitoryItem);
+  }
+
+  deleteDormitory() {
+    this.selectedDormitoryIndex = -1;
+    DBUtil.getInstance().deleteDormitory(this.dormitoryItem);
+    this.tableSet.deleteData(this.mIndex);
+  }
+
+  @Builder
+  DormitoryHistorySheetItem(item: DormitoryLocation, index: number) {
+    Row() {
+      Text(`${item.Area}`)
+        .textAlign(TextAlign.Center)
+        .fontSize(12)
+        .fontWeight(400)
+        .width('24%')
+      Text(`${item.Building}`)
+        .textAlign(TextAlign.Center)
+        .fontSize(12)
+        .fontWeight(400)
+        .width('24%')
+      Text(`${item.Floor}`)
+        .fontSize(12)
+        .textAlign(TextAlign.Center)
+        .fontWeight(400)
+        .width('24%')
+      Text(`${item.Room}`)
+        .fontSize(12)
+        .textAlign(TextAlign.Center)
+        .fontWeight(400)
+        .width('24%')
+    }
+    .width('100%')
+    .height(44)
+    .justifyContent(FlexAlign.SpaceBetween)
+    .backgroundColor(this.selectedDormitoryIndex === index ? $r('app.color.whut_blue_background_selected') :
+      this.dormitoryItem.isStar ? $r('app.color.whut_yellow_background_selected') : $r('app.color.start_window_background'))
+    .onClick(() => {
+      this.selectedDormitoryIndex = index;
+    })
+    .borderRadius(8)
+  }
+
+  build() {
+    ListItem() {
+      this.DormitoryHistorySheetItem(this.dormitoryItem, this.mIndex);
+    }
+    .transition({type: TransitionType.Delete, opacity: 0})
+    .swipeAction({
+      end: {builder: () => this.ListItemSwiper(),
+      onAction: () => {
+        animateTo({duration: 500,
+        onFinish: () => {
+          this.tableSet.reloadData();
+        }}, () => {
+          this.deleteDormitory()
+        })
+      },
+        actionAreaDistance: 75,
+      onEnterActionArea: () => {
+        this.enterDeleteArea = true;
+      },
+      onExitActionArea: () => {
+        this.enterDeleteArea = false;
+      }}
     })
   }
 }

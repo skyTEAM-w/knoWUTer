@@ -41,7 +41,7 @@ export struct User {
           Text('使用自定义的服务列表')
           Toggle({type: ToggleType.Switch, isOn: this.customSettingOfService === SettingTwoStatus.ON})
             .size({ width: 40, height: 20 })
-            .selectedColor('#007DFF')
+            .selectedColor($r('sys.color.brand'))
             .onChange((isOn) => {
               this.userSettingUtil.saveCustomServiceListSetting(isOn ?
               SettingTwoStatus.ON : SettingTwoStatus.OFF)

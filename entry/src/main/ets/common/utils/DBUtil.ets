@@ -2,6 +2,7 @@ import { relationalStore } from "@kit.ArkData";
 import { common } from "@kit.AbilityKit";
 import LazyDataSource from "../model/LazyDataSource";
 import { DormitoryLocation } from "../../model/DormitoryLocation";
+import { JSON } from "@kit.ArkTS";
 
 const STORE_CONFIG: relationalStore.StoreConfig = {
   name: 'ApplicationDB.db',
@@ -48,13 +49,13 @@ export class DBUtil {
     console.info('DB Init');
   }
 
-  creatTable(sql: string) {
+  executeSql(sql: string) {
     this.store?.executeSql(sql);
   }
 
   queryDormitoryHistory(): LazyDataSource<DormitoryLocation> {
     let res: LazyDataSource<DormitoryLocation> = new LazyDataSource();
-    this.store?.querySql('select Area, AreaId, Building, BuildingId, Floor, FloorId, Room, RoomId from DormitoryLocation ORDER BY id DESC;', (err, resultSet) => {
+    this.store?.querySql('select Area, AreaId, Building, BuildingId, Floor, FloorId, Room, RoomId, isStar from DormitoryLocation ORDER BY isStar DESC, id DESC;', (err, resultSet) => {
       if (err) {
         console.error(`Query failed, code is ${err.code},message is ${err.message}`);
         return;
@@ -70,6 +71,7 @@ export class DBUtil {
         dormLocation.FloorId = resultSet.getString(resultSet.getColumnIndex('FloorId'));
         dormLocation.Room = resultSet.getString(resultSet.getColumnIndex('Room'));
         dormLocation.RoomId = resultSet.getString(resultSet.getColumnIndex('RoomId'));
+        dormLocation.isStar = resultSet.getLong(resultSet.getColumnIndex('isStar')) === 0 ? false : true;
         res.pushData(dormLocation);
       }
       resultSet.close();
@@ -98,6 +100,33 @@ export class DBUtil {
       return;
     }
 
+  }
+
+  updateDormitoryStarStatus(dormitoryLocation: DormitoryLocation): void {
+    let valueBucket: relationalStore.ValuesBucket = {
+      'isStar': dormitoryLocation.isStar ? 1 : 0
+    }
+    let predicates = new relationalStore.RdbPredicates('DormitoryLocation');
+    predicates.equalTo('AreaId', dormitoryLocation.AreaId).and().equalTo('BuildingId', dormitoryLocation.BuildingId)
+      .and().equalTo('FloorId', dormitoryLocation.FloorId).and().equalTo('RoomId', dormitoryLocation.RoomId)
+    try {
+      let rows: number = (this.store as relationalStore.RdbStore).updateSync(valueBucket, predicates, relationalStore.ConflictResolution.ON_CONFLICT_REPLACE);
+      console.info(`Updated row count: ${rows}`);
+    } catch (err) {
+      console.error(`Update failed, code is ${err.code},message is ${err.message}`)
+    }
+  }
+
+  deleteDormitory(dormitoryLocation: DormitoryLocation):void {
+    let predicates = new relationalStore.RdbPredicates('DormitoryLocation');
+    predicates.equalTo('AreaId', dormitoryLocation.AreaId).and().equalTo('BuildingId', dormitoryLocation.BuildingId)
+      .and().equalTo('FloorId', dormitoryLocation.FloorId).and().equalTo('RoomId', dormitoryLocation.RoomId)
+    try {
+      let rows: Number = (this.store as relationalStore.RdbStore).deleteSync(predicates)
+      console.info(`Delete row count: ${rows}`);
+    } catch (err) {
+      console.error(`Delete failed, code is ${err.code},message is ${err.message}`)
+    }
   }
 
 }

@@ -12,6 +12,7 @@ import { DBUtil } from '../common/utils/DBUtil';
 @Component
 struct Index {
   @State bottomTabIndex: number = 2;
+  @State bottomTabEffectIndex: number = 2;
   @Provide('serviceStack') serviceStack: NavPathStack = new NavPathStack();
   @Provide('appPathStack') appPathStack: NavPathStack = new NavPathStack();
   private bottomTabController: TabsController = new TabsController();
@@ -22,10 +23,11 @@ struct Index {
   }
 
   @Builder
-  TabBuilder(index: number, name: string) {
+  TabBuilder(index: number) {
     Column() {
       SymbolGlyph(this.bottomTabIndex === index ? BottomTabsList[index].iconSelected : BottomTabsList[index].icon)
         .fontSize(25)
+        .symbolEffect(new BounceSymbolEffect(EffectScope.WHOLE, EffectDirection.DOWN), this.bottomTabEffectIndex === index)
 
       Text(BottomTabsList[index].text)
         .fontSize($r('app.float.bottom_font_size'))
@@ -37,7 +39,7 @@ struct Index {
     .height('100%')
     .border({ width: { top: 0.5 }, color: "#FF182431" })
     .backgroundColor(Color.Transparent)
-    .blur(BlurStyle.Thick)
+    .blur(BlurStyle.Regular)
     .padding({bottom: AppStorage.get<number>('naviIndicatorHeight'),
       top: 8})
   }
@@ -48,23 +50,23 @@ struct Index {
         Tabs({ barPosition: BarPosition.End, index: this.bottomTabIndex, controller: this.bottomTabController }) {
           TabContent() {
             CourseTable()
-          }.tabBar(this.TabBuilder(0, 'Map'))
+          }.tabBar(this.TabBuilder(0))
 
           TabContent() {
             Service()
-          }.tabBar(this.TabBuilder(1, 'Zone'))
+          }.tabBar(this.TabBuilder(1))
 
           TabContent() {
             Home()
-          }.tabBar(this.TabBuilder(2, 'Train'))
+          }.tabBar(this.TabBuilder(2))
 
           TabContent() {
             Tools()
-          }.tabBar(this.TabBuilder(3, 'Train'))
+          }.tabBar(this.TabBuilder(3))
 
           TabContent() {
             User()
-          }.tabBar(this.TabBuilder(4, 'Train'))
+          }.tabBar(this.TabBuilder(4))
 
         }
         .width('100%')
@@ -74,10 +76,14 @@ struct Index {
         .onChange((index: number) => {
           this.bottomTabIndex = index;
         })
+        .onTabBarClick((index: number) => {
+          this.bottomTabEffectIndex = index;
+        })
         .height('100%')
+        .barMode(BarMode.Fixed)
         .barOverlap(true)
         .barBackgroundColor(Color.Transparent)
-        .barBackgroundBlurStyle(BlurStyle.Thick)
+        .barBackgroundBlurStyle(BlurStyle.Regular)
       }
       .width('100%')
     }

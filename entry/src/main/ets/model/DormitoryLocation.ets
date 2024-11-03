@@ -80,4 +80,14 @@ export class DormitoryLocation {
     return this._RoomId;
   }
 
+  private _isStar: boolean = false;
+
+  public set isStar(value: boolean) {
+    this._isStar = value;
+  }
+
+  public get isStar(): boolean {
+    return this._isStar;
+  }
+
 }

@@ -13,6 +13,6 @@ export function NavigationTitleBar(title: ResourceStr) {
   }
   .width('100%')
   .height('100%')
-  .backgroundBlurStyle(BlurStyle.Thick)
+  .backgroundBlurStyle(BlurStyle.Regular)
   .padding({top: AppStorage.get<number>('statusBarHeight')})
 }

@@ -12,6 +12,7 @@ import { DormitoryLocation } from '../model/DormitoryLocation';
 struct WebViewPage {
   @State webUrl: WebUrl = new ServiceBlockClass('', '');
   @State webTitle: string = '';
+  @State webProgress: number = 0;
   private webViewController: webview.WebviewController = new webview.WebviewController();
 
   dormitoryLocation: DormitoryLocation = new DormitoryLocation();
@@ -56,18 +57,21 @@ struct WebViewPage {
           }
 
           Row() {
-            Text(this.webTitle)
-              .textOverflow({ overflow: TextOverflow.Ellipsis })
-              .maxLines(1)
-              .ellipsisMode(EllipsisMode.END)
-              .width('95%')
-              .height('100%')
-              .textAlign(TextAlign.Center)
+            Stack() {
+              Progress({value: this.webProgress, total: 100, type: ProgressType.Capsule})
+                .width('100%').height('100%').color($r('app.color.whut_blue_background_selected'))
 
+              Text(this.webTitle)
+                .textOverflow({ overflow: TextOverflow.Ellipsis })
+                .maxLines(1)
+                .ellipsisMode(EllipsisMode.END)
+                .width('95%')
+                .height('100%')
+                .textAlign(TextAlign.Center)
+            }
           }
           .justifyContent(FlexAlign.Center)
           .width('80%')
-          .backgroundColor($r('app.color.normal_background_grey'))
           .borderRadius(8)
 
           if (!this.isImport && !this.isRefresh) {
@@ -93,16 +97,13 @@ struct WebViewPage {
               if (this.isImport) {
                 importElectricity(this.webViewController).then((flag) => {
                   if (flag) {
-                    promptAction.showToast({message: '导入成功'})
+                    promptAction.showToast({ message: '导入成功' })
                     this.onDestinationBack?.();
                   } else {
-                    promptAction.showToast({message: '导入失败，请确认是否选择完全'})
+                    promptAction.showToast({ message: '导入失败，请确认是否选择完全' })
                   }
                 })
-              } else if (this.isRefresh){
-                getElectricCharge(this.webViewController, this.dormitoryLocation);
               }
-
             })
           }
 
@@ -126,6 +127,12 @@ struct WebViewPage {
             console.log("view: " + this.webUrl.url)
             this.webTitle = this.webViewController.getTitle()
           })
+          .onProgressChange((event) => {
+            if (event) {
+              this.webProgress = event.newProgress;
+              console.log('newProgress:' + event.newProgress);
+            }
+          })
       }
       .padding({top: AppStorage.get<number>('statusBarHeight')})
       .height('100%')
@@ -137,12 +144,6 @@ struct WebViewPage {
       this.onDestinationBack = param.onDestinationBack as () => boolean;
       if (param.isImport !== null) {
         this.isImport = param.isImport as Boolean;
-      }
-      if (param.isRefresh !== null) {
-        this.isRefresh = param.isRefresh as Boolean;
-      }
-      if (param.dormitoryLocation !== null) {
-        this.dormitoryLocation = param.dormitoryLocation as DormitoryLocation;
       }
     })
   }

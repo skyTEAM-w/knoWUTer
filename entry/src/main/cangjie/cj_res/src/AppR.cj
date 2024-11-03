@@ -34,7 +34,10 @@ public class AppColor {
 	public var swiper_dot_color_selected = 16777238
 	public var whut_blue = 16777248
 	public var whut_blue_background = 16777249
+	public var whut_blue_background_selected = 16777251
 	public var whut_yellow = 16777272
+	public var whut_yellow_background = 16777250
+	public var whut_yellow_background_selected = 16777252
 }
 
 public class AppFloat {
@@ -131,7 +134,10 @@ public func updateAllRes() {
 	resourceMap.put("color swiper_dot_color_selected", 16777238)
 	resourceMap.put("color whut_blue", 16777248)
 	resourceMap.put("color whut_blue_background", 16777249)
+	resourceMap.put("color whut_blue_background_selected", 16777251)
 	resourceMap.put("color whut_yellow", 16777272)
+	resourceMap.put("color whut_yellow_background", 16777250)
+	resourceMap.put("color whut_yellow_background_selected", 16777252)
 	resourceMap.put("float border_radius", 16777239)
 	resourceMap.put("float bottom_font_size", 16777240)
 	resourceMap.put("float component_title_size", 16777241)

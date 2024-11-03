@@ -61,7 +61,7 @@ export struct AcademicCalender {
     .borderRadius($r('app.float.border_radius'))
     .borderWidth(1)
     .borderStyle(BorderStyle.Solid)
-    .clickEffect({level: ClickEffectLevel.MIDDLE})
+    .clickEffect({level: ClickEffectLevel.LIGHT})
     .width('100%')
     .padding({
       left: 16,

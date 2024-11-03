@@ -127,7 +127,7 @@ export struct AllServiceList {
       Column() {
         TopNavigationView({title: $r('app.string.all_service'),
           onBackClick: () => {
-            this.appPathStack.pop();
+            this.serviceStack.pop()
           }})
         List({space: 10}) {
           ListItemGroup({header: this.NormalSceneHeader()}) {
@@ -171,7 +171,7 @@ export struct AllServiceList {
           }
           ListItem() {
             Column()
-              .height('15%')
+              .height('20%')
           }
         }
         .scrollBar(BarState.Off)

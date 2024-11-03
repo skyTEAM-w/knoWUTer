@@ -59,7 +59,7 @@ export function getElectricCharge(webviewController: webview.WebviewController, 
       console.info(insertQuery);
       console.info(remainMoney.trim())
 
-      DBUtil.getInstance().creatTable(insertQuery);
+      DBUtil.getInstance().executeSql(insertQuery);
 
       return remainMoney.replace(/^"+|"+$/g, '');
 
@@ -125,7 +125,7 @@ export async function importElectricity(webviewController: webview.WebviewContro
                          DO UPDATE SET ElectricFee = excluded.ElectricFee, RemainingElectric = excluded.RemainingElectric;`;
 
   console.info(insertQuery)
-  DBUtil.getInstance().creatTable(insertQuery);
+  DBUtil.getInstance().executeSql(insertQuery);
 
   return true;
 }

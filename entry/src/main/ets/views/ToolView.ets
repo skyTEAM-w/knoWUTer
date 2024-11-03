@@ -44,16 +44,6 @@ export struct Tools {
         }
       }
       .padding({ left: 16, right: 16 })
-      // Column() {
-      //   Text($r('app.string.text_tools'))
-      //     .fontSize($r('app.float.component_title_size'))
-      //     .fontWeight(700)
-      //     .width('100%')
-      //     .textAlign(TextAlign.Start)
-      //     .fontFamily('HarmonyHeiTi-Bold')
-      //     .lineHeight(33)
-      // }
-
 
     }
     .mode(NavigationMode.Stack)
