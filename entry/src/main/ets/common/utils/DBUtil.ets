@@ -4,6 +4,8 @@ import LazyDataSource from "../model/LazyDataSource";
 import { DormitoryLocation } from "../../model/DormitoryLocation";
 import { JSON } from "@kit.ArkTS";
 
+const TAG = '[DBUtil]'
+
 const STORE_CONFIG: relationalStore.StoreConfig = {
   name: 'ApplicationDB.db',
   securityLevel: relationalStore.SecurityLevel.S3
@@ -21,6 +23,7 @@ const DORM_LOCATION_TABLE_SQL = 'CREATE TABLE IF NOT EXISTS DormitoryLocation (\
   '    RoomId VARCHAR(255) NOT NULL,\n' +
   '    ElectricFee VARCHAR(255) NOT NULL,\n' +
   '    RemainingElectric VARCHAR(255) NOT NULL,' +
+  '    isStar INTEGER DEFAULT 0,' +
   '    UNIQUE (AreaId, BuildingId, FloorId, RoomId)' +
   ');'
 
@@ -46,7 +49,7 @@ export class DBUtil {
       this.store?.executeSql(DORM_LOCATION_TABLE_SQL);
     })
 
-    console.info('DB Init');
+    console.info(TAG, 'DB Init');
   }
 
   executeSql(sql: string) {
@@ -57,7 +60,7 @@ export class DBUtil {
     let res: LazyDataSource<DormitoryLocation> = new LazyDataSource();
     this.store?.querySql('select Area, AreaId, Building, BuildingId, Floor, FloorId, Room, RoomId, isStar from DormitoryLocation ORDER BY isStar DESC, id DESC;', (err, resultSet) => {
       if (err) {
-        console.error(`Query failed, code is ${err.code},message is ${err.message}`);
+        console.error(TAG, `Query failed, code is ${err.code},message is ${err.message}`);
         return;
       }
       console.info(`ResultSet column names: ${resultSet.columnNames}, column count: ${resultSet.columnCount}`);
@@ -90,13 +93,13 @@ export class DBUtil {
       console.info(`ResultSet column names: ${resultSet.columnNames}, column count: ${resultSet.columnCount}`);
       while (resultSet.goToLastRow()) {
         res = resultSet.getString(resultSet.getColumnIndex('ElectricFee'));
-        console.info(res);
+        console.info(TAG,res);
         break;
       }
       resultSet.close();
       return res.replace(/^"+|"+$/g, '');
     } catch (err) {
-      console.error(`Query failed, code is ${err.code},message is ${err.message}`);
+      console.error(TAG, `Query failed, code is ${err.code},message is ${err.message}`);
       return;
     }
 
@@ -111,9 +114,9 @@ export class DBUtil {
       .and().equalTo('FloorId', dormitoryLocation.FloorId).and().equalTo('RoomId', dormitoryLocation.RoomId)
     try {
       let rows: number = (this.store as relationalStore.RdbStore).updateSync(valueBucket, predicates, relationalStore.ConflictResolution.ON_CONFLICT_REPLACE);
-      console.info(`Updated row count: ${rows}`);
+      console.info(TAG, `Updated row count: ${rows}`);
     } catch (err) {
-      console.error(`Update failed, code is ${err.code},message is ${err.message}`)
+      console.error(TAG, `Update failed, code is ${err.code},message is ${err.message}`)
     }
   }
 
@@ -123,9 +126,9 @@ export class DBUtil {
       .and().equalTo('FloorId', dormitoryLocation.FloorId).and().equalTo('RoomId', dormitoryLocation.RoomId)
     try {
       let rows: Number = (this.store as relationalStore.RdbStore).deleteSync(predicates)
-      console.info(`Delete row count: ${rows}`);
+      console.info(TAG, `Delete row count: ${rows}`);
     } catch (err) {
-      console.error(`Delete failed, code is ${err.code},message is ${err.message}`)
+      console.error(TAG, `Delete failed, code is ${err.code},message is ${err.message}`)
     }
   }
 

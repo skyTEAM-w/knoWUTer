@@ -8,6 +8,9 @@ import { webview } from '@kit.ArkWeb';
 import { it } from '@ohos/hypium';
 import { JSON } from '@kit.ArkTS';
 import { faceDetector } from '@kit.CoreVisionKit';
+import { ElectricityFeeActionType, HttpUtil } from '../common/utils/HttpUtil';
+
+const TAG = '[Elec Comp]'
 
 @Component
 export struct ElectricityInquiryTool {
@@ -63,6 +66,10 @@ export struct ElectricityInquiryTool {
     }
     this.isShow = false;
     this.selectedDormitory = this.tableSet.getData(this.selectedDormitoryIndex);
+    // HttpUtil.getInstance().whutElectricityFeeAction(ElectricityFeeActionType.AREA, AppStorage.get<string>('fee_cookie') as string, this.selectedDormitory)
+    HttpUtil.getInstance().whutElectricityFeeAction(ElectricityFeeActionType.BUILD, AppStorage.get<string>('fee_cookie') as string, this.selectedDormitory)
+    // HttpUtil.getInstance().whutElectricityFeeAction(ElectricityFeeActionType.FLOOR, AppStorage.get<string>('fee_cookie') as string, this.selectedDormitory)
+    // HttpUtil.getInstance().whutElectricityFeeAction(ElectricityFeeActionType.ROOM, AppStorage.get<string>('fee_cookie') as string, this.selectedDormitory)
     this.electricityFee = DBUtil.getInstance().queryDormitoryElectricityFee(this.selectedDormitory) as string;
   }
 
@@ -198,6 +205,9 @@ export struct ElectricityInquiryTool {
                   this.isShow = false;
                   promptAction.showToast({message: '更新成功'})
                 })
+                  let FeeCookie = webview.WebCookieManager.fetchCookieSync('http://cwsf.whut.edu.cn/nyyPayElecPages51274E035').toString();
+                AppStorage.setOrCreate('fee_cookie', FeeCookie);
+                console.info(TAG, FeeCookie);
               }
             })
         }
@@ -233,11 +243,11 @@ export struct ElectricityInquiryTool {
       }
       .onClick(() => {
         this.isShow = true;
-        console.info('bind sheet')
+        console.info(TAG, 'Bind Sheet Show')
       })
       .bindSheet($$this.isShow, this.DormitoryBindSheet, {
         title: this.BindSheetTitle(),
-        detents: [SheetSize.MEDIUM, SheetSize.LARGE, 200],
+        detents: [SheetSize.MEDIUM, SheetSize.LARGE],
         scrollSizeMode: ScrollSizeMode.CONTINUOUS,
         preferType: SheetType.CENTER,
         onDisappear: () => {

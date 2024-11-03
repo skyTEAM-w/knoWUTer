@@ -1,0 +1,78 @@
+import { FormEncoder, HttpClient, Logger, Mime, Request, RequestBody, Response, TimeUnit } from '@ohos/httpclient';
+import MediaType from '@ohos/httpclient/src/main/ets/cache/MediaType';
+import { JSON } from '@kit.ArkTS';
+import { when } from '@ohos/hypium';
+import { DormitoryLocation } from '../../model/DormitoryLocation';
+
+const TAG = '[HttpUtil]'
+
+export enum ElectricityFeeActionType {
+  AREA = 'getAreaInfo',
+  BUILD = 'queryBuildList',
+  FLOOR = 'queryFloorList',
+  ROOM = 'getRoomInfo',
+  ELECTRICITY = 'queryRoomElec',
+  METER = 'queryReserve'
+}
+
+export class HttpUtil {
+  private static instance: HttpUtil;
+
+  public static getInstance(): HttpUtil {
+    if (!HttpUtil.instance) {
+      HttpUtil.instance = new HttpUtil();
+    }
+    return HttpUtil.instance;
+  }
+
+  HttpPost(url: string, cookies: string, body: RequestBody) {
+    let client = new HttpClient.Builder().setConnectTimeout(30, TimeUnit.SECONDS)
+      .setReadTimeout(30, TimeUnit.SECONDS).setWriteTimeout(30, TimeUnit.SECONDS).build();
+    let request = new Request.Builder().url(url)
+      .post(body)
+      .addHeader("Accept",
+        "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7")
+      .addHeader("Accept-Encoding", "gzip, deflate")
+      .addHeader("Accept-Language", "zh-CN,zh;q=0.9,en-GB;q=0.8,en-US;q=0.7,en;q=0.6")
+      .addHeader("Cache-Control", "no-cache")
+      .addHeader("Connection", "keep-alive")
+      .addHeader("Cookie", cookies)
+      .addHeader("Pragma", "no-cache")
+      .addHeader("Upgrade-Insecure-Requests", "1")
+      .addHeader("User-Agent",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36 Edg/116.0.1938.76")
+      .addHeader("Content-Type", "application/x-www-form-urlencoded")
+      .build()
+    let response: Response | undefined = undefined;
+    client.newCall(request).execute().then((result) => {
+      if (result) {
+        response = result;
+        console.info(TAG, JSON.stringify(response))
+      }
+    });
+
+    return response;
+  }
+
+  buildElectricityFeeRequestBody(action: string | ElectricityFeeActionType = 'getAreaInfo', dormitoryLocation: DormitoryLocation, meterId: string = '') {
+    let body: RequestBody = RequestBody.create('factorycode=E035', new Mime.Builder().contentType('application/x-www-form-urlencoded').build().getMime());
+    let formEncoder = new FormEncoder.Builder().add("factorycode","E035").add("areaid", `${dormitoryLocation.AreaId}`).build();
+    let feBody = formEncoder.createRequestBody();
+    console.info(TAG, feBody.mimesToString())
+    switch (action) {
+      case 'getAreaInfo': body = RequestBody.create('factorycode=E035', new Mime.Builder().contentType('application/x-www-form-urlencoded').build().getMime());
+      case 'queryBuildList': body = RequestBody.create(`areaid=${dormitoryLocation.AreaId}&factorycode=E035`, new Mime.Builder().contentType('application/x-www-form-urlencoded').build().getMime());
+      case 'queryFloorList': body = RequestBody.create(`factorycode=E035&areaid=${dormitoryLocation.AreaId}&buildid=${dormitoryLocation.BuildingId}`, new Mime.Builder().contentType('application/x-www-form-urlencoded').build().getMime());
+      case 'getRoomInfo': body = RequestBody.create(`factorycode=E035&areaid=${dormitoryLocation.AreaId}&buildid=${dormitoryLocation.BuildingId}&floorid=${dormitoryLocation.FloorId}`, new Mime.Builder().contentType('application/x-www-form-urlencoded').build().getMime());
+      case 'queryRoomElec': body = RequestBody.create(`factorycode=E035&roomid=${dormitoryLocation.RoomId}`, new Mime.Builder().contentType('application/x-www-form-urlencoded').build().getMime());
+      case 'queryReserve': body = RequestBody.create(`factorycode=E035&meterId=${meterId}`, new Mime.Builder().contentType('application/x-www-form-urlencoded').build().getMime());
+    }
+    return feBody;
+  }
+
+  whutElectricityFeeAction(action: string | ElectricityFeeActionType, cookie: string, dormitoryLocation: DormitoryLocation): Response | undefined{
+    let body = this.buildElectricityFeeRequestBody(action, dormitoryLocation)
+    return this.HttpPost(`http://cwsf.whut.edu.cn/${action}`,cookie, body)
+  }
+}
+
