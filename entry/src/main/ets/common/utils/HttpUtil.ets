@@ -1,13 +1,20 @@
 import { FormEncoder, HttpClient, Logger, Mime, Request, RequestBody, Response, TimeUnit } from '@ohos/httpclient';
 import MediaType from '@ohos/httpclient/src/main/ets/cache/MediaType';
 import { ArrayList, JSON } from '@kit.ArkTS';
-import { when } from '@ohos/hypium';
+import { it, when } from '@ohos/hypium';
 import { DormitoryLocation } from '../model/DormitoryLocation';
-import { HttpAreaList, HttpBuildingList, HttpFloorList } from '../model/HttpList';
+import { HttpAreaList, HttpBuildingList, HttpFloorList, HttpMeter,
+  HttpReserve,
+  HttpRoomList } from '../model/HttpResponseImp';
 import { HttpPostResponseBody } from '../model/HttpPostResponseBody';
 import { Area } from '../model/Area';
 import { DBUtil } from './DBUtil';
 import { Building } from '../model/Building';
+import { Floor } from '../model/Floor';
+import { Room } from '../model/Room';
+import json from '@ohos.util.json';
+import { HttpMethod } from '@ohos/httpclient/src/main/ets/http/HttpMethod';
+import { Meter } from '../model/Meter';
 
 const TAG = '[HttpUtil]'
 
@@ -85,7 +92,7 @@ export class HttpUtil {
         return feBody;
       }
       case ElectricityFeeActionType.METER: {
-        let formEncoder = new FormEncoder.Builder().add("factorycode", "E035").add("meterId", `${meterId}`).build();
+        let formEncoder = new FormEncoder.Builder().add("factorycode", "E035").add("meterId", `${dormitoryLocation.MeterId}`).build();
         let feBody = formEncoder.createRequestBody();
         return feBody;
       }
@@ -104,29 +111,29 @@ export class HttpUtil {
     return await this.HttpPost(`http://cwsf.whut.edu.cn/${action}`,cookie, body)
   }
 
-  async getAreaListHttp(cookie: string): Promise<ArrayList<Area>> {
+  async getAreaListHttp(cookie: string): Promise<ArrayList<Area> | undefined> {
     let response = await this.whutElectricityFeeAction(ElectricityFeeActionType.AREA, cookie);
     console.debug(TAG, 'getAreaList', response?.getBody())
     if (response) {
       console.info(TAG, 'Response: 200')
       let body = response.getBody().toString();
-      let jsonObjet = JSON.parse(body);
+      let jsonObject = JSON.parse(body);
       let areaList = JSON.parse(body) as HttpAreaList;
       console.info(TAG, JSON.parse(body));
-      console.info(TAG, JSON.has(jsonObjet, 'areaList'));
+      console.info(TAG, JSON.has(jsonObject, 'areaList'));
       console.debug(TAG, areaList.areaList);
       let dbAreaList = this.parseResponseBodyToAreaList(areaList);
-      if (JSON.has(jsonObjet, 'areaList')) {
+      if (JSON.has(jsonObject, 'areaList')) {
         dbAreaList.forEach((item: Area) => {
           DBUtil.getInstance().insertArea(item);
         })
       }
       return dbAreaList;
     }
-    return new ArrayList<Area>()
+    return undefined;
   }
 
-  async getBuildingListHttp(cookie: string, area: Area) {
+  async getBuildingListHttp(cookie: string, area: Area): Promise<ArrayList<Building> | undefined> {
     let dormitoryLocation= new DormitoryLocation();
     dormitoryLocation.Area = area.area; dormitoryLocation.AreaId = area.areaId;
     let response = await this.whutElectricityFeeAction(ElectricityFeeActionType.BUILD, cookie, dormitoryLocation);
@@ -134,24 +141,24 @@ export class HttpUtil {
     if (response) {
       console.info(TAG, 'Response: 200')
       let body = response.getBody().toString();
-      let jsonObjet = JSON.parse(body);
+      let jsonObject = JSON.parse(body);
       let buildingList = JSON.parse(body) as HttpBuildingList;
       console.info(TAG, JSON.parse(body));
-      console.info(TAG, JSON.has(jsonObjet, 'buildList'));
+      console.info(TAG, JSON.has(jsonObject, 'buildList'));
       console.debug(TAG, buildingList.buildList);
-      let dbAreaList = this.parseResponseBodyToBuildList(buildingList);
-      console.debug(TAG, JSON.stringify(dbAreaList))
-      if (JSON.has(jsonObjet, 'buildList')) {
-        dbAreaList.forEach((item: Building) => {
+      let dbBuildList = this.parseResponseBodyToBuildList(buildingList);
+      console.debug(TAG, JSON.stringify(dbBuildList))
+      if (JSON.has(jsonObject, 'buildList')) {
+        dbBuildList.forEach((item: Building) => {
           DBUtil.getInstance().insertBuilding(item, area);
         })
       }
-      return dbAreaList;
+      return dbBuildList;
     }
-    return new ArrayList<Building>();
+    return undefined;
   }
 
-  async getFloorListHttp(cookie: string, area: Area, building: Building) {
+  async getFloorListHttp(cookie: string, area: Area, building: Building): Promise<ArrayList<Floor> | undefined> {
     let dormitoryLocation= new DormitoryLocation();
     dormitoryLocation.Area = area.area; dormitoryLocation.AreaId = area.areaId;
     dormitoryLocation.Building = building.Building; dormitoryLocation.BuildingId = building.BuildingId;
@@ -160,21 +167,86 @@ export class HttpUtil {
     if (response) {
       console.info(TAG, 'Response: 200')
       let body = response.getBody().toString();
-      let jsonObjet = JSON.parse(body);
-      let buildingList = JSON.parse(body) as HttpFloorList;
+      let jsonObject = JSON.parse(body);
+      let floorList = JSON.parse(body) as HttpFloorList;
       console.info(TAG, JSON.parse(body));
-      console.info(TAG, JSON.has(jsonObjet, 'floorList'));
-      console.debug(TAG, buildingList.floorList);
-      // let dbAreaList = this.parseResponseBodyToBuildList(buildingList);
-      // console.debug(TAG, JSON.stringify(dbAreaList))
-      // if (JSON.has(jsonObjet, 'floorList')) {
-      //   dbAreaList.forEach((item: Building) => {
-      //     // DBUtil.getInstance().insertBuilding(item, area);
-      //   })
-      // }
-      // return dbAreaList;
+      console.info(TAG, JSON.has(jsonObject, 'floorList'));
+      console.debug(TAG, floorList.floorList);
+      let dbFloorList = this.parseResponseBodyToFloorList(floorList);
+      console.debug(TAG, JSON.stringify(dbFloorList))
+      if (JSON.has(jsonObject, 'floorList')) {
+        dbFloorList.forEach((item: Floor) => {
+          DBUtil.getInstance().insertFloor(item, building);
+        })
+      }
+      return dbFloorList;
     }
+    return undefined;
 
+  }
+
+  async getRoomListHttp(cookie: string, building: Building, floor: Floor): Promise<ArrayList<Room> | undefined> {
+    let dormitoryLocation: DormitoryLocation = new DormitoryLocation();
+    dormitoryLocation.Building = building.Building; dormitoryLocation.BuildingId = building.BuildingId;
+    dormitoryLocation.Floor = floor.Floor; dormitoryLocation.FloorId = floor.FloorId;
+    let response: Response = await this.whutElectricityFeeAction(ElectricityFeeActionType.ROOM, cookie, dormitoryLocation) as Response;
+    console.debug(TAG, 'getRoomListHttp', response?.getBody());
+    if (response) {
+      console.info(TAG, 'Response: 200')
+      let body = response.getBody().toString();
+      let jsonObject = JSON.parse(body);
+      let roomList = JSON.parse(body) as HttpRoomList;
+      console.info(TAG, JSON.parse(body));
+      console.info(TAG, JSON.has(jsonObject, 'roomList'));
+      console.debug(TAG, roomList.roomList);
+      let dbFloorList = this.parseResponseBodyToRoomList(roomList);
+      console.debug(TAG, JSON.stringify(dbFloorList))
+      if (JSON.has(jsonObject, 'roomList')) {
+        dbFloorList.forEach((item: Room) => {
+          DBUtil.getInstance().insertRoom(item, building);
+        })
+      }
+      return dbFloorList;
+    }
+    return undefined;
+
+  }
+
+  async getMeterIdHttp(cookie: string, room: Room) {
+    let dormitoryLocation: DormitoryLocation = new DormitoryLocation();
+    dormitoryLocation.RoomId = room.RoomId; dormitoryLocation.Room = room.Room;
+    let response: Response = await this.whutElectricityFeeAction(ElectricityFeeActionType.ELECTRICITY, cookie, dormitoryLocation) as Response;
+    console.debug(TAG, 'getMeterIdHttp', response.getBody())
+    if (response) {
+      let body = response.getBody().toString();
+      let jsonObject = JSON.parse(body);
+      let httpMeter = JSON.parse(body) as HttpMeter;
+      console.info(TAG, JSON.parse(body));
+      console.info(TAG, JSON.has(jsonObject, 'meterId'));
+      console.debug(TAG, JSON.stringify(httpMeter));
+      if (JSON.has(jsonObject, 'meterId')) {
+        DBUtil.getInstance().insertMeter(new Meter(httpMeter.meterId), room);
+      }
+      return new Meter(httpMeter.meterId)
+    }
+    return new Meter('');
+  }
+
+  async getElectricityFeeHttp(cookie: string, meter: Meter): Promise<HttpReserve | undefined> {
+    let dormitoryLocation: DormitoryLocation = new DormitoryLocation();
+    dormitoryLocation.MeterId = meter.MeterId
+    let response: Response = await this.whutElectricityFeeAction(ElectricityFeeActionType.METER, cookie, dormitoryLocation) as Response;
+    console.debug(TAG, 'getElectricityFeeHttp', response.getBody())
+    if (response) {
+      let body = response.getBody().toString();
+      let jsonObject = JSON.parse(body);
+      let httpReserve = JSON.parse(body) as HttpReserve;
+      console.info(TAG, JSON.parse(body));
+      console.info(TAG, JSON.has(jsonObject, 'meterId'));
+      console.debug(TAG, JSON.stringify(httpReserve));
+      return httpReserve;
+    }
+    return undefined
   }
 
   parseResponseBodyToAreaList(responseBody: HttpAreaList): ArrayList<Area> {
@@ -191,6 +263,23 @@ export class HttpUtil {
     responseBody.buildList.forEach((item: string) => {
       let splitString: string[] = item.split('@');
       res.add(new Building(splitString[1], splitString[0]))
+    })
+    return res;
+  }
+
+  parseResponseBodyToFloorList(responseBody: HttpFloorList): ArrayList<Floor> {
+    let res: ArrayList<Floor> = new ArrayList();
+    responseBody.floorList.forEach((item: string) => {
+      res.add(new Floor(item.toString(), item.toString()));
+    })
+    return res;
+  }
+
+  parseResponseBodyToRoomList(responseBody: HttpRoomList): ArrayList<Room> {
+    let res: ArrayList<Room> = new ArrayList();
+    responseBody.roomList.forEach((item: string) => {
+      let splitString: string[] = item.split('@');
+      res.add(new Room(splitString[1], splitString[0]))
     })
     return res;
   }

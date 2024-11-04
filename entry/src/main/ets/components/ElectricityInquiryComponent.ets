@@ -2,7 +2,7 @@ import LazyDataSource from '../common/model/LazyDataSource';
 import { DBUtil } from '../common/utils/DBUtil';
 import { DormitoryLocation } from '../common/model/DormitoryLocation';
 import { ElectricityFeeUrl } from '../model/ElectricityFeeUrl';
-import { DownloadFileButton, DownloadIconStyle, promptAction } from '@kit.ArkUI';
+import { DownloadFileButton, DownloadIconStyle, LengthMetrics, promptAction } from '@kit.ArkUI';
 import { getElectricCharge } from '../common/utils/PayElectricCharge';
 import { webview } from '@kit.ArkWeb';
 import { it } from '@ohos/hypium';
@@ -11,6 +11,9 @@ import { faceDetector } from '@kit.CoreVisionKit';
 import { ElectricityFeeActionType, HttpUtil } from '../common/utils/HttpUtil';
 import { Area } from '../common/model/Area';
 import { Building } from '../common/model/Building';
+import { Floor } from '../common/model/Floor';
+import { Room } from '../common/model/Room';
+import { Meter } from '../common/model/Meter';
 
 const TAG = '[Elec Comp]'
 
@@ -18,14 +21,32 @@ const TAG = '[Elec Comp]'
 export struct ElectricityInquiryTool {
   @Consume('appPathStack') appPathStack: NavPathStack;
   @State @Watch('onBindSheetShow') isShow: boolean = false;
-  @State areaPickerList: string[] = [];
+  @State areaPickerList: string[] = ['---'];
+  @State buildingPickerList: string[] = ['---'];
+  @State floorPickerList: string[] = ['---'];
+  @State roomPickerList: string[] = ['---'];
+  @State pickerList: string[][] = [this.areaPickerList, this.buildingPickerList, this.floorPickerList, this.roomPickerList]
   @State tableSet: LazyDataSource<DormitoryLocation> = new LazyDataSource();
   @State selectedDormitoryIndex: number = -1;
   @State selectedDormitory: DormitoryLocation | undefined = undefined;
   @State electricityFee: string | undefined = undefined;
   @State isRefresh: boolean = false;
+  @State isChoose: boolean = false;
+  @State selectedArea: string = '';
+  @State selectedAreaIndex: number = 0;
+
+  private areaList: ArrayList<Area> | undefined = undefined;
+  private buildList: ArrayList<Building> | undefined = undefined;
+  private floorList: ArrayList<Floor> | undefined = undefined;
+  private roomList: ArrayList<Room> | undefined = undefined;
+  private dbUtil: DBUtil = DBUtil.getInstance();
+  private httpUtil: HttpUtil = HttpUtil.getInstance();
   private webViewController: webview.WebviewController = new webview.WebviewController();
   private scroller: ListScroller = new ListScroller()
+
+  aboutToAppear(): void {
+    this.getAreaList();
+  }
 
   jumpWebView() {
     this.isShow = false;
@@ -73,20 +94,47 @@ export struct ElectricityInquiryTool {
     this.electricityFee = DBUtil.getInstance().queryDormitoryElectricityFee(this.selectedDormitory) as string;
   }
 
-  async parseAreaListToPickerList() {
-    let httpAreaList = await HttpUtil.getInstance().getAreaListHttp(AppStorage.get<string>('fee_cookie') as string)
-    if (this.areaPickerList.length === 0) {
-      httpAreaList.forEach((item: Area) =>{
-        this.areaPickerList.push(item.area);
-      })
+  async getAreaList() {
+    if (this.areaList = this.dbUtil.queryAreaListDataBase()) {
+      this.parseAreaListToPickerList(this.areaList);
+    } else {
+      this.areaList = await this.httpUtil.getAreaListHttp(AppStorage.get<string>('fee_cookie') as string)
+      if (this.areaList) {
+        this.parseAreaListToPickerList(this.areaList);
+      }
     }
-    HttpUtil.getInstance().getBuildingListHttp(AppStorage.get<string>('fee_cookie') as string, new Area('0002', '0002'))
-    HttpUtil.getInstance().getFloorListHttp(AppStorage.get<string>('fee_cookie') as string, new Area('0002', '0002'), new Building('000023', '000023'))
+  }
+
+  async getBuildingList(area: Area) {
+    if (this.buildList = this.dbUtil.queryBuildingListDataBase(area)) {
+      this.parseBuildingListToPickerList(this.buildList);
+    } else {
+      this.buildList = await this.httpUtil.getBuildingListHttp(AppStorage.get<string>('fee_cookie') as string, area);
+      if (this.buildList) {
+        this.parseBuildingListToPickerList(this.buildList);
+      }
+    }
+  }
+
+  async parseAreaListToPickerList(areaList: ArrayList<Area>) {
+    let temp: string[] = []
+    areaList.forEach((item: Area) =>{
+      temp.push(item.area);
+    })
+    this.areaPickerList = temp;
+  }
+
+  async parseBuildingListToPickerList(buildingList: ArrayList<Building>) {
+    let temp: string[] = []
+    buildingList.forEach((item: Building) =>{
+      temp.push(item.Building);
+    })
+    this.buildingPickerList = temp;
   }
 
   @Builder
   DormitoryBindSheet() {
-    if (!this.isRefresh) {
+    if (!this.isRefresh && !this.isChoose) {
       List({scroller: this.scroller}) {
         ListItemGroup({ header: this.DormitoryHistorySheetHeader(), space: 5 }) {
           LazyForEach(this.tableSet, (item: DormitoryLocation, index: number) => {
@@ -97,13 +145,15 @@ export struct ElectricityInquiryTool {
       }
       .sticky(StickyStyle.Header)
       .padding({ left: 16, right: 16 })
-    } else {
+    } else if (!this.isChoose){
       Web({ src: new ElectricityFeeUrl().url, controller: this.webViewController })
         .onPageEnd(() => {
           let FeeCookie = webview.WebCookieManager.fetchCookieSync('http://cwsf.whut.edu.cn/nyyPayElecPages51274E035').toString();
           AppStorage.setOrCreate('fee_cookie', FeeCookie);
           console.info(TAG, FeeCookie);
         })
+    } else {
+      DormitoryPicker()
     }
 
   }
@@ -266,6 +316,7 @@ export struct ElectricityInquiryTool {
         preferType: SheetType.CENTER,
         onDisappear: () => {
           this.isRefresh = false;
+          this.isChoose = false;
         }
       })
       .justifyContent(FlexAlign.SpaceBetween)
@@ -291,7 +342,7 @@ export struct ElectricityInquiryTool {
 
       Row() {
         Button('更新')
-          .width('100%')
+          .width('50%')
           .fontColor(Color.Black)
           .backgroundColor(Color.Transparent)
           .onClick(() => {
@@ -302,14 +353,39 @@ export struct ElectricityInquiryTool {
               promptAction.showToast({message: '未选择宿舍'})
             }
           })
+        Button('选择')
+          .width('50%')
+          .fontColor(Color.Black)
+          .backgroundColor(Color.Transparent)
+          .onClick(() => {
+            this.isShow = true;
+            this.isChoose = true;
+          })
       }
+      .width('100%')
 
       Column() {
-        TextPicker({ range: this.areaPickerList })
-          .textStyle({font: {size: 12}})
-          .selectedTextStyle({font: {size: 16}})
-          .disappearTextStyle({font: {size: 8}})
-          .defaultPickerItemHeight(18)
+        Button(this.selectedArea)
+          .onClick(() => {
+            this.getUIContext().showTextPickerDialog({
+              range: this.areaPickerList,
+              selected: this.selectedAreaIndex,
+              onAccept: (value: TextPickerResult) => {
+                this.selectedArea = value.value as string;
+                this.selectedAreaIndex = value.index as number;
+                if (this.areaList) {
+                  this.getBuildingList(this.areaList[value.index as number])
+                }
+              }
+            })
+          })
+        Button()
+          .onClick(() => {
+            this.getUIContext().showTextPickerDialog({
+              range: this.buildingPickerList
+            })
+          })
+
         Button('cookie')
           .onClick(() => {
             this.isRefresh = true;
@@ -317,7 +393,6 @@ export struct ElectricityInquiryTool {
           })
         Button('http')
           .onClick(() => {
-            this.parseAreaListToPickerList()
           })
       }
 
@@ -437,5 +512,114 @@ struct DormitoryItem {
         this.enterDeleteArea = false;
       }}
     })
+  }
+}
+
+@Component
+struct DormitoryPicker {
+  @State areaPickerList: string[] = ['---'];
+  @State buildingPickerList: string[] = [];
+  @State floorPickerList: string[] = [];
+  @State roomPickerList: string[] = [];
+
+  private areaList: ArrayList<Area> | undefined = undefined;
+  private buildList: ArrayList<Building> | undefined = undefined;
+  private floorList: ArrayList<Floor> | undefined = undefined;
+  private roomList: ArrayList<Room> | undefined = undefined;
+  private dbUtil: DBUtil = DBUtil.getInstance();
+  private httpUtil: HttpUtil = HttpUtil.getInstance();
+
+  aboutToAppear(): void {
+    this.getAreaList()
+  }
+
+
+
+  async getAreaList() {
+    if (this.areaList = this.dbUtil.queryAreaListDataBase()) {
+      this.parseAreaListToPickerList(this.areaList);
+    } else {
+      this.areaList = await this.httpUtil.getAreaListHttp(AppStorage.get<string>('fee_cookie') as string)
+      if (this.areaList) {
+        this.parseAreaListToPickerList(this.areaList);
+      }
+    }
+  }
+
+  async getBuildingList(area: Area) {
+    if (this.buildList = this.dbUtil.queryBuildingListDataBase(area)) {
+      this.parseBuildingListToPickerList(this.buildList);
+    } else {
+      this.buildList = await this.httpUtil.getBuildingListHttp(AppStorage.get<string>('fee_cookie') as string, area);
+      if (this.buildList) {
+        this.parseBuildingListToPickerList(this.buildList);
+      }
+    }
+  }
+
+  async parseAreaListToPickerList(areaList: ArrayList<Area>) {
+    let temp: string[] = []
+     areaList.forEach((item: Area) =>{
+        temp.push(item.area);
+    })
+    this.areaPickerList = temp;
+  }
+
+  async parseBuildingListToPickerList(buildingList: ArrayList<Building>) {
+    let temp: string[] = []
+    buildingList.forEach((item: Building) =>{
+      temp.push(item.Building);
+    })
+    this.buildingPickerList = temp;
+  }
+
+  build() {
+    Flex({
+      wrap: FlexWrap.Wrap,
+      justifyContent: FlexAlign.SpaceAround,
+      space: { main: LengthMetrics.px(20), cross: LengthMetrics.px(20) }
+    }) {
+      Column() {
+        Text('校区')
+        TextPicker({ range: this.areaPickerList })
+          .selectedTextStyle({font: {size: 18}})
+          .disappearTextStyle({font: {size: 12}})
+          .defaultPickerItemHeight(24)
+          .width('100%')
+          .onChange((value, index) => {
+            if (this.areaList) {
+              this.getBuildingList(this.areaList[index as number])
+            }
+          })
+      }
+      .width('40%')
+      Column() {
+        Text('楼栋')
+        TextPicker({ range: this.buildingPickerList })
+          .selectedTextStyle({font: {size: 18}})
+          .disappearTextStyle({font: {size: 12}})
+          .defaultPickerItemHeight(24)
+          .width('100%')
+      }
+      .width('40%')
+      Column() {
+        Text('楼层')
+        TextPicker({ range: this.floorPickerList })
+          .selectedTextStyle({font: {size: 18}})
+          .disappearTextStyle({font: {size: 12}})
+          .defaultPickerItemHeight(24)
+          .width('100%')
+      }
+      .width('40%')
+      Column() {
+        Text('房间')
+        TextPicker({ range: this.roomPickerList })
+          .selectedTextStyle({font: {size: 18}})
+          .disappearTextStyle({font: {size: 12}})
+          .defaultPickerItemHeight(24)
+          .width('100%')
+      }
+      .width('40%')
+    }
   }
 }
