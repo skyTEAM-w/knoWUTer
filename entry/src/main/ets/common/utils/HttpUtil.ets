@@ -163,7 +163,7 @@ export class HttpUtil {
       let jsonObjet = JSON.parse(body);
       let buildingList = JSON.parse(body) as HttpFloorList;
       console.info(TAG, JSON.parse(body));
-      console.info(TAG, JSON.has(jsonObjet, 'buildList'));
+      console.info(TAG, JSON.has(jsonObjet, 'floorList'));
       console.debug(TAG, buildingList.floorList);
       // let dbAreaList = this.parseResponseBodyToBuildList(buildingList);
       // console.debug(TAG, JSON.stringify(dbAreaList))
