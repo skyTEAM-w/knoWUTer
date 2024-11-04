@@ -1,14 +1,16 @@
 import LazyDataSource from '../common/model/LazyDataSource';
 import { DBUtil } from '../common/utils/DBUtil';
-import { DormitoryLocation } from '../model/DormitoryLocation';
+import { DormitoryLocation } from '../common/model/DormitoryLocation';
 import { ElectricityFeeUrl } from '../model/ElectricityFeeUrl';
 import { DownloadFileButton, DownloadIconStyle, promptAction } from '@kit.ArkUI';
 import { getElectricCharge } from '../common/utils/PayElectricCharge';
 import { webview } from '@kit.ArkWeb';
 import { it } from '@ohos/hypium';
-import { JSON } from '@kit.ArkTS';
+import { ArrayList, JSON } from '@kit.ArkTS';
 import { faceDetector } from '@kit.CoreVisionKit';
 import { ElectricityFeeActionType, HttpUtil } from '../common/utils/HttpUtil';
+import { Area } from '../common/model/Area';
+import { Building } from '../common/model/Building';
 
 const TAG = '[Elec Comp]'
 
@@ -16,6 +18,7 @@ const TAG = '[Elec Comp]'
 export struct ElectricityInquiryTool {
   @Consume('appPathStack') appPathStack: NavPathStack;
   @State @Watch('onBindSheetShow') isShow: boolean = false;
+  @State areaPickerList: string[] = [];
   @State tableSet: LazyDataSource<DormitoryLocation> = new LazyDataSource();
   @State selectedDormitoryIndex: number = -1;
   @State selectedDormitory: DormitoryLocation | undefined = undefined;
@@ -66,11 +69,19 @@ export struct ElectricityInquiryTool {
     }
     this.isShow = false;
     this.selectedDormitory = this.tableSet.getData(this.selectedDormitoryIndex);
-    // HttpUtil.getInstance().whutElectricityFeeAction(ElectricityFeeActionType.AREA, AppStorage.get<string>('fee_cookie') as string, this.selectedDormitory)
-    HttpUtil.getInstance().whutElectricityFeeAction(ElectricityFeeActionType.BUILD, AppStorage.get<string>('fee_cookie') as string, this.selectedDormitory)
-    // HttpUtil.getInstance().whutElectricityFeeAction(ElectricityFeeActionType.FLOOR, AppStorage.get<string>('fee_cookie') as string, this.selectedDormitory)
-    // HttpUtil.getInstance().whutElectricityFeeAction(ElectricityFeeActionType.ROOM, AppStorage.get<string>('fee_cookie') as string, this.selectedDormitory)
+    HttpUtil.getInstance().getAreaListHttp(AppStorage.get<string>('fee_cookie') as string)
     this.electricityFee = DBUtil.getInstance().queryDormitoryElectricityFee(this.selectedDormitory) as string;
+  }
+
+  async parseAreaListToPickerList() {
+    let httpAreaList = await HttpUtil.getInstance().getAreaListHttp(AppStorage.get<string>('fee_cookie') as string)
+    if (this.areaPickerList.length === 0) {
+      httpAreaList.forEach((item: Area) =>{
+        this.areaPickerList.push(item.area);
+      })
+    }
+    HttpUtil.getInstance().getBuildingListHttp(AppStorage.get<string>('fee_cookie') as string, new Area('0002', '0002'))
+    HttpUtil.getInstance().getFloorListHttp(AppStorage.get<string>('fee_cookie') as string, new Area('0002', '0002'), new Building('000023', '000023'))
   }
 
   @Builder
@@ -88,6 +99,11 @@ export struct ElectricityInquiryTool {
       .padding({ left: 16, right: 16 })
     } else {
       Web({ src: new ElectricityFeeUrl().url, controller: this.webViewController })
+        .onPageEnd(() => {
+          let FeeCookie = webview.WebCookieManager.fetchCookieSync('http://cwsf.whut.edu.cn/nyyPayElecPages51274E035').toString();
+          AppStorage.setOrCreate('fee_cookie', FeeCookie);
+          console.info(TAG, FeeCookie);
+        })
     }
 
   }
@@ -205,9 +221,7 @@ export struct ElectricityInquiryTool {
                   this.isShow = false;
                   promptAction.showToast({message: '更新成功'})
                 })
-                  let FeeCookie = webview.WebCookieManager.fetchCookieSync('http://cwsf.whut.edu.cn/nyyPayElecPages51274E035').toString();
-                AppStorage.setOrCreate('fee_cookie', FeeCookie);
-                console.info(TAG, FeeCookie);
+
               }
             })
         }
@@ -287,6 +301,23 @@ export struct ElectricityInquiryTool {
             } else {
               promptAction.showToast({message: '未选择宿舍'})
             }
+          })
+      }
+
+      Column() {
+        TextPicker({ range: this.areaPickerList })
+          .textStyle({font: {size: 12}})
+          .selectedTextStyle({font: {size: 16}})
+          .disappearTextStyle({font: {size: 8}})
+          .defaultPickerItemHeight(18)
+        Button('cookie')
+          .onClick(() => {
+            this.isRefresh = true;
+            this.isShow = true;
+          })
+        Button('http')
+          .onClick(() => {
+            this.parseAreaListToPickerList()
           })
       }
 

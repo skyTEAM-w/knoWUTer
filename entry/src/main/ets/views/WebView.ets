@@ -6,7 +6,7 @@ import { BusinessError, pasteboard } from '@kit.BasicServicesKit';
 import { common, Want } from '@kit.AbilityKit';
 import { getElectricCharge, importElectricity } from '../common/utils/PayElectricCharge';
 import { WebUrl } from '../model/WebUrl';
-import { DormitoryLocation } from '../model/DormitoryLocation';
+import { DormitoryLocation } from '../common/model/DormitoryLocation';
 
 @Component
 struct WebViewPage {

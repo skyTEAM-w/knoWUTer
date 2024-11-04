@@ -3,7 +3,7 @@ import { NavigationTitleBar } from '../common/components/NavigationTitleBar';
 import { getElectricCharge } from '../common/utils/PayElectricCharge';
 import { AcademicCalender } from '../components/AcademicCalendarComponent';
 import { ElectricityInquiryTool } from '../components/ElectricityInquiryComponent';
-import { DormitoryLocation } from '../model/DormitoryLocation';
+import { DormitoryLocation } from '../common/model/DormitoryLocation';
 
 @Component
 export struct Tools {

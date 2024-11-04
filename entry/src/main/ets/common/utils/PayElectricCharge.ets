@@ -1,5 +1,5 @@
 import { webview } from '@kit.ArkWeb';
-import { DormitoryLocation } from '../../model/DormitoryLocation';
+import { DormitoryLocation } from '../model/DormitoryLocation';
 import { BusinessError } from '@kit.BasicServicesKit';
 import { DBUtil } from './DBUtil';
 
@@ -59,7 +59,7 @@ export function getElectricCharge(webviewController: webview.WebviewController, 
       console.info(insertQuery);
       console.info(remainMoney.trim())
 
-      DBUtil.getInstance().executeSql(insertQuery);
+      DBUtil.getInstance().executeMySql(insertQuery);
 
       return remainMoney.replace(/^"+|"+$/g, '');
 
@@ -125,7 +125,7 @@ export async function importElectricity(webviewController: webview.WebviewContro
                          DO UPDATE SET ElectricFee = excluded.ElectricFee, RemainingElectric = excluded.RemainingElectric;`;
 
   console.info(insertQuery)
-  DBUtil.getInstance().executeSql(insertQuery);
+  DBUtil.getInstance().executeMySql(insertQuery);
 
   return true;
 }

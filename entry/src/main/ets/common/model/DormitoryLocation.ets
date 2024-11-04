@@ -90,4 +90,14 @@ export class DormitoryLocation {
     return this._isStar;
   }
 
+  private _MeterId: string = '';
+
+  public set MeterId(value: string) {
+    this._MeterId = value;
+  }
+
+  public get MeterId(): string {
+    return this._MeterId;
+  }
+
 }
