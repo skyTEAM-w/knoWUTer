@@ -364,6 +364,7 @@ export struct ElectricityInquiryTool {
       }
       .width('100%')
 
+      //TODO: 完善新的选择方式
       Column() {
         Button(this.selectedArea)
           .onClick(() => {
