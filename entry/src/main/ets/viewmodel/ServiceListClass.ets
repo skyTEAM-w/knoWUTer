@@ -8,7 +8,8 @@ export class ServiceListClass implements ServiceUrl {
   imageUrl: string = '';
   inMainPage: ServiceShowType = ServiceShowType.FALSE;
 
-  constructor(serviceName: string, url: string, serviceType: ServiceType, imageUrl: string, inMainPage: ServiceShowType) {
+  constructor(serviceName: string, url: string, serviceType: ServiceType, imageUrl: string,
+    inMainPage: ServiceShowType) {
     this.serviceName = serviceName;
     this.url = url;
     this.serviceType = serviceType;

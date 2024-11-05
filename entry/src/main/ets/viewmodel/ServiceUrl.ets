@@ -1,5 +1,5 @@
-import { WebUrl } from "../model/WebUrl";
+import { WebUrl } from '../model/WebUrl';
 
-export interface ServiceUrl extends  WebUrl{
+export interface ServiceUrl extends WebUrl {
   url: string
 }

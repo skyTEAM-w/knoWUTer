@@ -1,14 +1,13 @@
-import { relationalStore, ValuesBucket } from "@kit.ArkData";
-import { common } from "@kit.AbilityKit";
-import LazyDataSource from "../model/LazyDataSource";
-import { DormitoryLocation } from "../model/DormitoryLocation";
-import { ArrayList, JSON } from "@kit.ArkTS";
-import { Area } from "../model/Area";
-import { Building } from "../model/Building";
-import { Floor } from "../model/Floor";
-import { Room } from "../model/Room";
-import { Meter } from "../model/Meter";
-import json from "@ohos.util.json";
+import { relationalStore, ValuesBucket } from '@kit.ArkData';
+import { common } from '@kit.AbilityKit';
+import LazyDataSource from '../model/LazyDataSource';
+import { DormitoryLocation } from '../model/DormitoryLocation';
+import { ArrayList, JSON } from '@kit.ArkTS';
+import { Area } from '../model/Area';
+import { Building } from '../model/Building';
+import { Floor } from '../model/Floor';
+import { Room } from '../model/Room';
+import { Meter } from '../model/Meter';
 
 const TAG = '[DBUtil]'
 
@@ -39,7 +38,9 @@ const FLOOR_TABLE_SQL = 'CREATE TABLE IF NOT EXISTS Floors (\n' +
 const ROOM_TABLE_SQL = 'CREATE TABLE IF NOT EXISTS Rooms (\n' +
   '    RoomId VARCHAR(255) PRIMARY KEY,\n' +
   '    Room VARCHAR(255) NOT NULL,\n' +
-  '    BuildingId VARCHAR(255),\n' +
+  '    BuildingId VARCHAR(255),' +
+  '    FloorId VARCHAR(255),' +
+  '    UNIQUE(RoomId, FloorId, BuildingId),\n' +
   '    FOREIGN KEY (BuildingId) REFERENCES Buildings(BuildingId)\n' +
   ');'
 
@@ -71,9 +72,9 @@ const DORM_LOCATION_TABLE_SQL = 'CREATE TABLE IF NOT EXISTS DormitoryLocation (\
   ');'
 
 export class DBUtil {
+  public static instance: DBUtil;
   private store?: relationalStore.RdbStore;
   private context: common.UIAbilityContext = getContext(this) as common.UIAbilityContext;
-  public static instance: DBUtil;
 
   constructor() {
     this.initDB(STORE_CONFIG);
@@ -90,7 +91,7 @@ export class DBUtil {
     relationalStore.getRdbStore(this.context, storeConfig).then((store: relationalStore.RdbStore) => {
       this.store = store;
       try {
-        // this.executeMySql('drop table Meters;')
+        // this.executeMySql('drop table DormitoryLocation;')
         this.executeMySql(AREAS_TABLE_SQL);
         this.executeMySql(BUILDINGS_TABLE_SQL);
         this.executeMySql(FLOOR_TABLE_SQL);
@@ -116,46 +117,54 @@ export class DBUtil {
 
   queryDormitoryHistory(): LazyDataSource<DormitoryLocation> {
     let res: LazyDataSource<DormitoryLocation> = new LazyDataSource();
-    this.store?.querySql('select Area, AreaId, Building, BuildingId, Floor, FloorId, Room, RoomId, isStar from DormitoryLocation ORDER BY isStar DESC, id DESC;', (err, resultSet) => {
-      if (err) {
-        console.error(TAG, `Query failed, code is ${err.code},message is ${err.message}`);
-        return;
-      }
-      console.info(`ResultSet column names: ${resultSet.columnNames}, column count: ${resultSet.columnCount}`);
-      while (resultSet.goToNextRow()) {
-        let dormLocation: DormitoryLocation = new DormitoryLocation();
-        dormLocation.Area = resultSet.getString(resultSet.getColumnIndex('Area'));
-        dormLocation.AreaId = resultSet.getString(resultSet.getColumnIndex('AreaId'));
-        dormLocation.Building = resultSet.getString(resultSet.getColumnIndex('Building'));
-        dormLocation.BuildingId = resultSet.getString(resultSet.getColumnIndex('BuildingId'));
-        dormLocation.Floor = resultSet.getString(resultSet.getColumnIndex('Floor'));
-        dormLocation.FloorId = resultSet.getString(resultSet.getColumnIndex('FloorId'));
-        dormLocation.Room = resultSet.getString(resultSet.getColumnIndex('Room'));
-        dormLocation.RoomId = resultSet.getString(resultSet.getColumnIndex('RoomId'));
-        dormLocation.isStar = resultSet.getLong(resultSet.getColumnIndex('isStar')) === 0 ? false : true;
-        res.pushData(dormLocation);
-      }
-      resultSet.close();
-    })
+    this.store?.querySql('select Area, AreaId, Building, BuildingId, Floor, FloorId, Room, RoomId, isStar from DormitoryLocation ORDER BY isStar DESC, id DESC;',
+      (err, resultSet) => {
+        if (err) {
+          console.error(TAG, `Query failed, code is ${err.code},message is ${err.message}`);
+          return;
+        }
+        console.info(`ResultSet column names: ${resultSet.columnNames}, column count: ${resultSet.columnCount}`);
+        while (resultSet.goToNextRow()) {
+          let dormLocation: DormitoryLocation = new DormitoryLocation();
+          dormLocation.Area = resultSet.getString(resultSet.getColumnIndex('Area'));
+          dormLocation.AreaId = resultSet.getString(resultSet.getColumnIndex('AreaId'));
+          dormLocation.Building = resultSet.getString(resultSet.getColumnIndex('Building'));
+          dormLocation.BuildingId = resultSet.getString(resultSet.getColumnIndex('BuildingId'));
+          dormLocation.Floor = resultSet.getString(resultSet.getColumnIndex('Floor'));
+          dormLocation.FloorId = resultSet.getString(resultSet.getColumnIndex('FloorId'));
+          dormLocation.Room = resultSet.getString(resultSet.getColumnIndex('Room'));
+          dormLocation.RoomId = resultSet.getString(resultSet.getColumnIndex('RoomId'));
+          dormLocation.isStar = resultSet.getLong(resultSet.getColumnIndex('isStar')) === 0 ? false : true;
+          res.pushData(dormLocation);
+        }
+        resultSet.close();
+      })
     return res;
   }
 
-  queryDormitoryElectricityFee(dormitoryLocation: DormitoryLocation): string | void {
+  queryDormitoryElectricityFeeAndRemainPower(dormitoryLocation: DormitoryLocation): string[] | void {
     let predicates = new relationalStore.RdbPredicates('DormitoryLocation');
-    let res: string = '';
-    predicates.equalTo('AreaId', dormitoryLocation.AreaId).and().equalTo('BuildingId', dormitoryLocation.BuildingId)
-      .and().equalTo('FloorId', dormitoryLocation.FloorId).and().equalTo('RoomId', dormitoryLocation.RoomId)
+    let res: string[] = [];
+    predicates.equalTo('AreaId', dormitoryLocation.AreaId)
+      .and()
+      .equalTo('BuildingId', dormitoryLocation.BuildingId)
+      .and()
+      .equalTo('FloorId', dormitoryLocation.FloorId)
+      .and()
+      .equalTo('RoomId', dormitoryLocation.RoomId)
 
     try {
-      let resultSet: relationalStore.ResultSet = (this.store as relationalStore.RdbStore).querySync(predicates, ['ElectricFee'])
-      console.info(`ResultSet column names: ${resultSet.columnNames}, column count: ${resultSet.columnCount}`);
+      let resultSet: relationalStore.ResultSet =
+        (this.store as relationalStore.RdbStore).querySync(predicates, ['ElectricFee', 'RemainingElectric'])
+      console.info(`ResultSet column names: ${resultSet.columnNames}, column count: ${resultSet.columnCount}, row count: ${resultSet.rowCount}}`);
       while (resultSet.goToLastRow()) {
-        res = resultSet.getString(resultSet.getColumnIndex('ElectricFee'));
-        console.info(TAG,res);
+        res.push(resultSet.getString(resultSet.getColumnIndex('ElectricFee')));
+        res.push(resultSet.getString(resultSet.getColumnIndex('RemainingElectric')));
+        console.info(TAG, res);
         break;
       }
       resultSet.close();
-      return res.replace(/^"+|"+$/g, '');
+      return res
     } catch (err) {
       console.error(TAG, `Query failed, code is ${err.code},message is ${err.message}`);
       return;
@@ -168,20 +177,31 @@ export class DBUtil {
       'isStar': dormitoryLocation.isStar ? 1 : 0
     }
     let predicates = new relationalStore.RdbPredicates('DormitoryLocation');
-    predicates.equalTo('AreaId', dormitoryLocation.AreaId).and().equalTo('BuildingId', dormitoryLocation.BuildingId)
-      .and().equalTo('FloorId', dormitoryLocation.FloorId).and().equalTo('RoomId', dormitoryLocation.RoomId)
+    predicates.equalTo('AreaId', dormitoryLocation.AreaId)
+      .and()
+      .equalTo('BuildingId', dormitoryLocation.BuildingId)
+      .and()
+      .equalTo('FloorId', dormitoryLocation.FloorId)
+      .and()
+      .equalTo('RoomId', dormitoryLocation.RoomId)
     try {
-      let rows: number = (this.store as relationalStore.RdbStore).updateSync(valueBucket, predicates, relationalStore.ConflictResolution.ON_CONFLICT_REPLACE);
+      let rows: number = (this.store as relationalStore.RdbStore).updateSync(valueBucket, predicates,
+        relationalStore.ConflictResolution.ON_CONFLICT_ABORT);
       console.info(TAG, `Updated row count: ${rows}`);
     } catch (err) {
       console.error(TAG, `Update failed, code is ${err.code},message is ${err.message}`)
     }
   }
 
-  deleteDormitory(dormitoryLocation: DormitoryLocation):void {
+  deleteDormitory(dormitoryLocation: DormitoryLocation): void {
     let predicates = new relationalStore.RdbPredicates('DormitoryLocation');
-    predicates.equalTo('AreaId', dormitoryLocation.AreaId).and().equalTo('BuildingId', dormitoryLocation.BuildingId)
-      .and().equalTo('FloorId', dormitoryLocation.FloorId).and().equalTo('RoomId', dormitoryLocation.RoomId)
+    predicates.equalTo('AreaId', dormitoryLocation.AreaId)
+      .and()
+      .equalTo('BuildingId', dormitoryLocation.BuildingId)
+      .and()
+      .equalTo('FloorId', dormitoryLocation.FloorId)
+      .and()
+      .equalTo('RoomId', dormitoryLocation.RoomId)
     try {
       let rows: Number = (this.store as relationalStore.RdbStore).deleteSync(predicates)
       console.info(TAG, `Delete row count: ${rows}`);
@@ -196,9 +216,10 @@ export class DBUtil {
       'AreaId': area.areaId
     }
     try {
-      let rows: number = (this.store as relationalStore.RdbStore).insertSync('Areas', valueBucket, relationalStore.ConflictResolution.ON_CONFLICT_ABORT);
+      let rows: number = (this.store as relationalStore.RdbStore).insertSync('Areas', valueBucket,
+        relationalStore.ConflictResolution.ON_CONFLICT_ABORT);
       console.info(TAG, `Insert row at: ${rows}`)
-    }catch (err) {
+    } catch (err) {
       console.error(TAG, `Insert failed, code is ${err.code},message is ${err.message}`)
     }
   }
@@ -210,9 +231,10 @@ export class DBUtil {
       'AreaId': area.areaId
     }
     try {
-      let rows: number = (this.store as relationalStore.RdbStore).insertSync('Buildings', valueBucket, relationalStore.ConflictResolution.ON_CONFLICT_ABORT);
+      let rows: number = (this.store as relationalStore.RdbStore).insertSync('Buildings', valueBucket,
+        relationalStore.ConflictResolution.ON_CONFLICT_ABORT);
       console.info(TAG, `Insert row at: ${rows}`)
-    }catch (err) {
+    } catch (err) {
       console.error(TAG, `Insert failed, code is ${err.code},message is ${err.message}`)
     }
   }
@@ -224,23 +246,26 @@ export class DBUtil {
       'BuildingId': building.BuildingId
     }
     try {
-      let rows: number = (this.store as relationalStore.RdbStore).insertSync('Floors', valueBucket, relationalStore.ConflictResolution.ON_CONFLICT_ABORT);
+      let rows: number = (this.store as relationalStore.RdbStore).insertSync('Floors', valueBucket,
+        relationalStore.ConflictResolution.ON_CONFLICT_ABORT);
       console.info(TAG, `Insert row at: ${rows}`)
-    }catch (err) {
+    } catch (err) {
       console.error(TAG, `Insert failed, code is ${err.code},message is ${err.message}`)
     }
   }
 
-  insertRoom(room: Room, building: Building) {
+  insertRoom(room: Room, building: Building, floor: Floor) {
     let valueBucket: ValuesBucket = {
       'Room': room.Room,
       'RoomId': room.RoomId,
-      'BuildingId': building.BuildingId
+      'BuildingId': building.BuildingId,
+      'FloorId': floor.FloorId
     }
     try {
-      let rows: number = (this.store as relationalStore.RdbStore).insertSync('Rooms', valueBucket, relationalStore.ConflictResolution.ON_CONFLICT_ABORT);
+      let rows: number = (this.store as relationalStore.RdbStore).insertSync('Rooms', valueBucket,
+        relationalStore.ConflictResolution.ON_CONFLICT_ABORT);
       console.info(TAG, `Insert row at: ${rows}`)
-    }catch (err) {
+    } catch (err) {
       console.error(TAG, `Insert failed, code is ${err.code},message is ${err.message}`)
     }
   }
@@ -252,21 +277,65 @@ export class DBUtil {
     };
     console.debug(TAG, JSON.stringify(valueBucket))
     try {
-      let rows: number = (this.store as relationalStore.RdbStore).insertSync('Meters', valueBucket, relationalStore.ConflictResolution.ON_CONFLICT_ABORT);
+      let rows: number = (this.store as relationalStore.RdbStore).insertSync('Meters', valueBucket,
+        relationalStore.ConflictResolution.ON_CONFLICT_ABORT);
       console.info(TAG, `Insert row at: ${rows}`)
-    }catch (err) {
+    } catch (err) {
       console.error(TAG, `Insert failed, code is ${err.code},message is ${err.message}`)
     }
+  }
+
+  insertOrUpdateDormitory(dormitoryLocation: DormitoryLocation, electricFee: string, remainPower: string) {
+    let valueBucket: ValuesBucket = {
+      'Area': dormitoryLocation.Area,
+      'AreaId': dormitoryLocation.AreaId,
+      'Building': dormitoryLocation.Building,
+      'BuildingId': dormitoryLocation.BuildingId,
+      'Floor': dormitoryLocation.Floor,
+      'FloorId': dormitoryLocation.FloorId,
+      'Room': dormitoryLocation.Room,
+      'RoomId': dormitoryLocation.RoomId,
+      'MeterId': dormitoryLocation.MeterId,
+      'ElectricFee': electricFee,
+      'RemainingElectric': remainPower
+    }
+    console.debug(TAG, JSON.stringify(valueBucket))
+    let predicates: relationalStore.RdbPredicates = new relationalStore.RdbPredicates('DormitoryLocation');
+    predicates.equalTo('AreaId', dormitoryLocation.AreaId)
+      .and()
+      .equalTo('BuildingId', dormitoryLocation.BuildingId)
+      .and()
+      .equalTo('FloorId', dormitoryLocation.FloorId)
+      .and()
+      .equalTo('RoomId', dormitoryLocation.RoomId);
+    try {
+      let rows: number = (this.store as relationalStore.RdbStore).updateSync(valueBucket, predicates,
+        relationalStore.ConflictResolution.ON_CONFLICT_REPLACE);
+      console.info(TAG, `Update row at: ${rows}`)
+      if (rows <= 0) {
+        try {
+          let rows: number = (this.store as relationalStore.RdbStore).insertSync('DormitoryLocation', valueBucket,
+            relationalStore.ConflictResolution.ON_CONFLICT_REPLACE);
+          console.info(TAG, `Insert row at: ${rows}`)
+        } catch (err) {
+          console.error(TAG, `Insert failed, code is ${err.code},message is ${err.message}`)
+        }
+      }
+    } catch (err) {
+      console.error(TAG, `Insert failed, code is ${err.code},message is ${err.message}`)
+    }
+
   }
 
   queryAreaListDataBase(): ArrayList<Area> | undefined {
     try {
       let resultSet = this.store?.querySqlSync('select * from Areas;');
-      if (resultSet) {
+      if (resultSet && resultSet.rowCount > 0) {
         console.info(TAG, `ResultSet column names: ${resultSet.columnNames}, column count: ${resultSet.columnCount}`);
         let areaList: ArrayList<Area> = new ArrayList();
         while (resultSet.goToNextRow()) {
-          areaList.add(new Area(resultSet.getString(resultSet.getColumnIndex('AreaId')), resultSet.getString(resultSet.getColumnIndex('Area'))))
+          areaList.add(new Area(resultSet.getString(resultSet.getColumnIndex('AreaId')),
+            resultSet.getString(resultSet.getColumnIndex('Area'))))
         }
         console.info(TAG, JSON.stringify(areaList));
         resultSet.close();
@@ -275,8 +344,8 @@ export class DBUtil {
       return undefined
 
     } catch (err) {
-        console.error(TAG, `Query AreaList in DB failed, code is ${err.code},message is ${err.message}`);
-        return undefined;
+      console.error(TAG, `Query AreaList in DB failed, code is ${err.code},message is ${err.message}`);
+      return undefined;
     }
   }
 
@@ -289,7 +358,8 @@ export class DBUtil {
         console.info(TAG, `ResultSet column names: ${resultSet.columnNames}, column count: ${resultSet.columnCount}`);
         let buildingList: ArrayList<Building> = new ArrayList();
         while (resultSet.goToNextRow()) {
-          buildingList.add(new Building(resultSet.getString(resultSet.getColumnIndex('Building')), resultSet.getString(resultSet.getColumnIndex('BuildingId'))));
+          buildingList.add(new Building(resultSet.getString(resultSet.getColumnIndex('Building')),
+            resultSet.getString(resultSet.getColumnIndex('BuildingId'))));
         }
         console.info(TAG, JSON.stringify(buildingList));
         resultSet.close();
@@ -302,4 +372,49 @@ export class DBUtil {
     }
   }
 
+  queryFloorListDataBase(building: Building): ArrayList<Floor> | undefined {
+    try {
+      let predicates: relationalStore.RdbPredicates = new relationalStore.RdbPredicates('Floors');
+      predicates.equalTo('BuildingId', building.BuildingId);
+      let resultSet = this.store?.querySync(predicates, ['Floor', 'FloorId']);
+      if (resultSet && resultSet.rowCount != 0) {
+        console.info(TAG, `ResultSet column names: ${resultSet.columnNames}, column count: ${resultSet.columnCount}`);
+        let floorList: ArrayList<Floor> = new ArrayList();
+        while (resultSet.goToNextRow()) {
+          floorList.add(new Floor(resultSet.getString(resultSet.getColumnIndex('Floor')),
+            resultSet.getString(resultSet.getColumnIndex('FloorId'))))
+        }
+        console.info(TAG, JSON.stringify(floorList));
+        resultSet.close();
+        return floorList;
+      }
+      return undefined;
+    } catch (error) {
+      console.error(TAG, `Query FloorList in DB failed, code is ${error.code},message is ${error.message}`);
+      return undefined;
+    }
+  }
+
+  queryRoomListDataBase(building: Building, floor: Floor): ArrayList<Room> | undefined {
+    try {
+      let predication: relationalStore.RdbPredicates = new relationalStore.RdbPredicates('Rooms');
+      predication.equalTo('BuildingId', building.BuildingId).and().equalTo('FloorId', floor.FloorId);
+      let resultSet = this.store?.querySync(predication, ['Room', 'RoomId']);
+      if (resultSet && resultSet.rowCount != 0) {
+        console.info(TAG, `ResultSet column names: ${resultSet.columnNames}, column count: ${resultSet.columnCount}`);
+        let roomList: ArrayList<Room> = new ArrayList();
+        while (resultSet.goToNextRow()) {
+          roomList.add(new Room(resultSet.getString(resultSet.getColumnIndex('Room')),
+            resultSet.getString(resultSet.getColumnIndex('RoomId'))))
+        }
+        console.info(TAG, JSON.stringify(roomList));
+        resultSet.close();
+        return roomList;
+      }
+      return undefined;
+    } catch (error) {
+      console.error(TAG, `Query RoomList in DB failed, code is ${error.code},message is ${error.message}`);
+      return undefined;
+    }
+  }
 }

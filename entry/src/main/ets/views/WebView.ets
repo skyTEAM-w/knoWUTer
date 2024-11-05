@@ -13,11 +13,11 @@ struct WebViewPage {
   @State webUrl: WebUrl = new ServiceBlockClass('', '');
   @State webTitle: string = '';
   @State webProgress: number = 0;
-  private webViewController: webview.WebviewController = new webview.WebviewController();
-
   dormitoryLocation: DormitoryLocation = new DormitoryLocation();
   isImport: Boolean = false;
   isRefresh: Boolean = false;
+  private webViewController: webview.WebviewController = new webview.WebviewController();
+
   onDestinationBack?: () => boolean = () => false;
 
   @Builder
@@ -58,7 +58,7 @@ struct WebViewPage {
 
           Row() {
             Stack() {
-              Progress({value: this.webProgress, total: 100, type: ProgressType.Capsule})
+              Progress({ value: this.webProgress, total: 100, type: ProgressType.Capsule })
                 .width('100%').height('100%').color($r('app.color.whut_blue_background_selected'))
 
               Text(this.webTitle)
@@ -81,7 +81,7 @@ struct WebViewPage {
                 .height('80%')
             }
             .bindMenu(this.WebViewMenu())
-          } else  {
+          } else {
             Row() {
               DownloadFileButton({
                 contentOptions: {
@@ -109,7 +109,7 @@ struct WebViewPage {
 
 
         }
-        .padding({bottom: 5})
+        .padding({ bottom: 5 })
         .height(44)
         .width('95%')
 
@@ -134,7 +134,7 @@ struct WebViewPage {
             }
           })
       }
-      .padding({top: AppStorage.get<number>('statusBarHeight')})
+      .padding({ top: AppStorage.get<number>('statusBarHeight') })
       .height('100%')
     }
     .hideTitleBar(true)

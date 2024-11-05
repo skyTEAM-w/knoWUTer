@@ -2,102 +2,101 @@
 export class DormitoryLocation {
   private _Area: string = '';
 
-  public set Area(value: string) {
-    this._Area = value;
-  }
-
   public get Area(): string {
     return this._Area;
   }
 
-  private _AreaId: string = '';
-
-  public set AreaId(value: string) {
-    this._AreaId = value;
+  public set Area(value: string) {
+    this._Area = value;
   }
+
+  private _AreaId: string = '';
 
   public get AreaId(): string {
     return this._AreaId;
   }
 
-  private _Building: string = '';
-
-  public set Building(value: string) {
-    this._Building = value;
+  public set AreaId(value: string) {
+    this._AreaId = value;
   }
+
+  private _Building: string = '';
 
   public get Building(): string {
     return this._Building;
   }
 
-  private _BuildingId: string = '';
-
-  public set BuildingId(value: string) {
-    this._BuildingId = value;
+  public set Building(value: string) {
+    this._Building = value;
   }
+
+  private _BuildingId: string = '';
 
   public get BuildingId(): string {
     return this._BuildingId;
   }
 
-  private _Floor: string = '';
-
-  public set Floor(value: string) {
-    this._Floor = value;
+  public set BuildingId(value: string) {
+    this._BuildingId = value;
   }
+
+  private _Floor: string = '';
 
   public get Floor(): string {
     return this._Floor;
   }
 
-  private _FloorId: string = '';
-
-  public set FloorId(value: string) {
-    this._FloorId = value;
+  public set Floor(value: string) {
+    this._Floor = value;
   }
+
+  private _FloorId: string = '';
 
   public get FloorId(): string {
     return this._FloorId;
   }
 
-  private _Room: string = '';
-
-  public set Room(value: string) {
-    this._Room = value;
+  public set FloorId(value: string) {
+    this._FloorId = value;
   }
+
+  private _Room: string = '';
 
   public get Room(): string {
     return this._Room;
   }
 
-  private _RoomId: string = '';
-
-  public set RoomId(value: string) {
-    this._RoomId = value;
+  public set Room(value: string) {
+    this._Room = value;
   }
+
+  private _RoomId: string = '';
 
   public get RoomId(): string {
     return this._RoomId;
   }
 
-  private _isStar: boolean = false;
-
-  public set isStar(value: boolean) {
-    this._isStar = value;
+  public set RoomId(value: string) {
+    this._RoomId = value;
   }
+
+  private _isStar: boolean = false;
 
   public get isStar(): boolean {
     return this._isStar;
   }
 
-  private _MeterId: string = '';
-
-  public set MeterId(value: string) {
-    this._MeterId = value;
+  public set isStar(value: boolean) {
+    this._isStar = value;
   }
+
+  private _MeterId: string = '';
 
   public get MeterId(): string {
     return this._MeterId;
   }
 
+  public set MeterId(value: string) {
+    this._MeterId = value;
+  }
 }

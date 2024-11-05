@@ -47,7 +47,7 @@ export struct AllServiceList {
     .width('100%')
     .justifyContent(FlexAlign.SpaceBetween)
     .borderRadius(8)
-    .padding({ left: 5})
+    .padding({ left: 5 })
   }
 
   @Builder
@@ -125,12 +125,14 @@ export struct AllServiceList {
   build() {
     NavDestination() {
       Column() {
-        TopNavigationView({title: $r('app.string.all_service'),
+        TopNavigationView({
+          title: $r('app.string.all_service'),
           onBackClick: () => {
             this.serviceStack.pop()
-          }})
-        List({space: 10}) {
-          ListItemGroup({header: this.NormalSceneHeader()}) {
+          }
+        })
+        List({ space: 10 }) {
+          ListItemGroup({ header: this.NormalSceneHeader() }) {
             LazyForEach(this.serviceModel.listData, (item: ServiceListClass) => {
               ListItem() {
                 if (item.serviceType === ServiceType.NORMAL) {
@@ -139,8 +141,8 @@ export struct AllServiceList {
               }
             })
           }
-          ListItemGroup({header: this.OfficeSceneHeader()})
-          {
+
+          ListItemGroup({ header: this.OfficeSceneHeader() }) {
             LazyForEach(this.serviceModel.listData, (item: ServiceListClass) => {
               ListItem() {
                 if (item.serviceType === ServiceType.OFFICE) {
@@ -149,8 +151,8 @@ export struct AllServiceList {
               }
             })
           }
-          ListItemGroup({header: this.EducationSceneHeader()})
-          {
+
+          ListItemGroup({ header: this.EducationSceneHeader() }) {
             LazyForEach(this.serviceModel.listData, (item: ServiceListClass) => {
               ListItem() {
                 if (item.serviceType === ServiceType.EDUCATION) {
@@ -159,8 +161,8 @@ export struct AllServiceList {
               }
             })
           }
-          ListItemGroup({header: this.FinanceSceneHeader()})
-          {
+
+          ListItemGroup({ header: this.FinanceSceneHeader() }) {
             LazyForEach(this.serviceModel.listData, (item: ServiceListClass) => {
               ListItem() {
                 if (item.serviceType === ServiceType.FINANCE) {
@@ -169,6 +171,7 @@ export struct AllServiceList {
               }
             })
           }
+
           ListItem() {
             Column()
               .height('20%')
@@ -182,7 +185,7 @@ export struct AllServiceList {
           bottom: 11
         })
       }
-      .padding({top: AppStorage.get<number>('statusBarHeight')})
+      .padding({ top: AppStorage.get<number>('statusBarHeight') })
 
     }
     .hideTitleBar(true)

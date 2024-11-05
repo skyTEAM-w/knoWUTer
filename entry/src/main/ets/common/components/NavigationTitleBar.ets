@@ -1,4 +1,3 @@
-
 @Builder
 export function NavigationTitleBar(title: ResourceStr) {
   Column() {
@@ -14,5 +13,5 @@ export function NavigationTitleBar(title: ResourceStr) {
   .width('100%')
   .height('100%')
   .backgroundBlurStyle(BlurStyle.Regular)
-  .padding({top: AppStorage.get<number>('statusBarHeight')})
+  .padding({ top: AppStorage.get<number>('statusBarHeight') })
 }

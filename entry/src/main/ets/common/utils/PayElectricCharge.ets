@@ -1,9 +1,11 @@
 import { webview } from '@kit.ArkWeb';
 import { DormitoryLocation } from '../model/DormitoryLocation';
-import { BusinessError } from '@kit.BasicServicesKit';
 import { DBUtil } from './DBUtil';
+import { Room } from '../model/Room';
+import { HttpUtil } from './HttpUtil';
 
-export function getElectricCharge(webviewController: webview.WebviewController, dormitoryLocation: DormitoryLocation): Promise<string> {
+export function getElectricCharge(webviewController: webview.WebviewController,
+  dormitoryLocation: DormitoryLocation): Promise<string> {
   let myDormitory = new DormitoryLocation();
   let remainPower: string = '';
   let remainMoney: string = '';
@@ -46,7 +48,7 @@ export function getElectricCharge(webviewController: webview.WebviewController, 
       do {
         remainPower = await getTextContentWithRetry("RemainPower");
         remainMoney = await getTextContentWithRetry("MeterOverdue");
-      }while (remainMoney.trim() === "")
+      } while (remainMoney.trim() === "")
 
 
       let insertQuery = `INSERT INTO DormitoryLocation (Area, AreaId, Building, BuildingId, Floor, FloorId, Room, RoomId, ElectricFee, RemainingElectric)
@@ -73,9 +75,9 @@ export function getElectricCharge(webviewController: webview.WebviewController, 
 }
 
 
-
 async function getSelectValue(selectId: string, webviewController: webview.WebviewController): Promise<string[]> {
-  const result: string = await webviewController.runJavaScript(`var selectElement = document.getElementById("${selectId}"); [selectElement.value, selectElement.options[selectElement.selectedIndex].text];`);
+  const result: string =
+    await webviewController.runJavaScript(`var selectElement = document.getElementById("${selectId}"); [selectElement.value, selectElement.options[selectElement.selectedIndex].text];`);
   if (result) {
     console.info(`The ${selectId} return value is: ${result}`);
     return JSON.parse(result);
@@ -128,4 +130,17 @@ export async function importElectricity(webviewController: webview.WebviewContro
   DBUtil.getInstance().executeMySql(insertQuery);
 
   return true;
+}
+
+export async function getElectricityFee(cookie: string, room: Room) {
+  let meter = await HttpUtil.getInstance().getMeterIdHttp(cookie, room);
+  if (meter) {
+    let httpReserve = await HttpUtil.getInstance().getElectricityFeeHttp(cookie, meter);
+    if (httpReserve) {
+      console.debug(JSON.stringify(httpReserve));
+      return httpReserve;
+    }
+    return undefined;
+  }
+  return undefined;
 }

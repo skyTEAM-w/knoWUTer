@@ -59,6 +59,14 @@
     {
       "name": "all_service",
       "value": "全部服务"
+    },
+    {
+      "name": "text_please_select",
+      "value": "请选择"
+    },
+    {
+      "name": "text_save",
+      "value": "保存"
     }
   ]
 }

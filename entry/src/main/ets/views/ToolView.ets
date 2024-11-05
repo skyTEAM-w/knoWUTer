@@ -26,19 +26,21 @@ export struct Tools {
     .width('100%')
     .renderFit(RenderFit.CENTER)
     .backgroundBlurStyle(BlurStyle.Thick)
-    .padding({top: AppStorage.get<number>('statusBarHeight')})
+    .padding({ top: AppStorage.get<number>('statusBarHeight') })
   }
 
   build() {
     Navigation() {
-      List({space: 10}) {
+      List({ space: 10 }) {
         ListItem() {
           Column()
             .height($r('app.float.navigation_title_bar_half_height'))
         }
+
         ListItem() {
-          ElectricityInquiryTool({webViewController: this.webviewController})
+          ElectricityInquiryTool({ webViewController: this.webviewController })
         }
+
         ListItem() {
           AcademicCalender()
         }
@@ -47,8 +49,10 @@ export struct Tools {
 
     }
     .mode(NavigationMode.Stack)
-    .title({builder: NavigationTitleBar($r('app.string.text_tools')),
-      height: $r('app.float.navigation_title_bar_height')}, {
+    .title({
+      builder: NavigationTitleBar($r('app.string.text_tools')),
+      height: $r('app.float.navigation_title_bar_height')
+    }, {
       barStyle: BarStyle.STACK
     })
     .titleMode(NavigationTitleMode.Mini)

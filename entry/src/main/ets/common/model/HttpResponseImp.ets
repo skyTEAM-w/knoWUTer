@@ -1,10 +1,9 @@
-import { HttpPostResponseBody } from "./HttpPostResponseBody";
+import { HttpPostResponseBody } from './HttpPostResponseBody';
 
-export class HttpAreaList implements  HttpPostResponseBody{
+export class HttpAreaList implements HttpPostResponseBody {
   returncode: string = '';
   returnmsg: string = '';
   areaList: string[] = [];
-
 }
 
 export class HttpBuildingList implements HttpPostResponseBody {

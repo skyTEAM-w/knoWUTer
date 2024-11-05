@@ -16,6 +16,8 @@ public class AppString {
 	public var page_show = 16777294
 	public var text_course_table = 16777227
 	public var text_home = 16777228
+	public var text_please_select = 16777295
+	public var text_save = 16777296
 	public var text_service = 16777229
 	public var text_tools = 16777230
 	public var text_user_setting = 16777231
@@ -119,6 +121,8 @@ public func updateAllRes() {
 	resourceMap.put("string page_show", 16777294)
 	resourceMap.put("string text_course_table", 16777227)
 	resourceMap.put("string text_home", 16777228)
+	resourceMap.put("string text_please_select", 16777295)
+	resourceMap.put("string text_save", 16777296)
 	resourceMap.put("string text_service", 16777229)
 	resourceMap.put("string text_tools", 16777230)
 	resourceMap.put("string text_user_setting", 16777231)

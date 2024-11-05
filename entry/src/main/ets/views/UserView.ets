@@ -1,13 +1,11 @@
 import { NavigationTitleBar } from '../common/components/NavigationTitleBar';
-import { SettingTwoStatus, UserPreferenceType } from '../common/constants/CommonEnums';
-import {PreferencesUtil} from '../common/utils/PreferencesUtil';
+import { SettingTwoStatus } from '../common/constants/CommonEnums';
 import { UserSettingUtil } from '../common/utils/UserSettingUtil';
 
 @Component
 export struct User {
-
-  @State customSettingOfService: SettingTwoStatus = AppStorage.get<SettingTwoStatus>('customServiceListConfig') || SettingTwoStatus.OFF
-
+  @State customSettingOfService: SettingTwoStatus =
+    AppStorage.get<SettingTwoStatus>('customServiceListConfig') || SettingTwoStatus.OFF
   userSettingUtil: UserSettingUtil = UserSettingUtil.getInstance();
 
   aboutToAppear(): void {
@@ -29,7 +27,7 @@ export struct User {
     .width('100%')
     .renderFit(RenderFit.CENTER)
     .backgroundBlurStyle(BlurStyle.Thick)
-    .padding({top: AppStorage.get<number>('statusBarHeight')})
+    .padding({ top: AppStorage.get<number>('statusBarHeight') })
   }
 
   build() {
@@ -39,7 +37,7 @@ export struct User {
           .height($r('app.float.navigation_title_bar_half_height'))
         Row() {
           Text('使用自定义的服务列表')
-          Toggle({type: ToggleType.Switch, isOn: this.customSettingOfService === SettingTwoStatus.ON})
+          Toggle({ type: ToggleType.Switch, isOn: this.customSettingOfService === SettingTwoStatus.ON })
             .size({ width: 40, height: 20 })
             .selectedColor($r('sys.color.brand'))
             .onChange((isOn) => {
@@ -51,11 +49,13 @@ export struct User {
 
         .justifyContent(FlexAlign.SpaceBetween)
       }
-      .padding({left: 16, right: 16})
+      .padding({ left: 16, right: 16 })
     }
     .mode(NavigationMode.Stack)
-    .title({builder: NavigationTitleBar($r('app.string.text_user_setting')),
-      height: $r('app.float.navigation_title_bar_height')}, {
+    .title({
+      builder: NavigationTitleBar($r('app.string.text_user_setting')),
+      height: $r('app.float.navigation_title_bar_height')
+    }, {
       barStyle: BarStyle.STACK
     })
     .titleMode(NavigationTitleMode.Mini)

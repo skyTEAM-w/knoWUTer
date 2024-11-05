@@ -2,18 +2,17 @@ import LazyDataSource from '../common/model/LazyDataSource';
 import { DBUtil } from '../common/utils/DBUtil';
 import { DormitoryLocation } from '../common/model/DormitoryLocation';
 import { ElectricityFeeUrl } from '../model/ElectricityFeeUrl';
-import { DownloadFileButton, DownloadIconStyle, LengthMetrics, promptAction } from '@kit.ArkUI';
-import { getElectricCharge } from '../common/utils/PayElectricCharge';
+import { DownloadFileButton, DownloadIconStyle, promptAction } from '@kit.ArkUI';
+import { getElectricCharge, getElectricityFee } from '../common/utils/PayElectricCharge';
 import { webview } from '@kit.ArkWeb';
-import { it } from '@ohos/hypium';
-import { ArrayList, JSON } from '@kit.ArkTS';
-import { faceDetector } from '@kit.CoreVisionKit';
-import { ElectricityFeeActionType, HttpUtil } from '../common/utils/HttpUtil';
+import { ArrayList, JSON, taskpool } from '@kit.ArkTS';
+import { checkCWSFLoginStatus, HttpUtil } from '../common/utils/HttpUtil';
 import { Area } from '../common/model/Area';
 import { Building } from '../common/model/Building';
 import { Floor } from '../common/model/Floor';
 import { Room } from '../common/model/Room';
-import { Meter } from '../common/model/Meter';
+import { UserSettingUtil } from '../common/utils/UserSettingUtil';
+import { HttpReserve } from '../common/model/HttpResponseImp';
 
 const TAG = '[Elec Comp]'
 
@@ -25,27 +24,66 @@ export struct ElectricityInquiryTool {
   @State buildingPickerList: string[] = ['---'];
   @State floorPickerList: string[] = ['---'];
   @State roomPickerList: string[] = ['---'];
-  @State pickerList: string[][] = [this.areaPickerList, this.buildingPickerList, this.floorPickerList, this.roomPickerList]
+  @State pickerList: string[][] =
+    [this.areaPickerList, this.buildingPickerList, this.floorPickerList, this.roomPickerList]
   @State tableSet: LazyDataSource<DormitoryLocation> = new LazyDataSource();
   @State selectedDormitoryIndex: number = -1;
   @State selectedDormitory: DormitoryLocation | undefined = undefined;
   @State electricityFee: string | undefined = undefined;
+  @State remainPower: string | undefined = undefined;
+  @State electricityFeeHistory: string | undefined = undefined;
+  @State remainPowerHistory: string | undefined = undefined;
   @State isRefresh: boolean = false;
   @State isChoose: boolean = false;
-  @State selectedArea: string = '';
+  @State showChoice: boolean = false;
+  @State selectedArea: ResourceStr = $r('app.string.text_please_select');
   @State selectedAreaIndex: number = 0;
-
+  @State selectedBuilding: ResourceStr = $r('app.string.text_please_select');
+  @State selectedBuildingIndex: number = 0;
+  @State selectedFloor: ResourceStr = $r('app.string.text_please_select');
+  @State selectedFloorIndex: number = 0;
+  @State selectedRoom: ResourceStr = $r('app.string.text_please_select');
+  @State selectedRoomIndex: number = 0;
+  @StorageLink('fee_cookie') FeeCookie: string = AppStorage.get<string>('fee_cookie') || ''
   private areaList: ArrayList<Area> | undefined = undefined;
   private buildList: ArrayList<Building> | undefined = undefined;
   private floorList: ArrayList<Floor> | undefined = undefined;
   private roomList: ArrayList<Room> | undefined = undefined;
+  private httpReserve: HttpReserve | undefined = undefined;
+  private loginStatusTask: Array<taskpool.Task> = [];
   private dbUtil: DBUtil = DBUtil.getInstance();
   private httpUtil: HttpUtil = HttpUtil.getInstance();
   private webViewController: webview.WebviewController = new webview.WebviewController();
-  private scroller: ListScroller = new ListScroller()
+  private scroller: ListScroller = new ListScroller();
+  private userUtil: UserSettingUtil = UserSettingUtil.getInstance();
 
   aboutToAppear(): void {
+    this.userUtil.checkCWSFCookie();
+    this.loginStatusTask.length = 0;
+    this.loginStatusTask.push(new taskpool.Task(checkCWSFLoginStatus, this.FeeCookie));
+    taskpool.executePeriodically(5000, this.loginStatusTask[0], taskpool.Priority.MEDIUM);
+    this.loginStatusTask[0].onReceiveData((value: boolean) => {
+      this.refreshLoginState(value);
+    })
     this.getAreaList();
+  }
+
+  onPageHide(): void {
+    try {
+      taskpool.cancel(this.loginStatusTask[0]);
+      this.loginStatusTask.pop();
+    } catch (error) {
+      console.error(TAG, JSON.stringify(error))
+    }
+  }
+
+  aboutToDisappear(): void {
+    try {
+      taskpool.cancel(this.loginStatusTask[0]);
+      this.loginStatusTask.pop();
+    } catch (error) {
+      console.error(TAG, JSON.stringify(error))
+    }
   }
 
   jumpWebView() {
@@ -60,38 +98,30 @@ export struct ElectricityInquiryTool {
     }))
   }
 
-  jumpWebViewToRefresh() {
-    if (this.selectedDormitory !== undefined) {
-      this.appPathStack.pushPathByName('WebViewPage', new Object({
-        webUrl: new ElectricityFeeUrl(),
-        dormitoryLocation: this.selectedDormitory,
-        isRefresh: true,
-        onDestinationBack: () => {
-          this.electricityFee = DBUtil.getInstance().queryDormitoryElectricityFee(this.selectedDormitory) as string;
-          this.appPathStack.pop();
-          return false;
-        }
-      }))
-    } else {
-      promptAction.showToast({ message: '未选择宿舍' })
-    }
-  }
-
   onBindSheetShow() {
     if (this.isShow) {
       this.tableSet = DBUtil.getInstance().queryDormitoryHistory()
     }
   }
 
-  checkSelectedDormitory() {
+  async refreshLoginState(status: boolean) {
+    console.debug(JSON.stringify(status));
+  }
+
+  async checkSelectedDormitory() {
     if (this.selectedDormitoryIndex === -1) {
-      promptAction.showToast({message: '未选择宿舍'});
+      promptAction.showToast({ message: '未选择宿舍' });
       return;
     }
     this.isShow = false;
     this.selectedDormitory = this.tableSet.getData(this.selectedDormitoryIndex);
-    HttpUtil.getInstance().getAreaListHttp(AppStorage.get<string>('fee_cookie') as string)
-    this.electricityFee = DBUtil.getInstance().queryDormitoryElectricityFee(this.selectedDormitory) as string;
+    if (!await this.getElectricityFeeAndPower(new Room(this.selectedDormitory.Room, this.selectedDormitory.RoomId),
+      true)) {
+      this.electricityFeeHistory =
+        (this.dbUtil.queryDormitoryElectricityFeeAndRemainPower(this.selectedDormitory) as string[])[0];
+      this.remainPowerHistory =
+        (this.dbUtil.queryDormitoryElectricityFeeAndRemainPower(this.selectedDormitory) as string[])[1]
+    }
   }
 
   async getAreaList() {
@@ -102,6 +132,12 @@ export struct ElectricityInquiryTool {
       if (this.areaList) {
         this.parseAreaListToPickerList(this.areaList);
       }
+    }
+
+    this.selectedAreaIndex = 0;
+    this.selectedArea = this.areaPickerList[this.selectedAreaIndex];
+    if (this.areaList) {
+      this.getBuildingList(this.areaList[this.selectedAreaIndex])
     }
   }
 
@@ -114,43 +150,141 @@ export struct ElectricityInquiryTool {
         this.parseBuildingListToPickerList(this.buildList);
       }
     }
+    this.selectedBuildingIndex = 0;
+    this.selectedBuilding = this.buildingPickerList[this.selectedBuildingIndex];
+    if (this.buildList && this.areaList) {
+      this.getFloorList(this.areaList[this.selectedAreaIndex], this.buildList[this.selectedBuildingIndex]);
+    }
   }
 
-  async parseAreaListToPickerList(areaList: ArrayList<Area>) {
+  async getFloorList(area: Area, building: Building) {
+    if (this.floorList = this.dbUtil.queryFloorListDataBase(building)) {
+      this.parseFloorListToPickerList(this.floorList);
+    } else {
+      this.floorList =
+        await this.httpUtil.getFloorListHttp(AppStorage.get<string>('fee_cookie') as string, area, building);
+      if (this.floorList) {
+        this.parseFloorListToPickerList(this.floorList);
+      }
+    }
+    this.selectedFloorIndex = 0;
+    this.selectedFloor = this.floorPickerList[this.selectedFloorIndex];
+    if (this.buildList && this.floorList) {
+      this.getRoomList(this.buildList[this.selectedBuildingIndex], this.floorList[this.selectedFloorIndex]);
+    }
+  }
+
+  async getRoomList(building: Building, floor: Floor) {
+    if (this.roomList = this.dbUtil.queryRoomListDataBase(building, floor)) {
+      this.parseRoomListToPickerList(this.roomList)
+    } else {
+      this.roomList =
+        await this.httpUtil.getRoomListHttp(AppStorage.get<string>('fee_cookie') as string, building, floor);
+      if (this.roomList) {
+        this.parseRoomListToPickerList(this.roomList);
+      }
+    }
+    this.selectedRoomIndex = 0;
+    this.selectedRoom = this.roomPickerList[this.selectedRoomIndex];
+    this.getElectricityFeeAndPower(this.roomList?.[this.selectedRoomIndex], false)
+  }
+
+  async getElectricityFeeAndPower(room: Room | undefined, isHistory: boolean) {
+    if (room) {
+      this.httpReserve = await getElectricityFee(AppStorage.get<string>('fee_cookie') as string, room)
+      if (this.httpReserve) {
+        if (isHistory) {
+          this.electricityFeeHistory = this.httpReserve.meterOverdue;
+          this.remainPowerHistory = this.httpReserve.remainPower;
+        } else {
+          this.electricityFee = this.httpReserve.meterOverdue;
+          this.remainPower = this.httpReserve.remainPower;
+        }
+
+        return true;
+      }
+      return false;
+    }
+    return false;
+  }
+
+  saveDormitory() {
+    if (this.areaList && this.buildList && this.floorList && this.roomList && this.httpReserve) {
+      let dormitoryLocation: DormitoryLocation = new DormitoryLocation()
+      dormitoryLocation.Area = this.areaList[this.selectedAreaIndex].area;
+      dormitoryLocation.AreaId = this.areaList[this.selectedAreaIndex].areaId;
+      dormitoryLocation.Building = this.buildList[this.selectedBuildingIndex].Building;
+      dormitoryLocation.BuildingId = this.buildList[this.selectedBuildingIndex].BuildingId;
+      dormitoryLocation.Floor = this.floorList[this.selectedFloorIndex].Floor;
+      dormitoryLocation.FloorId = this.floorList[this.selectedFloorIndex].FloorId;
+      dormitoryLocation.Room = this.roomList[this.selectedRoomIndex].Room;
+      dormitoryLocation.RoomId = this.roomList[this.selectedRoomIndex].RoomId;
+
+      console.debug(TAG, 'http reserve', JSON.stringify(this.httpReserve))
+
+      this.dbUtil.insertOrUpdateDormitory(dormitoryLocation, this.httpReserve.meterOverdue,
+        this.httpReserve.remainPower);
+    }
+  }
+
+  parseAreaListToPickerList(areaList: ArrayList<Area>) {
     let temp: string[] = []
-    areaList.forEach((item: Area) =>{
+    areaList.forEach((item: Area) => {
       temp.push(item.area);
     })
     this.areaPickerList = temp;
   }
 
-  async parseBuildingListToPickerList(buildingList: ArrayList<Building>) {
+  parseBuildingListToPickerList(buildingList: ArrayList<Building>) {
     let temp: string[] = []
-    buildingList.forEach((item: Building) =>{
+    buildingList.forEach((item: Building) => {
       temp.push(item.Building);
     })
     this.buildingPickerList = temp;
   }
 
+  parseFloorListToPickerList(floorList: ArrayList<Floor>) {
+    let temp: string[] = [];
+    floorList.forEach((item: Floor) => {
+      temp.push(item.Floor);
+    })
+    this.floorPickerList = temp;
+  }
+
+  parseRoomListToPickerList(roomList: ArrayList<Room>) {
+    let temp: string[] = [];
+    roomList.forEach((item: Room) => {
+      temp.push(item.Room);
+    })
+    this.roomPickerList = temp;
+  }
+
   @Builder
   DormitoryBindSheet() {
     if (!this.isRefresh && !this.isChoose) {
-      List({scroller: this.scroller}) {
+      List({ scroller: this.scroller }) {
         ListItemGroup({ header: this.DormitoryHistorySheetHeader(), space: 5 }) {
           LazyForEach(this.tableSet, (item: DormitoryLocation, index: number) => {
-              DormitoryItem({dormitoryItem: item, selectedDormitoryIndex: this.selectedDormitoryIndex,
-                mIndex: index, tableSet: this.tableSet})
+            DormitoryItem({
+              dormitoryItem: item,
+              selectedDormitoryIndex: this.selectedDormitoryIndex,
+              mIndex: index,
+              tableSet: this.tableSet
+            })
           })
         }
       }
       .sticky(StickyStyle.Header)
       .padding({ left: 16, right: 16 })
-    } else if (!this.isChoose){
+    } else if (!this.isChoose) {
       Web({ src: new ElectricityFeeUrl().url, controller: this.webViewController })
-        .onPageEnd(() => {
-          let FeeCookie = webview.WebCookieManager.fetchCookieSync('http://cwsf.whut.edu.cn/nyyPayElecPages51274E035').toString();
-          AppStorage.setOrCreate('fee_cookie', FeeCookie);
+        .onPageEnd(async () => {
+          let FeeCookie =
+            webview.WebCookieManager.fetchCookieSync('http://cwsf.whut.edu.cn/nyyPayElecPages51274E035').toString();
+          this.userUtil.saveCWSFCookie(FeeCookie);
           console.info(TAG, FeeCookie);
+          let status = await this.httpUtil.checkLoginStatusForCWSF(AppStorage.get<string>('fee_cookie') as string);
+          console.debug(TAG, status);
         })
     } else {
       DormitoryPicker()
@@ -269,7 +403,7 @@ export struct ElectricityInquiryTool {
                 getElectricCharge(this.webViewController, this.selectedDormitory).then((fee) => {
                   this.electricityFee = fee;
                   this.isShow = false;
-                  promptAction.showToast({message: '更新成功'})
+                  promptAction.showToast({ message: '更新成功' })
                 })
 
               }
@@ -292,111 +426,251 @@ export struct ElectricityInquiryTool {
         .fontFamily('HarmonyHeiTi-medium')
         .textAlign(TextAlign.Start)
         .width('100%')
-        .padding({bottom: 5})
+        .padding({ bottom: 5 })
+        .onClick(() => {
+          this.isRefresh = true;
+          this.isShow = true;
+        })
+      if (!this.showChoice) {
+        Row() {
+          Text(this.selectedDormitory !== undefined ? `${this.selectedDormitory.Room}` : '请选择')
+            .textAlign(TextAlign.Start)
+            .fontSize(16)
+            .height(20)
+            .borderRadius(8)
+          SymbolGlyph($r('sys.symbol.arrow_counterclockwise_clock'))
+            .fontSize(20)
+            .fontWeight(FontWeight.Medium)
 
-      Row() {
-        Text(this.selectedDormitory !== undefined ? `${this.selectedDormitory.Room}` : '请选择')
-          .textAlign(TextAlign.Start)
-          .fontSize(16)
-          .height(20)
-          .borderRadius(8)
-        SymbolGlyph($r('sys.symbol.arrow_counterclockwise_clock'))
-          .fontSize(20)
-          .fontWeight(FontWeight.Medium)
-
-      }
-      .onClick(() => {
-        this.isShow = true;
-        console.info(TAG, 'Bind Sheet Show')
-      })
-      .bindSheet($$this.isShow, this.DormitoryBindSheet, {
-        title: this.BindSheetTitle(),
-        detents: [SheetSize.MEDIUM, SheetSize.LARGE],
-        scrollSizeMode: ScrollSizeMode.CONTINUOUS,
-        preferType: SheetType.CENTER,
-        onDisappear: () => {
-          this.isRefresh = false;
-          this.isChoose = false;
         }
-      })
-      .justifyContent(FlexAlign.SpaceBetween)
-      .width('100%')
-
-      Divider()
-        .padding({ top: 5, bottom: 5 })
-
-      Row() {
-        Text('剩余电费：')
-          .fontSize(16)
-          .fontWeight(700)
-          .fontFamily('HarmonyHeiTi-medium')
-          .textAlign(TextAlign.Start)
-        Text(this.electricityFee === undefined ? '元' : this.electricityFee + '元')
-          .fontSize(16)
-          .fontWeight(FontWeight.Medium)
-          .fontFamily('HarmonyHeiTi-medium')
-          .textAlign(TextAlign.Start)
+        .onClick(() => {
+          this.isShow = true;
+          console.info(TAG, 'Bind Sheet Show')
+        })
+        .bindSheet($$this.isShow, this.DormitoryBindSheet, {
+          title: this.BindSheetTitle(),
+          detents: [SheetSize.MEDIUM, SheetSize.LARGE],
+          scrollSizeMode: ScrollSizeMode.CONTINUOUS,
+          preferType: SheetType.CENTER,
+          onDisappear: () => {
+            this.isRefresh = false;
+            this.isChoose = false;
+          }
+        })
+        .justifyContent(FlexAlign.SpaceBetween)
+        .width('100%')
+        .transition(TransitionEffect.OPACITY)
       }
-      .justifyContent(FlexAlign.SpaceBetween)
-      .width('100%')
 
-      Row() {
-        Button('更新')
-          .width('50%')
-          .fontColor(Color.Black)
-          .backgroundColor(Color.Transparent)
-          .onClick(() => {
-            if (this.selectedDormitory !== undefined) {
-              this.isRefresh = true;
-              this.isShow = true;
-            } else {
-              promptAction.showToast({message: '未选择宿舍'})
-            }
-          })
-        Button('选择')
-          .width('50%')
-          .fontColor(Color.Black)
-          .backgroundColor(Color.Transparent)
-          .onClick(() => {
-            this.isShow = true;
-            this.isChoose = true;
-          })
-      }
-      .width('100%')
+      if (!this.showChoice) {
+        Column() {
+          Divider()
+            .padding({ top: 5, bottom: 5 })
+          Row() {
+            Text('剩余电费：')
+              .fontSize(16)
+              .fontWeight(700)
+              .fontFamily('HarmonyHeiTi-medium')
+              .textAlign(TextAlign.Start)
+            Text(this.electricityFeeHistory === undefined ? '元' : this.electricityFeeHistory + '元')
+              .fontSize(16)
+              .fontWeight(FontWeight.Medium)
+              .fontFamily('HarmonyHeiTi-medium')
+              .textAlign(TextAlign.Start)
+          }
+          .justifyContent(FlexAlign.SpaceBetween)
+          .width('100%')
 
-      //TODO: 完善新的选择方式
-      Column() {
-        Button(this.selectedArea)
-          .onClick(() => {
-            this.getUIContext().showTextPickerDialog({
-              range: this.areaPickerList,
-              selected: this.selectedAreaIndex,
-              onAccept: (value: TextPickerResult) => {
-                this.selectedArea = value.value as string;
-                this.selectedAreaIndex = value.index as number;
-                if (this.areaList) {
-                  this.getBuildingList(this.areaList[value.index as number])
-                }
+        }
+        .geometryTransition('remain')
+        .transition(TransitionEffect.OPACITY)
+
+      } else {
+        Column() {
+          Row() {
+            Text('校区：')
+              .fontSize(16)
+              .fontWeight(700)
+              .fontFamily('HarmonyHeiTi-medium')
+              .textAlign(TextAlign.Start)
+            Button(this.selectedArea)
+              .fontColor(Color.Black)
+              .backgroundColor(Color.Transparent)
+              .width('70%')
+              .onClick(() => {
+                this.getUIContext().showTextPickerDialog({
+                  range: this.areaPickerList,
+                  selected: this.selectedAreaIndex,
+                  onAccept: (value: TextPickerResult) => {
+                    this.selectedArea = value.value as string;
+                    this.selectedAreaIndex = value.index as number;
+                    if (this.areaList) {
+                      this.getBuildingList(this.areaList[value.index as number])
+                    }
+                  }
+                })
+              })
+          }
+          .width('100%')
+          .justifyContent(FlexAlign.SpaceBetween)
+
+          Row() {
+
+            Text('楼栋: ')
+              .fontSize(16)
+              .fontWeight(700)
+              .fontFamily('HarmonyHeiTi-medium')
+              .textAlign(TextAlign.Start)
+            Button(this.selectedBuilding)
+              .fontColor(Color.Black)
+              .backgroundColor(Color.Transparent)
+              .width('70%')
+              .onClick(() => {
+                this.getUIContext().showTextPickerDialog({
+                  range: this.buildingPickerList,
+                  selected: this.selectedBuildingIndex,
+                  onAccept: (value: TextPickerResult) => {
+                    this.selectedBuilding = value.value as string;
+                    this.selectedBuildingIndex = value.index as number;
+                    if (this.buildList && this.areaList) {
+                      this.getFloorList(this.areaList[this.selectedAreaIndex], this.buildList[value.index as number])
+                    }
+                  }
+                })
+              })
+          }
+          .width('100%')
+          .justifyContent(FlexAlign.SpaceBetween)
+
+          Row() {
+            Text('楼层: ')
+              .fontSize(16)
+              .fontWeight(700)
+              .fontFamily('HarmonyHeiTi-medium')
+              .textAlign(TextAlign.Start)
+            Button(this.selectedFloor)
+              .fontColor(Color.Black)
+              .backgroundColor(Color.Transparent)
+              .width('70%')
+              .onClick(() => {
+                this.getUIContext().showTextPickerDialog({
+                  range: this.floorPickerList,
+                  selected: this.selectedFloorIndex,
+                  onAccept: (value: TextPickerResult) => {
+                    this.selectedFloor = value.value as string;
+                    this.selectedFloorIndex = value.index as number;
+                    if (this.buildList && this.floorList) {
+                      this.getRoomList(this.buildList[this.selectedBuildingIndex],
+                        this.floorList[this.selectedFloorIndex]);
+                    }
+                  }
+                })
+              })
+          }
+          .width('100%')
+          .justifyContent(FlexAlign.SpaceBetween)
+
+          Row() {
+            Text('房间: ')
+              .fontSize(16)
+              .fontWeight(700)
+              .fontFamily('HarmonyHeiTi-medium')
+              .textAlign(TextAlign.Start)
+
+            Button(this.selectedRoom)
+              .fontColor(Color.Black)
+              .backgroundColor(Color.Transparent)
+              .width('70%')
+              .onClick(() => {
+                this.getUIContext().showTextPickerDialog({
+                  range: this.roomPickerList,
+                  selected: this.selectedRoomIndex,
+                  onAccept: async (value: TextPickerResult) => {
+                    this.selectedRoom = value.value as string;
+                    this.selectedRoomIndex = value.index as number;
+                    if (this.roomList) {
+                      this.getElectricityFeeAndPower(this.roomList[this.selectedRoomIndex], false)
+                    }
+                  }
+                })
+              })
+          }
+          .width('100%')
+          .justifyContent(FlexAlign.SpaceBetween)
+
+
+          Column() {
+            Divider()
+              .padding({ top: 5, bottom: 5 })
+            Row() {
+              Row() {
+                Text('剩余电费：')
+                  .fontSize(16)
+                  .fontWeight(700)
+                  .fontFamily('HarmonyHeiTi-medium')
+                  .textAlign(TextAlign.Start)
+                Text(this.electricityFee === undefined ? '元' : this.electricityFee + '元')
+                  .fontSize(16)
+                  .fontWeight(FontWeight.Medium)
+                  .fontFamily('HarmonyHeiTi-medium')
+                  .textAlign(TextAlign.Start)
               }
-            })
-          })
-        Button()
-          .onClick(() => {
-            this.getUIContext().showTextPickerDialog({
-              range: this.buildingPickerList
-            })
-          })
+              .justifyContent(FlexAlign.SpaceBetween)
+              .width('45%')
+              .geometryTransition('remain')
 
-        Button('cookie')
-          .onClick(() => {
-            this.isRefresh = true;
-            this.isShow = true;
-          })
-        Button('http')
-          .onClick(() => {
-          })
+              Row() {
+                Text('剩余电量：')
+                  .fontSize(16)
+                  .fontWeight(700)
+                  .fontFamily('HarmonyHeiTi-medium')
+                  .textAlign(TextAlign.Start)
+                Text(this.electricityFee === undefined ? '度' : this.remainPower + '度')
+                  .fontSize(16)
+                  .fontWeight(FontWeight.Medium)
+                  .fontFamily('HarmonyHeiTi-medium')
+                  .textAlign(TextAlign.Start)
+              }
+              .justifyContent(FlexAlign.SpaceBetween)
+              .width('45%')
+
+            }
+            .justifyContent(FlexAlign.SpaceBetween)
+            .width('100%')
+
+          }
+
+          .transition(TransitionEffect.OPACITY)
+
+          Row() {
+            Button($r('app.string.text_save'))
+              .width('70%')
+              .fontColor(Color.Black)
+              .backgroundColor(Color.Transparent)
+              .onClick(() => {
+                this.saveDormitory();
+              })
+          }
+          .width('100%')
+          .justifyContent(FlexAlign.Center)
+
+        }
+        .transition(TransitionEffect.OPACITY)
       }
 
+      Row() {
+        SymbolGlyph(this.showChoice ? $r('sys.symbol.chevron_up') : $r('sys.symbol.chevron_down'))
+          .fontSize(20)
+          .symbolEffect(new ReplaceSymbolEffect(EffectScope.WHOLE), this.showChoice)
+      }
+      .width('100')
+      .justifyContent(FlexAlign.Center)
+      .alignItems(VerticalAlign.Center)
+      .onClick(() => {
+        animateTo({ duration: 200 }, () => {
+          this.showChoice = !this.showChoice
+        })
+      })
     }
     .justifyContent(FlexAlign.Center)
     .backgroundColor($r('app.color.whut_blue_background'))
@@ -404,12 +678,12 @@ export struct ElectricityInquiryTool {
     .borderWidth(1)
     .borderStyle(BorderStyle.Solid)
     .width('100%')
-    .clickEffect({level: ClickEffectLevel.LIGHT})
+    .clickEffect({ level: ClickEffectLevel.LIGHT, scale: 0.99 })
     .padding({
       left: 16,
       right: 16,
       top: 10,
-      bottom: 10
+      bottom: 5
     })
   }
 }
@@ -420,8 +694,8 @@ struct DormitoryItem {
   @Link selectedDormitoryIndex: number;
   @ObjectLink tableSet: LazyDataSource<DormitoryLocation>;
   @State enterDeleteArea: boolean = false;
-  private startTrigger: number = 0;
   mIndex: number = -1;
+  private startTrigger: number = 0;
 
   @Builder
   ListItemSwiper() {
@@ -483,7 +757,8 @@ struct DormitoryItem {
     .height(44)
     .justifyContent(FlexAlign.SpaceBetween)
     .backgroundColor(this.selectedDormitoryIndex === index ? $r('app.color.whut_blue_background_selected') :
-      this.dormitoryItem.isStar ? $r('app.color.whut_yellow_background_selected') : $r('app.color.start_window_background'))
+      this.dormitoryItem.isStar ? $r('app.color.whut_yellow_background_selected') :
+      $r('app.color.start_window_background'))
     .onClick(() => {
       this.selectedDormitoryIndex = index;
     })
@@ -494,133 +769,35 @@ struct DormitoryItem {
     ListItem() {
       this.DormitoryHistorySheetItem(this.dormitoryItem, this.mIndex);
     }
-    .transition({type: TransitionType.Delete, opacity: 0})
+    .transition({ type: TransitionType.Delete, opacity: 0 })
     .swipeAction({
-      end: {builder: () => this.ListItemSwiper(),
-      onAction: () => {
-        animateTo({duration: 500,
-        onFinish: () => {
-          this.tableSet.reloadData();
-        }}, () => {
-          this.deleteDormitory()
-        })
-      },
+      end: {
+        builder: () => this.ListItemSwiper(),
+        onAction: () => {
+          animateTo({
+            duration: 500,
+            onFinish: () => {
+              this.tableSet.reloadData();
+            }
+          }, () => {
+            this.deleteDormitory()
+          })
+        },
         actionAreaDistance: 75,
-      onEnterActionArea: () => {
-        this.enterDeleteArea = true;
-      },
-      onExitActionArea: () => {
-        this.enterDeleteArea = false;
-      }}
+        onEnterActionArea: () => {
+          this.enterDeleteArea = true;
+        },
+        onExitActionArea: () => {
+          this.enterDeleteArea = false;
+        }
+      }
     })
   }
 }
 
 @Component
 struct DormitoryPicker {
-  @State areaPickerList: string[] = ['---'];
-  @State buildingPickerList: string[] = [];
-  @State floorPickerList: string[] = [];
-  @State roomPickerList: string[] = [];
-
-  private areaList: ArrayList<Area> | undefined = undefined;
-  private buildList: ArrayList<Building> | undefined = undefined;
-  private floorList: ArrayList<Floor> | undefined = undefined;
-  private roomList: ArrayList<Room> | undefined = undefined;
-  private dbUtil: DBUtil = DBUtil.getInstance();
-  private httpUtil: HttpUtil = HttpUtil.getInstance();
-
-  aboutToAppear(): void {
-    this.getAreaList()
-  }
-
-
-
-  async getAreaList() {
-    if (this.areaList = this.dbUtil.queryAreaListDataBase()) {
-      this.parseAreaListToPickerList(this.areaList);
-    } else {
-      this.areaList = await this.httpUtil.getAreaListHttp(AppStorage.get<string>('fee_cookie') as string)
-      if (this.areaList) {
-        this.parseAreaListToPickerList(this.areaList);
-      }
-    }
-  }
-
-  async getBuildingList(area: Area) {
-    if (this.buildList = this.dbUtil.queryBuildingListDataBase(area)) {
-      this.parseBuildingListToPickerList(this.buildList);
-    } else {
-      this.buildList = await this.httpUtil.getBuildingListHttp(AppStorage.get<string>('fee_cookie') as string, area);
-      if (this.buildList) {
-        this.parseBuildingListToPickerList(this.buildList);
-      }
-    }
-  }
-
-  async parseAreaListToPickerList(areaList: ArrayList<Area>) {
-    let temp: string[] = []
-     areaList.forEach((item: Area) =>{
-        temp.push(item.area);
-    })
-    this.areaPickerList = temp;
-  }
-
-  async parseBuildingListToPickerList(buildingList: ArrayList<Building>) {
-    let temp: string[] = []
-    buildingList.forEach((item: Building) =>{
-      temp.push(item.Building);
-    })
-    this.buildingPickerList = temp;
-  }
-
   build() {
-    Flex({
-      wrap: FlexWrap.Wrap,
-      justifyContent: FlexAlign.SpaceAround,
-      space: { main: LengthMetrics.px(20), cross: LengthMetrics.px(20) }
-    }) {
-      Column() {
-        Text('校区')
-        TextPicker({ range: this.areaPickerList })
-          .selectedTextStyle({font: {size: 18}})
-          .disappearTextStyle({font: {size: 12}})
-          .defaultPickerItemHeight(24)
-          .width('100%')
-          .onChange((value, index) => {
-            if (this.areaList) {
-              this.getBuildingList(this.areaList[index as number])
-            }
-          })
-      }
-      .width('40%')
-      Column() {
-        Text('楼栋')
-        TextPicker({ range: this.buildingPickerList })
-          .selectedTextStyle({font: {size: 18}})
-          .disappearTextStyle({font: {size: 12}})
-          .defaultPickerItemHeight(24)
-          .width('100%')
-      }
-      .width('40%')
-      Column() {
-        Text('楼层')
-        TextPicker({ range: this.floorPickerList })
-          .selectedTextStyle({font: {size: 18}})
-          .disappearTextStyle({font: {size: 12}})
-          .defaultPickerItemHeight(24)
-          .width('100%')
-      }
-      .width('40%')
-      Column() {
-        Text('房间')
-        TextPicker({ range: this.roomPickerList })
-          .selectedTextStyle({font: {size: 18}})
-          .disappearTextStyle({font: {size: 12}})
-          .defaultPickerItemHeight(24)
-          .width('100%')
-      }
-      .width('40%')
-    }
+
   }
 }

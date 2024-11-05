@@ -1,3 +1,3 @@
 export interface WebUrl {
-  url:string;
+  url: string;
 }

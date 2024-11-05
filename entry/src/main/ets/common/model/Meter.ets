@@ -1,8 +1,7 @@
 export class Meter {
-  MeterId: string  = '';
+  MeterId: string = '';
 
   constructor(MeterId: string) {
     this.MeterId = MeterId;
   }
-
 }

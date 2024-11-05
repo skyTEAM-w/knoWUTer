@@ -27,7 +27,8 @@ struct Index {
     Column() {
       SymbolGlyph(this.bottomTabIndex === index ? BottomTabsList[index].iconSelected : BottomTabsList[index].icon)
         .fontSize(25)
-        .symbolEffect(new BounceSymbolEffect(EffectScope.WHOLE, EffectDirection.DOWN), this.bottomTabEffectIndex === index)
+        .symbolEffect(new BounceSymbolEffect(EffectScope.WHOLE, EffectDirection.DOWN),
+          this.bottomTabEffectIndex === index)
 
       Text(BottomTabsList[index].text)
         .fontSize($r('app.float.bottom_font_size'))
@@ -40,8 +41,10 @@ struct Index {
     .border({ width: { top: 0.5 }, color: "#FF182431" })
     .backgroundColor(Color.Transparent)
     .blur(BlurStyle.Regular)
-    .padding({bottom: AppStorage.get<number>('naviIndicatorHeight'),
-      top: 8})
+    .padding({
+      bottom: AppStorage.get<number>('naviIndicatorHeight'),
+      top: 8
+    })
   }
 
   build() {

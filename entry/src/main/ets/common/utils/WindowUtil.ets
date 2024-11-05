@@ -1,8 +1,8 @@
-import { window } from "@kit.ArkUI";
-import { BusinessError } from "@kit.BasicServicesKit";
+import { window } from '@kit.ArkUI';
+import { BusinessError } from '@kit.BasicServicesKit';
 
-export class  WindowUtil {
-  public static requestFullScreen(windowStage: window.WindowStage, context: Context):void {
+export class WindowUtil {
+  public static requestFullScreen(windowStage: window.WindowStage, context: Context): void {
     windowStage.getMainWindow((err: BusinessError, data: window.Window) => {
       if (err.code) {
         console.error('Failed to obtain the main window. Cause: ' + JSON.stringify(err));
@@ -15,7 +15,8 @@ export class  WindowUtil {
       let isLayoutFullScreen = true;
       try {
         let area: window.AvoidArea = windowClass.getWindowAvoidArea(window.AvoidAreaType.TYPE_SYSTEM);
-        let naviBarArea: window.AvoidArea = windowClass.getWindowAvoidArea(window.AvoidAreaType.TYPE_NAVIGATION_INDICATOR)
+        let naviBarArea: window.AvoidArea =
+          windowClass.getWindowAvoidArea(window.AvoidAreaType.TYPE_NAVIGATION_INDICATOR)
 
         AppStorage.setOrCreate<number>('statusBarHeight', px2vp(area.topRect.height));
         AppStorage.setOrCreate<number>('naviIndicatorHeight', px2vp(naviBarArea.bottomRect.height));

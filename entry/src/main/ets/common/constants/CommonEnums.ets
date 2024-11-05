@@ -5,13 +5,14 @@ export enum ServiceType {
   NORMAL = 'normal',
   NULL = ''
 }
+
 export enum ServiceShowType {
   TRUE = 'true',
   FALSE = 'false'
 }
 
 export enum SettingTwoStatus {
-  ON= 'on',
+  ON = 'on',
   OFF = 'off'
 }
 

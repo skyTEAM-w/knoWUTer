@@ -75,7 +75,7 @@ export struct Service {
     .width('100%')
     .renderFit(RenderFit.CENTER)
     .backgroundBlurStyle(BlurStyle.Thick)
-    .padding({top: AppStorage.get<number>('statusBarHeight')})
+    .padding({ top: AppStorage.get<number>('statusBarHeight') })
   }
 
   @Builder
@@ -142,6 +142,7 @@ export struct Service {
               Column()
                 .height($r('app.float.navigation_title_bar_half_height'))
             }
+
             ListItemGroup() {
               ListItem() {
                 ServiceBanner({
@@ -183,8 +184,10 @@ export struct Service {
         }
       }
       .mode(NavigationMode.Stack)
-      .title({builder: NavigationTitleBar($r('app.string.text_service')),
-        height: $r('app.float.navigation_title_bar_height')}, {
+      .title({
+        builder: NavigationTitleBar($r('app.string.text_service')),
+        height: $r('app.float.navigation_title_bar_height')
+      }, {
         barStyle: BarStyle.STACK
       })
       .hideTitleBar(false)
@@ -216,7 +219,7 @@ export struct ServiceBlocks {
           }
           .width('49%')
           .height(88)
-          .clickEffect({level: ClickEffectLevel.HEAVY})
+          .clickEffect({ level: ClickEffectLevel.HEAVY })
           .backgroundColor((index % 2 === 0) ? $r('app.color.whut_blue') : $r('app.color.whut_yellow'))
           .borderRadius(16)
           .justifyContent(FlexAlign.Center)
@@ -299,7 +302,7 @@ export struct ServiceList {
     })
     .height(44)
     .width('100%')
-    .clickEffect({level: ClickEffectLevel.HEAVY})
+    .clickEffect({ level: ClickEffectLevel.HEAVY })
     .backgroundColor($r('app.color.normal_background_grey'))
     .justifyContent(FlexAlign.SpaceBetween)
     .borderRadius(8)

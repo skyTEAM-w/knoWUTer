@@ -59,6 +59,14 @@
     {
       "name": "all_service",
       "value": "All Service"
+    },
+    {
+      "name": "text_please_select",
+      "value": "Please select"
+    },
+    {
+      "name": "text_save",
+      "value": "Save"
     }
   ]
 }

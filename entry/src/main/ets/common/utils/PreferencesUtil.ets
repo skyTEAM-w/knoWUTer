@@ -1,13 +1,12 @@
-import { preferences } from "@kit.ArkData";
-import { SettingTwoStatus, UserPreferenceType } from "../constants/CommonEnums";
-import { common, Context } from "@kit.AbilityKit";
+import { preferences } from '@kit.ArkData';
+import { common } from '@kit.AbilityKit';
 
 const PREFERENCES_NAME: string = 'ApplicationPreferences';
 
 export class PreferencesUtil {
+  private static instance: PreferencesUtil;
   private preferences?: preferences.Preferences;
   private context = getContext(this) as common.UIAbilityContext;
-  private static instance: PreferencesUtil;
 
   private constructor() {
     this.initPreference(PREFERENCES_NAME);
@@ -79,6 +78,5 @@ export class PreferencesUtil {
   saveUserData() {
     this.preferences?.flush();
   }
-
 }
 

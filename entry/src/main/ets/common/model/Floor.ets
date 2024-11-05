@@ -6,5 +6,4 @@ export class Floor {
     this.Floor = Floor;
     this.FloorId = FloorId;
   }
-
 }
