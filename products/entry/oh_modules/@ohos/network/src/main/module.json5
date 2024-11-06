@@ -1,0 +1,13 @@
+{
+  "module": {
+    "name": "network",
+    "type": "har",
+    "description": "$string:module_desc",
+    "mainElement": "NetworkAbility",
+    "deviceTypes": [
+      "phone",
+      "tablet",
+      "2in1"
+    ]
+  }
+}

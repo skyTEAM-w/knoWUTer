@@ -1,0 +1,11 @@
+[
+    {
+        "Name": " OKhttp ",
+        "License": " Apache-2.0 License ",
+        "License File": " LICENSE ",
+        "Version Number": " v4.9.3 ",
+        "Owner": "xiafeng@huawei.com",
+        "Upstream URL": " https://github.com/square/okhttp ",
+        "Description": "  Meticulous HTTP client for OpenHarmony. "
+    }
+]

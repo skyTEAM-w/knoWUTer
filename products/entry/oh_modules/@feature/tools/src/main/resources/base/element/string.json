@@ -1,0 +1,28 @@
+{
+  "string": [
+    {
+      "name": "module_desc",
+      "value": "module description"
+    },
+    {
+      "name": "ToolsAbility_desc",
+      "value": "description"
+    },
+    {
+      "name": "ToolsAbility_label",
+      "value": "label"
+    },
+    {
+      "name": "text_please_select",
+      "value": "Please Select"
+    },
+    {
+      "name": "text_save",
+      "value": "Save"
+    },
+    {
+      "name": "text_tools",
+      "value": "Tools"
+    }
+  ]
+}

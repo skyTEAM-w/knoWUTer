@@ -1,0 +1,20 @@
+{
+  "string": [
+    {
+      "name": "module_desc",
+      "value": "模块描述"
+    },
+    {
+      "name": "ScheduleAbility_desc",
+      "value": "description"
+    },
+    {
+      "name": "ScheduleAbility_label",
+      "value": "label"
+    },
+    {
+      "name": "text_schedule",
+      "value": "课程表"
+    }
+  ]
+}

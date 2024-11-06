@@ -1,0 +1,76 @@
+{
+  "string": [
+    {
+      "name": "module_desc",
+      "value": "module description"
+    },
+    {
+      "name": "EntryAbility_desc",
+      "value": "description"
+    },
+    {
+      "name": "EntryAbility_label",
+      "value": "WHUT Helper"
+    },
+    {
+      "name": "bottom_text_course",
+      "value": "Course"
+    },
+    {
+      "name": "bottom_text_service",
+      "value": "Service"
+    },
+    {
+      "name": "bottom_text_home",
+      "value": "Home"
+    },
+    {
+      "name": "bottom_text_tools",
+      "value": "Tools"
+    },
+    {
+      "name": "bottom_text_user",
+      "value": "User"
+    },
+    {
+      "name": "text_tools",
+      "value": "Tools"
+    },
+    {
+      "name": "tool_electric_charge",
+      "value": "Electric Charge"
+    },
+    {
+      "name": "text_service",
+      "value": "Service"
+    },
+    {
+      "name": "text_course_table",
+      "value": "Course Table"
+    },
+    {
+      "name": "text_home",
+      "value": "Home"
+    },
+    {
+      "name": "text_user_setting",
+      "value": "User"
+    },
+    {
+      "name": "all_service",
+      "value": "All Service"
+    },
+    {
+      "name": "text_please_select",
+      "value": "Please select"
+    },
+    {
+      "name": "text_save",
+      "value": "Save"
+    },
+    {
+      "name": "internet_permission_desc",
+      "value": "internet"
+    }
+  ]
+}

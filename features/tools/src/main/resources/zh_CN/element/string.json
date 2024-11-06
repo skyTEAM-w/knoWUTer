@@ -1,0 +1,28 @@
+{
+  "string": [
+    {
+      "name": "module_desc",
+      "value": "模块描述"
+    },
+    {
+      "name": "ToolsAbility_desc",
+      "value": "description"
+    },
+    {
+      "name": "ToolsAbility_label",
+      "value": "label"
+    },
+    {
+      "name": "text_please_select",
+      "value": "请选择"
+    },
+    {
+      "name": "text_save",
+      "value": "保存"
+    },
+    {
+      "name": "text_tools",
+      "value": "工具"
+    }
+  ]
+}

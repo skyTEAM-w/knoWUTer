@@ -1,0 +1,32 @@
+{
+  "color": [
+    {
+      "name": "start_window_background",
+      "value": "#FFFFFF"
+    },
+    {
+      "name": "whut_blue",
+      "value": "#00489A"
+    },
+    {
+      "name": "whut_yellow",
+      "value": "#FAC640"
+    },
+    {
+      "name": "whut_yellow_background",
+      "value": "#0CFAC640"
+    },
+    {
+      "name": "whut_blue_background_selected",
+      "value": "#4000489A"
+    },
+    {
+      "name": "whut_yellow_background_selected",
+      "value": "#40FAC640"
+    },
+    {
+      "name": "whut_blue_background",
+      "value": "#0C00489A"
+    }
+  ]
+}

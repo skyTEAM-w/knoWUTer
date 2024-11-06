@@ -1,0 +1,16 @@
+{
+  "string": [
+    {
+      "name": "module_desc",
+      "value": "module description"
+    },
+    {
+      "name": "UicomponentsAbility_desc",
+      "value": "description"
+    },
+    {
+      "name": "UicomponentsAbility_label",
+      "value": "label"
+    }
+  ]
+}

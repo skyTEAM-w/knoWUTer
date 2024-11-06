@@ -1,0 +1,24 @@
+{
+  "name": "entry",
+  "version": "1.0.0",
+  "description": "Please describe the basic information.",
+  "main": "",
+  "author": "",
+  "license": "",
+  "dependencies": {
+//    "libark_interop_loader.so": "file:./src/main/cangjie/loader",
+    "@ohos/axios": "^2.2.2",
+    "@ohos/crypto-js": "^2.0.4",
+    "@ohos/httpclient": "^2.0.4",
+    "@ohos/utils": "file:../../common/utils",
+    "@ohos/datastore": "file:../../common/datastore",
+    "@ohos/network": "file:../../common/network",
+    "@feature/service": "file:../../features/service",
+    "@ohos/uicomponents": "file:../../common/uicomponents",
+    "@feature/tools": "file:../../features/tools",
+    "@feature/schedule": "file:../../features/schedule"
+  },
+  "devDependencies": {
+    "@type/libhello.so": "file:./src/main/cpp/types/libhello"
+  }
+}

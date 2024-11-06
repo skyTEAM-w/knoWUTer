@@ -1,0 +1,16 @@
+{
+  "string": [
+    {
+      "name": "module_desc",
+      "value": "模块描述"
+    },
+    {
+      "name": "NetworkAbility_desc",
+      "value": "description"
+    },
+    {
+      "name": "NetworkAbility_label",
+      "value": "label"
+    }
+  ]
+}

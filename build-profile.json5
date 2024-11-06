@@ -21,13 +21,13 @@
         "name": "default",
         "type": "HarmonyOS",
         "material": {
-          "certpath": "C:\\Users\\Lenovo\\.ohos\\config\\default_WHUTHelper_vMvF5ss3QK3gBXpPcOPQr4H01_HNBegYDLgB4gArjZs=.cer",
-          "storePassword": "00000019D266834E10C49D8C21B07F4D7DF689A6C5F3AEB311740E702402F0C531CDB5F25B17AD9D65",
+          "certpath": "C:\\Users\\Administrator\\.ohos\\config\\default_WHUTHelper_cp8-8MMRKniAzlzI6QW88MSuSrliDt6GEcPahalEzdI=.cer",
+          "storePassword": "0000001B4A30C516BD3C6A6FACB5B9598939248E2D9C3E3F2D112496FBD422182B6157CA01F88E049C4480",
           "keyAlias": "debugKey",
-          "keyPassword": "00000019A2B1CCA0267E30017E5E03057A53F1AF5A4DF8DF7E78A874FFF27795074B7C4B4241E2F50B",
-          "profile": "C:\\Users\\Lenovo\\.ohos\\config\\default_WHUTHelper_vMvF5ss3QK3gBXpPcOPQr4H01_HNBegYDLgB4gArjZs=.p7b",
+          "keyPassword": "0000001BD7BC145C8950574DC5D84EE31E96504B8ED6F1E11123B82586F713E95CAB2C13704A4C8383AB4C",
+          "profile": "C:\\Users\\Administrator\\.ohos\\config\\default_WHUTHelper_cp8-8MMRKniAzlzI6QW88MSuSrliDt6GEcPahalEzdI=.p7b",
           "signAlg": "SHA256withECDSA",
-          "storeFile": "C:\\Users\\Lenovo\\.ohos\\config\\default_WHUTHelper_vMvF5ss3QK3gBXpPcOPQr4H01_HNBegYDLgB4gArjZs=.p12"
+          "storeFile": "C:\\Users\\Administrator\\.ohos\\config\\default_WHUTHelper_cp8-8MMRKniAzlzI6QW88MSuSrliDt6GEcPahalEzdI=.p12"
         }
       }
     ]
@@ -35,7 +35,7 @@
   "modules": [
     {
       "name": "entry",
-      "srcPath": "./entry",
+      "srcPath": "./products/entry",
       "targets": [
         {
           "name": "default",
@@ -106,8 +106,20 @@
       ]
     },
     {
-      "name": "webviewpage",
-      "srcPath": "./features/webviewpage",
+      "name": "tools",
+      "srcPath": "./features/tools",
+      "targets": [
+        {
+          "name": "default",
+          "applyToProducts": [
+            "default"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "schedule",
+      "srcPath": "./features/schedule",
       "targets": [
         {
           "name": "default",
