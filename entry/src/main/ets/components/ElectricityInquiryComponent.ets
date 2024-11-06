@@ -417,7 +417,7 @@ export struct ElectricityInquiryTool {
         })
         .justifyContent(FlexAlign.SpaceBetween)
         .width('100%')
-        .transition(TransitionEffect.OPACITY)
+        .transition(TransitionEffect.OPACITY.combine(TransitionEffect.scale({x: 0.8, y: 0.5})))
       }
 
       if (!this.showChoice) {
