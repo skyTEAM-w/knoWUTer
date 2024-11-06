@@ -1,0 +1,16 @@
+{
+  "string": [
+    {
+      "name": "module_desc",
+      "value": "module description"
+    },
+    {
+      "name": "DatastoreAbility_desc",
+      "value": "description"
+    },
+    {
+      "name": "DatastoreAbility_label",
+      "value": "label"
+    }
+  ]
+}

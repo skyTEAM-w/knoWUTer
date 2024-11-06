@@ -1,11 +1,11 @@
 import { BottomTabsList } from '../viewmodel/BottomTabsModel';
 import { Home } from '../views/HomeView';
 import { Tools } from '../views/ToolView';
-import { Service } from '../views/ServiceView';
+import { Service } from '@feature/service';
 import { CourseTable } from '../views/CourseTableView';
 import { User } from '../views/UserView';
-import { UserSettingUtil } from '../common/utils/UserSettingUtil';
-import { DBUtil } from '../common/utils/DBUtil';
+import { UserSettingUtil } from '@ohos/utils';
+import { DBUtil } from '@ohos/datastore';
 
 
 @Entry

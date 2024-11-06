@@ -1,6 +1,6 @@
-import { NavigationTitleBar } from '../common/components/NavigationTitleBar';
-import { SettingTwoStatus } from '../common/constants/CommonEnums';
-import { UserSettingUtil } from '../common/utils/UserSettingUtil';
+import { NavigationTitleBar } from 'uicomponents/src/main/ets/components/NavigationTitleBar';
+import { SettingTwoStatus } from 'utils/src/main/ets/common/CommonEnums';
+import { UserSettingUtil } from '@ohos/utils/src/main/ets/utils/UserSettingUtil';
 
 @Component
 export struct User {

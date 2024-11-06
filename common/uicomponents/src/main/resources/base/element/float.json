@@ -1,0 +1,28 @@
+{
+  "float": [
+    {
+      "name": "component_title_size",
+      "value": "24"
+    },
+    {
+      "name": "interactive_button_height",
+      "value": "40"
+    },
+    {
+      "name": "lg_padding_margin",
+      "value": "16"
+    },
+    {
+      "name": "title_text_size",
+      "value": "20"
+    },
+    {
+      "name": "navigation_height",
+      "value": "71"
+    },
+    {
+      "name": "xxl_padding_margin",
+      "value": "16"
+    }
+  ]
+}

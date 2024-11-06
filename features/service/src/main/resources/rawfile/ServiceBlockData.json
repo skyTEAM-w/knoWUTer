@@ -1,0 +1,26 @@
+[
+  {
+    "title": "智慧理工大",
+    "url": "https://zhlgd.whut.edu.cn/tp_up/view?m=up#act=portal/viewhome"
+  },
+  {
+    "title": "教务系统",
+    "url": "https://jwxt.whut.edu.cn/jwapp/sys/homeapp/home/index.html"
+  },
+  {
+    "title": "缴费平台",
+    "url": "http://cwsf.whut.edu.cn/"
+  },
+  {
+    "title": "智慧学工",
+    "url": "https://talent.whut.edu.cn/"
+  },
+  {
+    "title": "成绩查询",
+    "url": "https://zhlgd.whut.edu.cn/tp_up/view?m=up#act=up/sysintegration/queryGrade"
+  },
+  {
+    "title": "WebVPN",
+    "url": "https://webvpn.whut.edu.cn/login"
+  }
+]

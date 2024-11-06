@@ -1,18 +1,13 @@
-import LazyDataSource from '../common/model/LazyDataSource';
-import { DBUtil } from '../common/utils/DBUtil';
-import { DormitoryLocation } from '../common/model/DormitoryLocation';
-import { ElectricityFeeUrl } from '../model/ElectricityFeeUrl';
+import LazyDataSource from '@ohos/utils/src/main/ets/utils/LazyDataSource';
+import { DBUtil, DormitoryLocation, Area, Building, Floor, Room, Meter } from '@ohos/datastore';
+import { ElectricityFeeUrl } from '@ohos/utils/src/main/ets/model/ElectricityFeeUrl';
 import { DownloadFileButton, DownloadIconStyle, promptAction } from '@kit.ArkUI';
 import { getElectricCharge, getElectricityFee } from '../common/utils/PayElectricCharge';
 import { webview } from '@kit.ArkWeb';
 import { ArrayList, JSON, taskpool } from '@kit.ArkTS';
-import { checkCWSFLoginStatus, HttpUtil } from '../common/utils/HttpUtil';
-import { Area } from '../common/model/Area';
-import { Building } from '../common/model/Building';
-import { Floor } from '../common/model/Floor';
-import { Room } from '../common/model/Room';
-import { UserSettingUtil } from '../common/utils/UserSettingUtil';
-import { HttpReserve } from '../common/model/HttpResponseImp';
+import { checkCWSFLoginStatus, HttpUtil } from 'network/src/main/ets/network/HttpUtil';
+import { UserSettingUtil } from '@ohos/utils/src/main/ets/utils/UserSettingUtil';
+import { HttpReserve } from 'network/src/main/ets/model/HttpResponseImp';
 import { http } from '@kit.NetworkKit';
 
 const TAG = '[Elec Comp]'

@@ -1,0 +1,12 @@
+{
+  "name": "network",
+  "version": "1.0.0",
+  "description": "Please describe the basic information.",
+  "main": "",
+  "author": "",
+  "license": "",
+  "dependencies": {
+    "@ohos/datastore": "file:../datastore"
+  }
+}
+

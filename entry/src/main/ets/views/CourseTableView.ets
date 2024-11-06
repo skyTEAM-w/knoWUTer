@@ -1,4 +1,4 @@
-import { NavigationTitleBar } from '../common/components/NavigationTitleBar'
+import { NavigationTitleBar } from 'uicomponents/src/main/ets/components/NavigationTitleBar'
 
 @Component
 export struct CourseTable {

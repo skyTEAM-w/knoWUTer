@@ -1,0 +1,13 @@
+{
+  "module": {
+    "name": "utils",
+    "type": "har",
+    "description": "$string:module_desc",
+    "mainElement": "UtilsAbility",
+    "deviceTypes": [
+      "phone",
+      "tablet",
+      "2in1"
+    ]
+  }
+}

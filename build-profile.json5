@@ -21,13 +21,13 @@
         "name": "default",
         "type": "HarmonyOS",
         "material": {
-          "certpath": "C:\\Users\\Administrator\\.ohos\\config\\default_WHUTHelper_cp8-8MMRKniAzlzI6QW88MSuSrliDt6GEcPahalEzdI=.cer",
-          "storePassword": "0000001B9AEECE2AE29DE68F8FAEA2EE97DD840029BD27AF04B725E6FB98C933C8E233C41A0F08114590F8",
+          "certpath": "C:\\Users\\Lenovo\\.ohos\\config\\default_WHUTHelper_vMvF5ss3QK3gBXpPcOPQr4H01_HNBegYDLgB4gArjZs=.cer",
+          "storePassword": "00000019D266834E10C49D8C21B07F4D7DF689A6C5F3AEB311740E702402F0C531CDB5F25B17AD9D65",
           "keyAlias": "debugKey",
-          "keyPassword": "0000001B5B1095A6946FD2865A4B7F4DDFD6CA4604FB9AD3BC2516333FE019E907757D593B3FF7A003B8BC",
-          "profile": "C:\\Users\\Administrator\\.ohos\\config\\default_WHUTHelper_cp8-8MMRKniAzlzI6QW88MSuSrliDt6GEcPahalEzdI=.p7b",
+          "keyPassword": "00000019A2B1CCA0267E30017E5E03057A53F1AF5A4DF8DF7E78A874FFF27795074B7C4B4241E2F50B",
+          "profile": "C:\\Users\\Lenovo\\.ohos\\config\\default_WHUTHelper_vMvF5ss3QK3gBXpPcOPQr4H01_HNBegYDLgB4gArjZs=.p7b",
           "signAlg": "SHA256withECDSA",
-          "storeFile": "C:\\Users\\Administrator\\.ohos\\config\\default_WHUTHelper_cp8-8MMRKniAzlzI6QW88MSuSrliDt6GEcPahalEzdI=.p12"
+          "storeFile": "C:\\Users\\Lenovo\\.ohos\\config\\default_WHUTHelper_vMvF5ss3QK3gBXpPcOPQr4H01_HNBegYDLgB4gArjZs=.p12"
         }
       }
     ]
@@ -36,6 +36,78 @@
     {
       "name": "entry",
       "srcPath": "./entry",
+      "targets": [
+        {
+          "name": "default",
+          "applyToProducts": [
+            "default"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "utils",
+      "srcPath": "./common/utils",
+      "targets": [
+        {
+          "name": "default",
+          "applyToProducts": [
+            "default"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "datastore",
+      "srcPath": "./common/datastore",
+      "targets": [
+        {
+          "name": "default",
+          "applyToProducts": [
+            "default"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "network",
+      "srcPath": "./common/network",
+      "targets": [
+        {
+          "name": "default",
+          "applyToProducts": [
+            "default"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "service",
+      "srcPath": "./features/service",
+      "targets": [
+        {
+          "name": "default",
+          "applyToProducts": [
+            "default"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "uicomponents",
+      "srcPath": "./common/uicomponents",
+      "targets": [
+        {
+          "name": "default",
+          "applyToProducts": [
+            "default"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "webviewpage",
+      "srcPath": "./features/webviewpage",
       "targets": [
         {
           "name": "default",

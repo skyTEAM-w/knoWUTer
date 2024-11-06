@@ -1,8 +1,8 @@
 import { webview } from '@kit.ArkWeb';
-import { DormitoryLocation } from '../model/DormitoryLocation';
-import { DBUtil } from './DBUtil';
-import { Room } from '../model/Room';
-import { HttpUtil } from './HttpUtil';
+import { DormitoryLocation } from 'datastore/src/main/ets/model/DormitoryLocation';
+import { DBUtil } from 'datastore/src/main/ets/datasotore/DBUtil';
+import { Room } from 'datastore/src/main/ets/model/Room';
+import { HttpUtil } from 'network/src/main/ets/network/HttpUtil';
 
 export function getElectricCharge(webviewController: webview.WebviewController,
   dormitoryLocation: DormitoryLocation): Promise<string> {

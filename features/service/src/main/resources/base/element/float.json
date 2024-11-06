@@ -1,0 +1,16 @@
+{
+  "float": [
+    {
+      "name": "navigation_title_bar_half_height",
+      "value": "66"
+    },
+    {
+      "name": "navigation_title_bar_height",
+      "value": "71"
+    },
+    {
+      "name": "border_radius",
+      "value": "16"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "module": {
+    "name": "webviewpage",
+    "type": "har",
+    "description": "$string:module_desc",
+    "mainElement": "WebviewpageAbility",
+    "deviceTypes": [
+      "phone",
+      "tablet",
+      "2in1"
+    ]
+  }
+}

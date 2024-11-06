@@ -1,9 +1,9 @@
 import { webview } from '@kit.ArkWeb';
-import { NavigationTitleBar } from '../common/components/NavigationTitleBar';
+import { NavigationTitleBar } from 'uicomponents/src/main/ets/components/NavigationTitleBar';
 import { getElectricCharge } from '../common/utils/PayElectricCharge';
 import { AcademicCalender } from '../components/AcademicCalendarComponent';
 import { ElectricityInquiryTool } from '../components/ElectricityInquiryComponent';
-import { DormitoryLocation } from '../common/model/DormitoryLocation';
+import { DormitoryLocation } from 'datastore/src/main/ets/model/DormitoryLocation';
 
 @Component
 export struct Tools {
