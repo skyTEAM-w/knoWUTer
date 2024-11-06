@@ -597,8 +597,7 @@ export struct ElectricityInquiryTool {
             .width('100%')
 
           }
-
-          .transition(TransitionEffect.OPACITY)
+          .transition(TransitionEffect.OPACITY.combine(TransitionEffect.scale({x: 0.8, y: 0.8})))
 
           Row() {
             Button($r('app.string.text_save'))
@@ -613,7 +612,7 @@ export struct ElectricityInquiryTool {
           .justifyContent(FlexAlign.Center)
 
         }
-        .transition(TransitionEffect.OPACITY)
+        .transition(TransitionEffect.OPACITY.combine(TransitionEffect.scale({x: 0.8, y: 0.8})))
       }
 
       Row() {
@@ -621,11 +620,11 @@ export struct ElectricityInquiryTool {
           .fontSize(20)
           .symbolEffect(new ReplaceSymbolEffect(EffectScope.WHOLE), this.showChoice)
       }
-      .width('100')
+      .width('100%')
       .justifyContent(FlexAlign.Center)
       .alignItems(VerticalAlign.Center)
       .onClick(() => {
-        animateTo({ duration: 200 }, () => {
+        animateTo({ duration: 250 ,curve: Curve.Friction}, () => {
           this.showChoice = !this.showChoice
         })
       })
@@ -759,12 +758,5 @@ struct DormitoryItem {
         }
       }
     })
-  }
-}
-
-@Component
-struct DormitoryPicker {
-  build() {
-
   }
 }
