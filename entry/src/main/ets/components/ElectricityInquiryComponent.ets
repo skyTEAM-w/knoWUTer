@@ -13,6 +13,7 @@ import { Floor } from '../common/model/Floor';
 import { Room } from '../common/model/Room';
 import { UserSettingUtil } from '../common/utils/UserSettingUtil';
 import { HttpReserve } from '../common/model/HttpResponseImp';
+import { http } from '@kit.NetworkKit';
 
 const TAG = '[Elec Comp]'
 
@@ -34,8 +35,9 @@ export struct ElectricityInquiryTool {
   @State electricityFeeHistory: string | undefined = undefined;
   @State remainPowerHistory: string | undefined = undefined;
   @State isRefresh: boolean = false;
-  @State isChoose: boolean = false;
   @State showChoice: boolean = false;
+  @State @Watch('loginButtonAnimation') loginStatus: boolean = false;
+  @State loginButtonStatus: boolean = false;
   @State selectedArea: ResourceStr = $r('app.string.text_please_select');
   @State selectedAreaIndex: number = 0;
   @State selectedBuilding: ResourceStr = $r('app.string.text_please_select');
@@ -44,13 +46,12 @@ export struct ElectricityInquiryTool {
   @State selectedFloorIndex: number = 0;
   @State selectedRoom: ResourceStr = $r('app.string.text_please_select');
   @State selectedRoomIndex: number = 0;
-  @StorageLink('fee_cookie') FeeCookie: string = AppStorage.get<string>('fee_cookie') || ''
+  @StorageLink('fee_cookie') FeeCookie: string = AppStorage.get<string>('fee_cookie') || '';
   private areaList: ArrayList<Area> | undefined = undefined;
   private buildList: ArrayList<Building> | undefined = undefined;
   private floorList: ArrayList<Floor> | undefined = undefined;
   private roomList: ArrayList<Room> | undefined = undefined;
   private httpReserve: HttpReserve | undefined = undefined;
-  private loginStatusTask: Array<taskpool.Task> = [];
   private dbUtil: DBUtil = DBUtil.getInstance();
   private httpUtil: HttpUtil = HttpUtil.getInstance();
   private webViewController: webview.WebviewController = new webview.WebviewController();
@@ -59,32 +60,10 @@ export struct ElectricityInquiryTool {
 
   aboutToAppear(): void {
     this.userUtil.checkCWSFCookie();
-    this.loginStatusTask.length = 0;
-    this.loginStatusTask.push(new taskpool.Task(checkCWSFLoginStatus, this.FeeCookie));
-    taskpool.executePeriodically(5000, this.loginStatusTask[0], taskpool.Priority.MEDIUM);
-    this.loginStatusTask[0].onReceiveData((value: boolean) => {
-      this.refreshLoginState(value);
-    })
+    this.refreshLoginState();
     this.getAreaList();
   }
 
-  onPageHide(): void {
-    try {
-      taskpool.cancel(this.loginStatusTask[0]);
-      this.loginStatusTask.pop();
-    } catch (error) {
-      console.error(TAG, JSON.stringify(error))
-    }
-  }
-
-  aboutToDisappear(): void {
-    try {
-      taskpool.cancel(this.loginStatusTask[0]);
-      this.loginStatusTask.pop();
-    } catch (error) {
-      console.error(TAG, JSON.stringify(error))
-    }
-  }
 
   jumpWebView() {
     this.isShow = false;
@@ -104,8 +83,21 @@ export struct ElectricityInquiryTool {
     }
   }
 
-  async refreshLoginState(status: boolean) {
-    console.debug(JSON.stringify(status));
+  loginButtonAnimation() {
+    this.getUIContext().animateTo({duration: 200}, () => {
+      this.loginButtonStatus = this.loginStatus;
+    })
+  }
+
+  async refreshLoginState() {
+   this.loginStatus = await this.httpUtil.checkLoginStatusForCWSF(this.FeeCookie);
+   console.debug(TAG, 'login status: ', JSON.stringify(this.loginStatus))
+   if (this.loginStatus) {
+     this.isShow = false;
+     this.isRefresh = false;
+     promptAction.showToast({ message: '登录成功' })
+     this.getAreaList();
+   }
   }
 
   async checkSelectedDormitory() {
@@ -261,7 +253,7 @@ export struct ElectricityInquiryTool {
 
   @Builder
   DormitoryBindSheet() {
-    if (!this.isRefresh && !this.isChoose) {
+    if (!this.isRefresh) {
       List({ scroller: this.scroller }) {
         ListItemGroup({ header: this.DormitoryHistorySheetHeader(), space: 5 }) {
           LazyForEach(this.tableSet, (item: DormitoryLocation, index: number) => {
@@ -276,18 +268,15 @@ export struct ElectricityInquiryTool {
       }
       .sticky(StickyStyle.Header)
       .padding({ left: 16, right: 16 })
-    } else if (!this.isChoose) {
+    } else {
       Web({ src: new ElectricityFeeUrl().url, controller: this.webViewController })
-        .onPageEnd(async () => {
+        .onPageEnd(() => {
           let FeeCookie =
             webview.WebCookieManager.fetchCookieSync('http://cwsf.whut.edu.cn/nyyPayElecPages51274E035').toString();
           this.userUtil.saveCWSFCookie(FeeCookie);
           console.info(TAG, FeeCookie);
-          let status = await this.httpUtil.checkLoginStatusForCWSF(AppStorage.get<string>('fee_cookie') as string);
-          console.debug(TAG, status);
+          this.refreshLoginState();
         })
-    } else {
-      DormitoryPicker()
     }
 
   }
@@ -314,41 +303,6 @@ export struct ElectricityInquiryTool {
     }
     .width('100%')
     .padding({ bottom: 10 })
-  }
-
-  @Builder
-  DormitoryHistorySheetItem(item: DormitoryLocation, index: number) {
-    Row() {
-      Text(`${item.Area}`)
-        .textAlign(TextAlign.Center)
-        .fontSize(12)
-        .fontWeight(400)
-        .width('24%')
-      Text(`${item.Building}`)
-        .textAlign(TextAlign.Center)
-        .fontSize(12)
-        .fontWeight(400)
-        .width('24%')
-      Text(`${item.Floor}`)
-        .fontSize(12)
-        .textAlign(TextAlign.Center)
-        .fontWeight(400)
-        .width('24%')
-      Text(`${item.Room}`)
-        .fontSize(12)
-        .textAlign(TextAlign.Center)
-        .fontWeight(400)
-        .width('24%')
-    }
-    .width('100%')
-    .height(44)
-    .justifyContent(FlexAlign.SpaceBetween)
-    .backgroundColor(this.selectedDormitoryIndex === index ? $r('app.color.whut_blue_background') :
-    $r('app.color.start_window_background'))
-    .onClick(() => {
-      this.selectedDormitoryIndex = index;
-    })
-    .borderRadius(8)
   }
 
   @Builder
@@ -389,29 +343,15 @@ export struct ElectricityInquiryTool {
         .padding({ right: 16 })
       } else {
         Row({ space: 10 }) {
-          Text('更新宿舍信息')
+          Text('登录')
             .fontSize(18)
             .fontWeight(700)
             .fontFamily('HarmonyHeiTi-medium')
             .textAlign(TextAlign.Start)
-
-          SymbolGlyph($r('sys.symbol.arrow_counterclockwise'))
-            .fontSize(24)
-            .fontWeight(FontWeight.Medium)
-            .onClick(() => {
-              if (this.isRefresh && this.selectedDormitory !== undefined) {
-                getElectricCharge(this.webViewController, this.selectedDormitory).then((fee) => {
-                  this.electricityFee = fee;
-                  this.isShow = false;
-                  promptAction.showToast({ message: '更新成功' })
-                })
-
-              }
-            })
         }
         .height(56)
         .width('100%')
-        .justifyContent(FlexAlign.SpaceBetween)
+        .alignItems(VerticalAlign.Center)
         .padding({ right: 16 })
       }
     }
@@ -420,17 +360,45 @@ export struct ElectricityInquiryTool {
 
   build() {
     Column() {
-      Text('电费查询')
-        .fontSize(18)
-        .fontWeight(700)
-        .fontFamily('HarmonyHeiTi-medium')
-        .textAlign(TextAlign.Start)
-        .width('100%')
-        .padding({ bottom: 5 })
+      Row({space: 5}) {
+        Text('电费查询')
+          .fontSize(18)
+          .fontWeight(700)
+          .fontFamily('HarmonyHeiTi-medium')
+          .textAlign(TextAlign.Start)
+          .onClick(() => {
+            this.isRefresh = true;
+            this.isShow = true;
+          })
+        Button() {
+          if (! this.loginButtonStatus) {
+            Text('未登录')
+              .fontSize(10)
+              .fontColor($r('sys.color.warning'))
+              .transition(TransitionEffect.OPACITY
+                .combine(TransitionEffect.scale({x: 0.5, y: 0.5})))
+          } else {
+            Text('已登录')
+              .fontSize(10)
+              .fontColor($r('sys.color.confirm'))
+              .transition(TransitionEffect.OPACITY
+                .combine(TransitionEffect.scale({x: 0.5, y: 0.5})))
+          }
+        }
+        .enabled(!this.loginButtonStatus)
+        .backgroundColor(Color.Transparent)
+        .border({width: 2})
+        .borderColor(this.loginStatus ? $r('sys.color.confirm') : $r('sys.color.warning'))
+        .height('70%')
+        .width(44)
         .onClick(() => {
-          this.isRefresh = true;
           this.isShow = true;
+          this.isRefresh = true;
         })
+      }
+      .padding({ bottom: 5 })
+      .width('100%')
+      .height(33)
       if (!this.showChoice) {
         Row() {
           Text(this.selectedDormitory !== undefined ? `${this.selectedDormitory.Room}` : '请选择')
@@ -446,16 +414,6 @@ export struct ElectricityInquiryTool {
         .onClick(() => {
           this.isShow = true;
           console.info(TAG, 'Bind Sheet Show')
-        })
-        .bindSheet($$this.isShow, this.DormitoryBindSheet, {
-          title: this.BindSheetTitle(),
-          detents: [SheetSize.MEDIUM, SheetSize.LARGE],
-          scrollSizeMode: ScrollSizeMode.CONTINUOUS,
-          preferType: SheetType.CENTER,
-          onDisappear: () => {
-            this.isRefresh = false;
-            this.isChoose = false;
-          }
         })
         .justifyContent(FlexAlign.SpaceBetween)
         .width('100%')
@@ -672,6 +630,15 @@ export struct ElectricityInquiryTool {
         })
       })
     }
+    .bindSheet($$this.isShow, this.DormitoryBindSheet, {
+      title: this.BindSheetTitle(),
+      detents: [SheetSize.MEDIUM, SheetSize.LARGE],
+      scrollSizeMode: ScrollSizeMode.CONTINUOUS,
+      preferType: SheetType.CENTER,
+      onDisappear: () => {
+        this.isRefresh = false;
+      }
+    })
     .justifyContent(FlexAlign.Center)
     .backgroundColor($r('app.color.whut_blue_background'))
     .borderRadius($r('app.float.border_radius'))

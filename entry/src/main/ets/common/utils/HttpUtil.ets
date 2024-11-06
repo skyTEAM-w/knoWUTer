@@ -111,11 +111,15 @@ export class HttpUtil {
 
   async checkLoginStatusForCWSF(cookie: string): Promise<boolean> {
     let response = await this.whutElectricityFeeAction(ElectricityFeeActionType.AREA, cookie);
-    if (response?.getBody().toString().match('登录')?.length as number > 0) {
-      return false;
-    } else {
-      return true;
+    if (response) {
+      let jsonObject = JSON.parse(response.getBody().toString());
+      if (JSON.has(jsonObject, 'areaList')) {
+        return true;
+      } else {
+        return false;
+      }
     }
+    return false;
   }
 
   async whutElectricityFeeAction(action: string | ElectricityFeeActionType, cookie: string,
