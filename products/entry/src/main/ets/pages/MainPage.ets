@@ -4,11 +4,11 @@ import { Tools } from '@feature/tools';
 import { Service } from '@feature/service';
 import { Schedule } from '@feature/schedule';
 import { User } from '../views/UserView';
-import { UserSettingUtil } from '@ohos/utils';
+import { BreakPointSystem, BreakPointTypeEnum, UserSettingUtil } from '@ohos/utils';
 import { DBUtil } from '@ohos/utils';
 import { WebViewPage } from '@ohos/uicomponents'
 
-
+@Preview
 @Entry
 @Component
 struct Index {
@@ -16,11 +16,22 @@ struct Index {
   @State bottomTabEffectIndex: number = 2;
   @Provide('serviceStack') serviceStack: NavPathStack = new NavPathStack();
   @Provide('appPathStack') appPathStack: NavPathStack = new NavPathStack();
+  @StorageLink('currentBreakPoint') currentBreakPoint: string = BreakPointTypeEnum.MD;
   private bottomTabController: TabsController = new TabsController();
+  private breakPointSystem: BreakPointSystem = new BreakPointSystem();
 
   onPageShow(): void {
     UserSettingUtil.getInstance().checkAllSetting();
     DBUtil.getInstance();
+
+  }
+
+  aboutToAppear(): void {
+    this.breakPointSystem.register();
+  }
+
+  aboutToDisappear(): void {
+    this.breakPointSystem.unregister();
   }
 
   @Builder
@@ -57,8 +68,8 @@ struct Index {
 
   build() {
     Navigation(this.appPathStack) {
-      Flex({ direction: FlexDirection.Column, alignItems: ItemAlign.End, justifyContent: FlexAlign.End }) {
-        Tabs({ barPosition: BarPosition.End, index: this.bottomTabIndex, controller: this.bottomTabController }) {
+      Flex({ direction: this.currentBreakPoint === BreakPointTypeEnum.LG ? FlexDirection.Row : FlexDirection.Column, alignItems: ItemAlign.End, justifyContent: FlexAlign.End }) {
+        Tabs({ barPosition: this.currentBreakPoint === BreakPointTypeEnum.LG ? BarPosition.Start : BarPosition.End, index: this.bottomTabIndex, controller: this.bottomTabController }) {
           TabContent() {
             Schedule()
           }.tabBar(this.TabBuilder(0))
@@ -91,10 +102,10 @@ struct Index {
           this.bottomTabEffectIndex = index;
         })
         .height('100%')
-        .barMode(BarMode.Fixed)
-        .barOverlap(true)
+        .barOverlap(this.currentBreakPoint !== BreakPointTypeEnum.LG)
         .barBackgroundColor(Color.Transparent)
         .barBackgroundBlurStyle(BlurStyle.Regular)
+        .vertical(this.currentBreakPoint === BreakPointTypeEnum.LG)
       }
       .width('100%')
     }

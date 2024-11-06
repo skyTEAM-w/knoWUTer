@@ -1,8 +1,8 @@
-import { TopNavigationView } from '../../../../../../../../../common/uicomponents/Index';
-import { ServiceType } from '../../../../../../../../../common/utils/Index';
+import { TopNavigationView } from '@ohos/uicomponents';
+import { ServiceType } from '@ohos/utils';
 import { ServiceListClass } from '../model/ServiceListClass';
 import { ServiceModel } from '../model/ServiceModel';
-import { ServiceUrl } from '../../../../../../../../../common/utils/src/main/ets/model/ServiceUrl';
+import { ServiceUrl } from '@ohos/utils';
 
 @Component
 export struct AllServiceList {

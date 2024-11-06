@@ -128,6 +128,18 @@
           ]
         }
       ]
+    },
+    {
+      "name": "routermodule",
+      "srcPath": "./common/routermodule",
+      "targets": [
+        {
+          "name": "default",
+          "applyToProducts": [
+            "default"
+          ]
+        }
+      ]
     }
   ]
 }

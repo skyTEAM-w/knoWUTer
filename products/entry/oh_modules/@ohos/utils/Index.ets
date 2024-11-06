@@ -19,3 +19,5 @@ export {ElectricityFeeUrl} from './src/main/ets/model/ElectricityFeeUrl';
 export {ServiceUrl} from './src/main/ets/model/ServiceUrl';
 
 export {DBUtil} from './src/main/ets/utils/DBUtil';
+
+export {BreakPointTypeEnum, BreakPointTypes, BreakPointType, BreakPointSystem} from './src/main/ets/utils/BreakPoint';

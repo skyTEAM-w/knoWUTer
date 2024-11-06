@@ -10,6 +10,7 @@
     "@ohos/axios": "^2.2.2",
     "@ohos/crypto-js": "^2.0.4",
     "@ohos/httpclient": "^2.0.4",
+    "@ohos/routermodule": "file:../../common/routermodule",
     "@ohos/utils": "file:../../common/utils",
     "@ohos/datastore": "file:../../common/datastore",
     "@ohos/network": "file:../../common/network",

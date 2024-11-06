@@ -1,13 +1,12 @@
 {
   "module": {
-    "name": "service",
+    "name": "routermodule",
     "type": "har",
     "description": "$string:module_desc",
     "deviceTypes": [
       "phone",
       "tablet",
       "2in1"
-    ],
-    "routerMap": "$profile:route_map"
+    ]
   }
 }

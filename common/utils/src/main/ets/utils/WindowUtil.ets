@@ -20,7 +20,7 @@ export class WindowUtil {
 
         AppStorage.setOrCreate<number>('statusBarHeight', px2vp(area.topRect.height));
         AppStorage.setOrCreate<number>('naviIndicatorHeight', px2vp(naviBarArea.bottomRect.height));
-
+        WindowUtil.getDeviceSize(context);
         if (area.topRect.height > 0) {
           let promise: Promise<void> = windowClass.setWindowLayoutFullScreen(isLayoutFullScreen);
           promise.then(() => {
@@ -32,6 +32,13 @@ export class WindowUtil {
       } catch {
         console.error('Failed to set the window layout to full-screen mode. ')
       }
+    });
+  }
+  static getDeviceSize(context: Context): void {
+    window.getLastWindow(context).then((data: window.Window) => {
+      let properties = data.getWindowProperties();
+      AppStorage.setOrCreate<number>('deviceHeight', px2vp(properties.windowRect.height));
+      AppStorage.setOrCreate<number>('deviceWidth', px2vp(properties.windowRect.width));
     });
   }
 }

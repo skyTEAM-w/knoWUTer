@@ -61,24 +61,6 @@ export struct Service {
   }
 
   @Builder
-  NavigationTitle(title: ResourceStr) {
-    Column() {
-      Text(title)
-        .fontSize($r('app.float.component_title_size'))
-        .fontWeight(700)
-        .width('100%')
-        .padding({ left: 16 })
-        .fontFamily('HarmonyHeiTi-Bold')
-        .lineHeight(33)
-        .textAlign(TextAlign.Start)
-    }
-    .width('100%')
-    .renderFit(RenderFit.CENTER)
-    .backgroundBlurStyle(BlurStyle.Thick)
-    .padding({ top: AppStorage.get<number>('statusBarHeight') })
-  }
-
-  @Builder
   ServiceBlockHeader() {
     Row() {
       Text('常用服务')
