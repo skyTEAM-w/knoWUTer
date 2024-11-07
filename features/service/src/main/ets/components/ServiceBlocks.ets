@@ -1,6 +1,5 @@
-import { BreakPointType, BreakPointTypeEnum, LazyDataSource, ServiceUrl } from "@ohos/utils";
-import { ServiceBlockClass } from "../model/ServiceBlockClass";
-import { LengthMetrics } from "@kit.ArkUI";
+import { BreakPointType, BreakPointTypeEnum, LazyDataSource, ServiceUrl } from '@ohos/utils';
+import { ServiceBlockClass } from '../model/ServiceBlockClass';
 
 @Component
 export struct ServiceBlocks {
@@ -11,7 +10,7 @@ export struct ServiceBlocks {
 
   build() {
     Column() {
-      List({space: 5}) {
+      List({ space: 5 }) {
         LazyForEach(this.blockList, (item: ServiceBlockClass, index: number) => {
           ListItem() {
             Row() {
@@ -32,7 +31,7 @@ export struct ServiceBlocks {
               console.log(item.url);
             })
           }
-          .padding(this.currentBreakPoint !== BreakPointTypeEnum.SM ? {right: 5, left: 5} : {left: 2.5, right: 2.5})
+          .padding(this.currentBreakPoint !== BreakPointTypeEnum.SM ? { right: 5, left: 5 } : { left: 2.5, right: 2.5 })
         })
       }
       .lanes((new BreakPointType({ sm: 2, md: 3, lg: 4 }).getValue(this.currentBreakPoint)))

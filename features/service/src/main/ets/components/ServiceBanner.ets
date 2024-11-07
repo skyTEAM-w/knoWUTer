@@ -1,5 +1,5 @@
-import { BreakPointType, BreakPointTypeEnum, ServiceUrl } from "@ohos/utils";
-import { ServiceBannerClass } from "../model/ServiceBannerClass";
+import { BreakPointType, BreakPointTypeEnum, ServiceUrl } from '@ohos/utils';
+import { ServiceBannerClass } from '../model/ServiceBannerClass';
 
 @Component
 export struct ServiceBanner {
@@ -15,30 +15,33 @@ export struct ServiceBanner {
           .objectFit(ImageFit.Contain)
           .width('100%')
           .borderRadius($r('app.float.border_radius'))
-          .padding({
-            top: 11,
-            left: 16,
-            right: 16,
-            bottom: 5
-          })
+          .padding({ right: 8, left: 8 })
           .onClick(() => {
             this.handleClick(item)
             console.log(item.url);
           })
       }, (item: ServiceBannerClass) => item.id)
     }
-    .displayCount(new BreakPointType({sm: 1, md: 1, lg: 2}).getValue(this.currentBreakPoint))
+    .displayCount(new BreakPointType({ sm: 1, md: 1, lg: 2 }).getValue(this.currentBreakPoint))
     .autoPlay(true)
     .loop(true)
-    .nextMargin(new BreakPointType({sm: $r('app.float.sm_swiper_margin'),
-                                    md: $r('app.float.md_swiper_margin'),
-                                    lg: $r('app.float.lg_swiper_margin')}).getValue(this.currentBreakPoint))
-    .prevMargin(new BreakPointType({sm: $r('app.float.sm_swiper_margin'),
+    .padding({
+      top: 11,
+      bottom: 5
+    })
+    .nextMargin(new BreakPointType({
+      sm: $r('app.float.sm_swiper_margin'),
       md: $r('app.float.md_swiper_margin'),
-      lg: $r('app.float.lg_swiper_margin')}).getValue(this.currentBreakPoint))
-    .indicator( this.currentBreakPoint !== BreakPointTypeEnum.LG ?
-      new DotIndicator()
-        .color($r('app.color.swiper_dot_color'))
-        .selectedColor($r('app.color.swiper_dot_color_selected')) : false)
+      lg: $r('app.float.lg_swiper_margin')
+    }).getValue(this.currentBreakPoint))
+    .prevMargin(new BreakPointType({
+      sm: $r('app.float.sm_swiper_margin'),
+      md: $r('app.float.md_swiper_margin'),
+      lg: $r('app.float.lg_swiper_margin')
+    }).getValue(this.currentBreakPoint))
+    .indicator(this.currentBreakPoint !== BreakPointTypeEnum.LG ?
+    new DotIndicator()
+      .color($r('app.color.swiper_dot_color'))
+      .selectedColor($r('app.color.swiper_dot_color_selected')) : false)
   }
 }

@@ -1,8 +1,7 @@
 import { TopNavigationView } from '@ohos/uicomponents';
-import { ServiceType } from '@ohos/utils';
+import { ServiceType, ServiceUrl } from '@ohos/utils';
 import { ServiceListClass } from '../model/ServiceListClass';
 import { ServiceModel } from '../model/ServiceModel';
-import { ServiceUrl } from '@ohos/utils';
 
 @Component
 export struct AllServiceList {

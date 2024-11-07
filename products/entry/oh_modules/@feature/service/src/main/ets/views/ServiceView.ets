@@ -1,12 +1,8 @@
 import { ServiceBlockClass } from '../model/ServiceBlockClass';
 import { ServiceBannerClass } from '../model/ServiceBannerClass';
 import { ServiceListClass } from '../model/ServiceListClass';
-import { ServiceUrl } from '@ohos/utils';
-import { bufferToString } from '@ohos/utils';
-import { LengthMetrics } from '@kit.ArkUI';
+import { bufferToString, ServiceUrl } from '@ohos/utils';
 import { ServiceModel } from '../model/ServiceModel';
-import { LazyDataSource } from '@ohos/utils';
-import { ServiceShowType } from '@ohos/utils';
 import { NavigationTitleBar } from '@ohos/uicomponents';
 import { ServiceBanner } from '../components/ServiceBanner';
 import { ServiceBlocks } from '../components/ServiceBlocks';

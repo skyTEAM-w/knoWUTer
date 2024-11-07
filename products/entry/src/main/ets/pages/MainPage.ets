@@ -4,9 +4,8 @@ import { Tools } from '@feature/tools';
 import { Service } from '@feature/service';
 import { Schedule } from '@feature/schedule';
 import { User } from '../views/UserView';
-import { BreakPointSystem, BreakPointTypeEnum, UserSettingUtil } from '@ohos/utils';
-import { DBUtil } from '@ohos/utils';
-import { WebViewPage } from '@ohos/uicomponents'
+import { BreakPointSystem, BreakPointTypeEnum, DBUtil, UserSettingUtil } from '@ohos/utils';
+import { WebViewPage } from '@ohos/uicomponents';
 
 @Preview
 @Entry
@@ -57,7 +56,10 @@ struct Index {
     }
     .width('100%')
     .height('100%')
-    .border({ width: this.currentBreakPoint === BreakPointTypeEnum.LG ? {top: 0, right: 0.5} : {top : 0.5, right: 0}, color: "#FF182431" })
+    .border({
+      width: this.currentBreakPoint === BreakPointTypeEnum.LG ? { top: 0, right: 0.5 } : { top: 0.5, right: 0 },
+      color: "#FF182431"
+    })
     .backgroundColor(Color.Transparent)
     .blur(BlurStyle.Regular)
     .padding({
@@ -68,8 +70,16 @@ struct Index {
 
   build() {
     Navigation(this.appPathStack) {
-      Flex({ direction: this.currentBreakPoint === BreakPointTypeEnum.LG ? FlexDirection.Row : FlexDirection.Column, alignItems: ItemAlign.End, justifyContent: FlexAlign.End }) {
-        Tabs({ barPosition: this.currentBreakPoint === BreakPointTypeEnum.LG ? BarPosition.Start : BarPosition.End, index: this.bottomTabIndex, controller: this.bottomTabController }) {
+      Flex({
+        direction: this.currentBreakPoint === BreakPointTypeEnum.LG ? FlexDirection.Row : FlexDirection.Column,
+        alignItems: ItemAlign.End,
+        justifyContent: FlexAlign.End
+      }) {
+        Tabs({
+          barPosition: this.currentBreakPoint === BreakPointTypeEnum.LG ? BarPosition.Start : BarPosition.End,
+          index: this.bottomTabIndex,
+          controller: this.bottomTabController
+        }) {
           TabContent() {
             Schedule()
           }.tabBar(this.TabBuilder(0))

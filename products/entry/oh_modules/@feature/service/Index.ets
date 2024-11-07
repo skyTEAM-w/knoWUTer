@@ -1,1 +1,1 @@
-export {Service}from './src/main/ets/views/ServiceView';
+export { Service } from './src/main/ets/views/ServiceView';

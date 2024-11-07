@@ -39,19 +39,21 @@
     "requestPermissions": [
       {
         "name": "ohos.permission.INTERNET",
-        "reason":"$string:internet_permission_desc",
-        "usedScene": {"abilities": [
-          "EntryAbility"
-        ],
+        "reason": "$string:internet_permission_desc",
+        "usedScene": {
+          "abilities": [
+            "EntryAbility"
+          ],
           "when": "inuse"
         }
       },
       {
         "name": "ohos.permission.GET_NETWORK_INFO",
-        "reason":"$string:internet_permission_desc",
-        "usedScene": {"abilities": [
-          "EntryAbility"
-        ],
+        "reason": "$string:internet_permission_desc",
+        "usedScene": {
+          "abilities": [
+            "EntryAbility"
+          ],
           "when": "inuse"
         }
       }

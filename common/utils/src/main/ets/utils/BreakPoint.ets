@@ -1,11 +1,12 @@
-import { mediaquery, window } from "@kit.ArkUI";
-import { WindowUtil } from "./WindowUtil";
+import { mediaquery, window } from '@kit.ArkUI';
+import { WindowUtil } from './WindowUtil';
 
 export enum BreakPointTypeEnum {
   SM = 'sm',
   MD = 'md',
   LG = 'lg'
-};
+}
+;
 
 export interface BreakPointTypes<T> {
   sm: T;
@@ -41,33 +42,6 @@ export class BreakPointSystem {
   private mdListener: mediaquery.MediaQueryListener | undefined;
   private lgListener: mediaquery.MediaQueryListener | undefined;
 
-  private updateCurrentBreakPoint(breakPoint: BreakPointTypeEnum) {
-    WindowUtil.getDeviceSize(getContext(this));
-    if (this.currenBreakPoint !== breakPoint) {
-      this.currenBreakPoint = breakPoint;
-      console.debug(this.currenBreakPoint)
-      AppStorage.setOrCreate<string>('currentBreakPoint', this.currenBreakPoint);
-    }
-  }
-
-  private isSM = (mediaQueryResult: mediaquery.MediaQueryResult) => {
-    if(mediaQueryResult.matches) {
-      this.updateCurrentBreakPoint(BreakPointTypeEnum.SM);
-    }
-  }
-
-  private isMD = (mediaQueryResult: mediaquery.MediaQueryResult) => {
-    if(mediaQueryResult.matches) {
-      this.updateCurrentBreakPoint(BreakPointTypeEnum.MD);
-    }
-  }
-
-  private isLG = (mediaQueryResult: mediaquery.MediaQueryResult) => {
-    if(mediaQueryResult.matches) {
-      this.updateCurrentBreakPoint(BreakPointTypeEnum.LG);
-    }
-  }
-
   public register() {
     this.smListener = mediaquery.matchMediaSync('(320vp<=width<600vp)');
     if (this.smListener?.matches) {
@@ -94,6 +68,32 @@ export class BreakPointSystem {
     this.lgListener?.off('change', this.isLG);
   }
 
+  private updateCurrentBreakPoint(breakPoint: BreakPointTypeEnum) {
+    WindowUtil.getDeviceSize(getContext(this));
+    if (this.currenBreakPoint !== breakPoint) {
+      this.currenBreakPoint = breakPoint;
+      console.debug(this.currenBreakPoint)
+      AppStorage.setOrCreate<string>('currentBreakPoint', this.currenBreakPoint);
+    }
+  }
+
+  private isSM = (mediaQueryResult: mediaquery.MediaQueryResult) => {
+    if (mediaQueryResult.matches) {
+      this.updateCurrentBreakPoint(BreakPointTypeEnum.SM);
+    }
+  }
+
+  private isMD = (mediaQueryResult: mediaquery.MediaQueryResult) => {
+    if (mediaQueryResult.matches) {
+      this.updateCurrentBreakPoint(BreakPointTypeEnum.MD);
+    }
+  }
+
+  private isLG = (mediaQueryResult: mediaquery.MediaQueryResult) => {
+    if (mediaQueryResult.matches) {
+      this.updateCurrentBreakPoint(BreakPointTypeEnum.LG);
+    }
+  }
 }
 
 

@@ -1,13 +1,9 @@
-import { LazyDataSource } from '@ohos/utils';
-import { DormitoryLocation, Area, Building, Floor, Room, Meter } from '@ohos/datastore';
-import { ElectricityFeeUrl } from '@ohos/utils';
+import { DBUtil, ElectricityFeeUrl, LazyDataSource, UserSettingUtil } from '@ohos/utils';
+import { Area, Building, DormitoryLocation, Floor, Room } from '@ohos/datastore';
 import { DownloadFileButton, DownloadIconStyle, promptAction } from '@kit.ArkUI';
 import { webview } from '@kit.ArkWeb';
-import { ArrayList, JSON, taskpool } from '@kit.ArkTS';
-import {  HttpUtil, HttpReserve } from '@ohos/network';
-import { UserSettingUtil, DBUtil } from '@ohos/utils';
-import { http } from '@kit.NetworkKit';
-
+import { ArrayList, JSON } from '@kit.ArkTS';
+import { HttpReserve, HttpUtil } from '@ohos/network';
 const TAG = '[Elec Comp]'
 
 @Component
@@ -57,7 +53,6 @@ export struct ElectricityInquiryTool {
     this.getAreaList();
   }
 
-
   jumpWebView() {
     this.isShow = false;
     this.appPathStack.pushPathByName('WebViewPage', new Object({
@@ -77,20 +72,20 @@ export struct ElectricityInquiryTool {
   }
 
   loginButtonAnimation() {
-    this.getUIContext().animateTo({duration: 200}, () => {
+    this.getUIContext().animateTo({ duration: 200 }, () => {
       this.loginButtonStatus = this.loginStatus;
     })
   }
 
   async refreshLoginState() {
-   this.loginStatus = await this.httpUtil.checkLoginStatusForCWSF(this.FeeCookie);
-   console.debug(TAG, 'login status: ', JSON.stringify(this.loginStatus))
-   if (this.loginStatus) {
-     this.isShow = false;
-     this.isRefresh = false;
-     promptAction.showToast({ message: '登录成功' })
-     this.getAreaList();
-   }
+    this.loginStatus = await this.httpUtil.checkLoginStatusForCWSF(this.FeeCookie);
+    console.debug(TAG, 'login status: ', JSON.stringify(this.loginStatus))
+    if (this.loginStatus) {
+      this.isShow = false;
+      this.isRefresh = false;
+      promptAction.showToast({ message: '登录成功' })
+      this.getAreaList();
+    }
   }
 
   async checkSelectedDormitory() {
@@ -173,18 +168,19 @@ export struct ElectricityInquiryTool {
     this.selectedRoom = this.roomPickerList[this.selectedRoomIndex];
     this.getElectricityFeeAndPower(this.roomList?.[this.selectedRoomIndex], false)
   }
+
   async getElectricityFee(cookie: string, room: Room) {
-  let meter = await this.httpUtil.getMeterIdHttp(cookie, room);
-  if (meter) {
-    let httpReserve = await this.httpUtil.getElectricityFeeHttp(cookie, meter);
-    if (httpReserve) {
-      console.debug(JSON.stringify(httpReserve));
-      return httpReserve;
+    let meter = await this.httpUtil.getMeterIdHttp(cookie, room);
+    if (meter) {
+      let httpReserve = await this.httpUtil.getElectricityFeeHttp(cookie, meter);
+      if (httpReserve) {
+        console.debug(JSON.stringify(httpReserve));
+        return httpReserve;
+      }
+      return undefined;
     }
     return undefined;
   }
-  return undefined;
-}
 
   async getElectricityFeeAndPower(room: Room | undefined, isHistory: boolean) {
     if (room) {
@@ -365,7 +361,7 @@ export struct ElectricityInquiryTool {
 
   build() {
     Column() {
-      Row({space: 5}) {
+      Row({ space: 5 }) {
         Text('电费查询')
           .fontSize(18)
           .fontWeight(700)
@@ -376,23 +372,23 @@ export struct ElectricityInquiryTool {
             this.isShow = true;
           })
         Button() {
-          if (! this.loginButtonStatus) {
+          if (!this.loginButtonStatus) {
             Text('未登录')
               .fontSize(10)
               .fontColor($r('sys.color.warning'))
               .transition(TransitionEffect.OPACITY
-                .combine(TransitionEffect.scale({x: 0.5, y: 0.5})))
+                .combine(TransitionEffect.scale({ x: 0.5, y: 0.5 })))
           } else {
             Text('已登录')
               .fontSize(10)
               .fontColor($r('sys.color.confirm'))
               .transition(TransitionEffect.OPACITY
-                .combine(TransitionEffect.scale({x: 0.5, y: 0.5})))
+                .combine(TransitionEffect.scale({ x: 0.5, y: 0.5 })))
           }
         }
         .enabled(!this.loginButtonStatus)
         .backgroundColor(Color.Transparent)
-        .border({width: 2})
+        .border({ width: 2 })
         .borderColor(this.loginStatus ? $r('sys.color.confirm') : $r('sys.color.warning'))
         .height('70%')
         .width(44)
@@ -404,6 +400,7 @@ export struct ElectricityInquiryTool {
       .padding({ bottom: 5 })
       .width('100%')
       .height(33)
+
       if (!this.showChoice) {
         Row() {
           Text(this.selectedDormitory !== undefined ? `${this.selectedDormitory.Room}` : '请选择')
@@ -422,7 +419,7 @@ export struct ElectricityInquiryTool {
         })
         .justifyContent(FlexAlign.SpaceBetween)
         .width('100%')
-        .transition(TransitionEffect.OPACITY.combine(TransitionEffect.scale({x: 0.8, y: 0.5})))
+        .transition(TransitionEffect.OPACITY.combine(TransitionEffect.scale({ x: 0.8, y: 0.5 })))
       }
 
       if (!this.showChoice) {
@@ -602,7 +599,7 @@ export struct ElectricityInquiryTool {
             .width('100%')
 
           }
-          .transition(TransitionEffect.OPACITY.combine(TransitionEffect.scale({x: 0.8, y: 0.8})))
+          .transition(TransitionEffect.OPACITY.combine(TransitionEffect.scale({ x: 0.8, y: 0.8 })))
 
           Row() {
             Button($r('app.string.text_save'))
@@ -617,7 +614,7 @@ export struct ElectricityInquiryTool {
           .justifyContent(FlexAlign.Center)
 
         }
-        .transition(TransitionEffect.OPACITY.combine(TransitionEffect.scale({x: 0.8, y: 0.8})))
+        .transition(TransitionEffect.OPACITY.combine(TransitionEffect.scale({ x: 0.8, y: 0.8 })))
       }
 
       Row() {
@@ -629,7 +626,7 @@ export struct ElectricityInquiryTool {
       .justifyContent(FlexAlign.Center)
       .alignItems(VerticalAlign.Center)
       .onClick(() => {
-        animateTo({ duration: 250 ,curve: Curve.Friction}, () => {
+        animateTo({ duration: 250, curve: Curve.Friction }, () => {
           this.showChoice = !this.showChoice
         })
       })

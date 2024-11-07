@@ -33,20 +33,24 @@ export struct Tools {
     Navigation() {
       Column()
         .height($r('app.float.navigation_title_bar_height'))
-        .padding({top: AppStorage.get<number>('statusBarHeight')})
+        .padding({ top: AppStorage.get<number>('statusBarHeight') })
       WaterFlow() {
         FlowItem() {
           ElectricityInquiryTool({ webViewController: this.webviewController })
         }
-        .padding(this.currentBreakPoint === BreakPointTypeEnum.LG ? {right: 5, top: 5, bottom: 5} : 0)
+        .padding(this.currentBreakPoint === BreakPointTypeEnum.LG ? { right: 5, top: 5, bottom: 5 } : 0)
 
         FlowItem() {
           AcademicCalender()
         }
-        .padding(this.currentBreakPoint === BreakPointTypeEnum.LG ? {right: 5, top: 5, bottom: 5} : 0)
+        .padding(this.currentBreakPoint === BreakPointTypeEnum.LG ? { right: 5, top: 5, bottom: 5 } : 0)
 
       }
-      .columnsTemplate(new BreakPointType({ sm: '1fr', md: '1fr 1fr', lg: 'repeat(auto-fill, 300)'}).getValue(this.currentBreakPoint))
+      .columnsTemplate(new BreakPointType({
+        sm: '1fr',
+        md: '1fr 1fr',
+        lg: '1fr 1fr 1fr'
+      }).getValue(this.currentBreakPoint))
       .columnsGap(10)
       .rowsGap(10)
       .padding({ left: 16, right: 16 })

@@ -138,6 +138,7 @@ export class Meter {
     this.MeterId = MeterId;
   }
 }
+
 export class Room {
   Room: string = '';
   RoomId: string = '';

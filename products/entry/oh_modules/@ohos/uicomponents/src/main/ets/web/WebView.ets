@@ -2,7 +2,7 @@ import { DownloadFileButton, DownloadIconStyle, promptAction } from '@kit.ArkUI'
 import { webview } from '@kit.ArkWeb';
 import { BusinessError, pasteboard } from '@kit.BasicServicesKit';
 import { common, Want } from '@kit.AbilityKit';
-import { WebUrl, ServiceUrl } from '@ohos/utils';
+import { ServiceUrl, WebUrl } from '@ohos/utils';
 import { DormitoryLocation } from '@ohos/datastore';
 
 @Component
@@ -14,7 +14,6 @@ export struct WebViewPage {
   isImport: Boolean = false;
   isRefresh: Boolean = false;
   private webViewController: webview.WebviewController = new webview.WebviewController();
-
   onDestinationBack?: () => boolean = () => false;
 
   @Builder
@@ -26,7 +25,7 @@ export struct WebViewPage {
         })
       MenuItem({ content: "在浏览器打开" })
         .onClick(() => {
-          if(this.webUrl) {
+          if (this.webUrl) {
             let context = getContext(this) as common.UIAbilityContext;
             startBrowsableAbility(context, this.webUrl.url)
           }

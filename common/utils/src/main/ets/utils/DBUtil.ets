@@ -1,7 +1,7 @@
 import { relationalStore, ValuesBucket } from '@kit.ArkData';
 import { common } from '@kit.AbilityKit';
-import  LazyDataSource  from './LazyDataSource';
-import { DormitoryLocation, Area, Building, Floor, Meter, Room } from '@ohos/datastore';
+import LazyDataSource from './LazyDataSource';
+import { Area, Building, DormitoryLocation, Floor, Meter, Room } from '@ohos/datastore';
 import { ArrayList, JSON } from '@kit.ArkTS';
 
 const TAG = '[DBUtil]'
@@ -66,6 +66,44 @@ const DORM_LOCATION_TABLE_SQL = 'CREATE TABLE IF NOT EXISTS DormitoryLocation (\
   '    FOREIGN KEY (RoomId) REFERENCES Rooms(RoomId)' +
   ');'
 
+const SCHEDULE_TABLE_INFO_TABLE_SQL = 'CREATE TABLE IF NOT EXISTS ScheduleTableInformation (' +
+  '    TableId INTEGER PRIMARY KEY AUTOINCREMENT,' +
+  '    TableName VARCHAR(255) NOT NULL,' +
+  '    StartDate TEXT NOTNULL' +
+  ');';
+
+const COURSE_INFO_TABLE_SQL = 'CREATE TABLE IF NOT EXISTS CourseInformation (' +
+  '    TableId VARCHAR(255) NOT NULL,' +
+  '    ClassId VARCHAR(255) NOT NULL,\n' +
+  '    CourseName VARCHAR(255) NOT NULL,\n' +
+  '    Credit VARCHAR(255) DEFAULT NULL,\n' +
+  '    CreditHours VARCHAR(255) DEFAULT NULL,\n' +
+  '    ExamPlace VARCHAR(255) DEFAULT NULL,\n' +
+  '    ExamDate VARCHAR(255) DEFAULT NULL,\n' +
+  '    TeachingProcess VARCHAR(255) DEFAULT NULL,\n' +
+  '    ClassDateAndPlace VARCHAR(255) DEFAULT NULL,\n' +
+  '    CourseNo VARCHAR(255) NOT NULL,\n' +
+  '    CourseSerialNum VARCHAR(255) NOT NULL,' +
+  '    Color TEXT DEFAULT NULL,' +
+  '    UNIQUE (TableId, ClassId),' +
+  '    FOREIGN KEY (TableId) REFERENCES ScheduleTableInformation(TableId)' +
+  ');';
+
+const COURSE_SCHEDULE_TABLE_SQL = 'CREATE TABLE IF NOT EXISTS CourseSchedule (' +
+  '   TableId VARCHAR(255) NOT NULL,' +
+  '   ClassId VARCHAR(255) NOT NULL,' +
+  '   ScheduleId VARCHAR(255) NOT NULL,' +
+  '   StartWeek INTEGER NOT NULL,' +
+  '   EndWeek INTEGER NOT NULL,' +
+  '   WeekDay TEXT NOT NULL,' +
+  '   StarSession INTEGER NOT NULL,' +
+  '   EndSession INTEGER NOT NULL,' +
+  '   Place TEXT NOT NULL,' +
+  '   UNIQUE(TableId, ClassId, ScheduleId),' +
+  '   FOREIGN KEY (TableId) REFERENCES ScheduleTableInformation(TableId),' +
+  '   FOREIGN KEY (ClassId) REFERENCES CourseInformation(ClassId)' +
+  ');'
+
 export class DBUtil {
   public static instance: DBUtil;
   private store?: relationalStore.RdbStore;
@@ -86,13 +124,16 @@ export class DBUtil {
     relationalStore.getRdbStore(this.context, storeConfig).then((store: relationalStore.RdbStore) => {
       this.store = store;
       try {
-        // this.executeMySql('drop table DormitoryLocation;')
+        // this.executeMySql('drop table ScheduleTableInformation;')
         this.executeMySql(AREAS_TABLE_SQL);
         this.executeMySql(BUILDINGS_TABLE_SQL);
         this.executeMySql(FLOOR_TABLE_SQL);
         this.executeMySql(ROOM_TABLE_SQL);
         this.executeMySql(METER_TABLE_SQL);
         this.executeMySql(DORM_LOCATION_TABLE_SQL);
+        this.executeMySql(SCHEDULE_TABLE_INFO_TABLE_SQL);
+        this.executeMySql(COURSE_INFO_TABLE_SQL);
+        this.executeMySql(COURSE_SCHEDULE_TABLE_SQL);
       } catch (err) {
         console.error(TAG, `Init failed, code is ${err.code},message is ${err.message}`)
       }
@@ -108,6 +149,65 @@ export class DBUtil {
       console.error(TAG, sql + `failed, code is ${err.code},message is ${err.message}`)
     }
 
+  }
+
+  queryMySql(sql: string) {
+    try {
+      let resultSet: relationalStore.ResultSet = (this.store as relationalStore.RdbStore).querySqlSync(sql);
+      if (resultSet) {
+        return resultSet;
+      } else {
+        return false;
+      }
+    } catch (error) {
+      console.error(TAG, sql + `failed, code is ${error.code},message is ${error.message}`)
+      return false;
+    }
+  }
+
+  queryMyPredicates(predicates: relationalStore.RdbPredicates, columns?: string[] | undefined) {
+    try {
+      let resultSet: relationalStore.ResultSet =
+        (this.store as relationalStore.RdbStore).querySync(predicates, columns);
+      if (resultSet) {
+        return resultSet;
+      }
+      return false;
+    } catch (error) {
+      console.error(TAG, 'queryMyPredicates', `failed, code is ${error.code}, message is ${error.message}`);
+      return false;
+    }
+  }
+
+  insertMyValueBucket(valueBucket: ValuesBucket, tableName: string,
+    conflictResolve: relationalStore.ConflictResolution) {
+    try {
+      let rows: number = (this.store as relationalStore.RdbStore).insertSync(tableName, valueBucket, conflictResolve);
+      if (rows > 0) {
+        console.info(TAG, 'insertMyValueBucket', `Insert row at: ${rows}`)
+        return true;
+      } else {
+        return false;
+      }
+    } catch (error) {
+      console.error(TAG, 'insertMyValueBucket', `failed, code is ${error.code},message is ${error.message}`)
+      return false;
+    }
+  }
+
+  updateMyValueBucket(valueBucket: ValuesBucket, predicates: relationalStore.RdbPredicates,
+    conflictResolve: relationalStore.ConflictResolution, columns?: string[]) {
+    try {
+      let rows: number = (this.store as relationalStore.RdbStore).updateSync(valueBucket, predicates, conflictResolve);
+      if (rows && rows > 0) {
+        console.info(TAG, 'updateMyValueBucket', `Update row at: ${rows}`);
+        return true;
+      }
+      return false;
+    } catch (error) {
+      console.error(TAG, 'updateMyValueBucket', `Update failed, code is ${error.code},message is ${error.message}`)
+      return false;
+    }
   }
 
   queryDormitoryHistory(): LazyDataSource<DormitoryLocation> {

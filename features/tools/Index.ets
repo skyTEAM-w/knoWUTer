@@ -1,1 +1,1 @@
-export {Tools} from './src/main/ets/views/ToolView';
+export { Tools } from './src/main/ets/views/ToolView';

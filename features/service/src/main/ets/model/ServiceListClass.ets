@@ -1,5 +1,4 @@
-import { ServiceUrl } from '@ohos/utils';
-import { ServiceShowType, ServiceType } from '@ohos/utils';
+import { ServiceShowType, ServiceType, ServiceUrl } from '@ohos/utils';
 
 export class ServiceListClass implements ServiceUrl {
   serviceName: string = '';

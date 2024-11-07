@@ -34,6 +34,7 @@ export class WindowUtil {
       }
     });
   }
+
   static getDeviceSize(context: Context): void {
     window.getLastWindow(context).then((data: window.Window) => {
       let properties = data.getWindowProperties();

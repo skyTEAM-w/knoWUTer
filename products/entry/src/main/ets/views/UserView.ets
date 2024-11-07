@@ -1,6 +1,5 @@
 import { NavigationTitleBar } from '@ohos/uicomponents';
-import { SettingTwoStatus } from '@ohos/utils';
-import { UserSettingUtil } from '@ohos/utils';
+import { SettingTwoStatus, UserSettingUtil } from '@ohos/utils';
 
 @Component
 export struct User {

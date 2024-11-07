@@ -23,8 +23,7 @@
     {
       "name": "navigation_title_bar_half_height",
       "value": "66"
-    }
-    ,
+    },
     {
       "name": "page_left_and_right_padding",
       "value": "16"

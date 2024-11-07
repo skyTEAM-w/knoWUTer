@@ -1,16 +1,15 @@
 import { FormEncoder, HttpClient, Request, RequestBody, Response, TimeUnit } from '@ohos/httpclient';
-import { ArrayList, JSON, taskpool } from '@kit.ArkTS';
-import { DormitoryLocation, Area, Building, Floor, Room, Meter, } from '@ohos/datastore';
-import {DBUtil} from '@ohos/utils'
+import { ArrayList, JSON } from '@kit.ArkTS';
+import { Area, Building, DormitoryLocation, Floor, Meter, Room, } from '@ohos/datastore';
+import { DBUtil } from '@ohos/utils';
 import {
-    HttpAreaList,
-    HttpBuildingList,
-    HttpFloorList,
-    HttpMeter,
-    HttpReserve,
-    HttpRoomList
+  HttpAreaList,
+  HttpBuildingList,
+  HttpFloorList,
+  HttpMeter,
+  HttpReserve,
+  HttpRoomList
 } from '../model/HttpResponseImp';
-
 
 const TAG = '[HttpUtil]'
 
@@ -50,6 +49,25 @@ export class HttpUtil {
       .addHeader("User-Agent",
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36 Edg/116.0.1938.76")
       .addHeader("Content-Type", "application/x-www-form-urlencoded")
+      .build()
+    return await client.newCall(request).execute();
+  }
+
+  async HttpGet(url: string, cookies: string): Promise<Response | undefined> {
+    let client = new HttpClient.Builder().setConnectTimeout(30, TimeUnit.SECONDS)
+      .setReadTimeout(30, TimeUnit.SECONDS).setWriteTimeout(30, TimeUnit.SECONDS).build();
+    let request = new Request.Builder()
+      .get(url)
+      .addHeader("Accept", "*/*")
+      .addHeader("Accept-Encoding", "gzip, deflate")
+      .addHeader("Accept-Language", "zh-CN,zh;q=0.9,en-GB;q=0.8,en-US;q=0.7,en;q=0.6")
+      .addHeader("Cache-Control", "max-age=0")
+      .addHeader("Connection", "keep-alive")
+      .addHeader("Cookie", cookies)
+      .addHeader("Pragma", "no-cache")
+      .addHeader("Upgrade-Insecure-Requests", "1")
+      .addHeader("User-Agent",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36 Edg/116.0.1938.76")
       .build()
     return await client.newCall(request).execute();
   }
@@ -306,36 +324,3 @@ export class HttpUtil {
     return res;
   }
 }
-
-@Concurrent
-export async function checkCWSFLoginStatus(cookie: string) {
-  let client = new HttpClient.Builder().setConnectTimeout(30, TimeUnit.SECONDS)
-    .setReadTimeout(30, TimeUnit.SECONDS).setWriteTimeout(30, TimeUnit.SECONDS).build();
-  let formEncoder = new FormEncoder.Builder().add("factorycode", "E035").build();
-  console.info('checkCWSFLoginStatus', "factorycode", "E035")
-  let feBody = formEncoder.createRequestBody();
-  let request = new Request.Builder().url('http://cwsf.whut.edu.cn/getAreaInfo')
-    .post(feBody)
-    .addHeader("Accept",
-      "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7")
-    .addHeader("Accept-Encoding", "gzip, deflate")
-    .addHeader("Accept-Language", "zh-CN,zh;q=0.9,en-GB;q=0.8,en-US;q=0.7,en;q=0.6")
-    .addHeader("Cache-Control", "no-cache")
-    .addHeader("Connection", "keep-alive")
-    .addHeader("Cookie", cookie)
-    .addHeader("Pragma", "no-cache")
-    .addHeader("Upgrade-Insecure-Requests", "1")
-    .addHeader("User-Agent",
-      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36 Edg/116.0.1938.76")
-    .addHeader("Content-Type", "application/x-www-form-urlencoded")
-    .build()
-  let response = await client.newCall(request).execute();
-  if (response?.getBody().toString().match('登录')?.length as number > 0) {
-    taskpool.Task.sendData(false);
-    return false;
-  } else {
-    taskpool.Task.sendData(true);
-    return true;
-  }
-}
-

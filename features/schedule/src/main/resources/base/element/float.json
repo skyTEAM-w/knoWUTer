@@ -3,6 +3,14 @@
     {
       "name": "navigation_title_bar_height",
       "value": "71"
+    },
+    {
+      "name": "md_padding_margin",
+      "value": "12"
+    },
+    {
+      "name": "schedule_navigation_height",
+      "value": "66"
     }
   ]
 }
