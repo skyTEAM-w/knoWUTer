@@ -11,6 +11,26 @@
     {
       "name": "border_radius",
       "value": "16"
+    },
+    {
+      "name": "lg_service_list_height",
+      "value": "88"
+    },
+    {
+      "name": "normal_service_list_height",
+      "value": "44"
+    },
+    {
+      "name": "sm_swiper_margin",
+      "value": "12"
+    },
+    {
+      "name": "md_swiper_margin",
+      "value": "100"
+    },
+    {
+      "name": "lg_swiper_margin",
+      "value": "48"
     }
   ]
 }

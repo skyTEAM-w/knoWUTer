@@ -1,5 +1,6 @@
 import { webview } from '@kit.ArkWeb';
 import { NavigationTitleBar } from '@ohos/uicomponents';
+import { BreakPointType, BreakPointTypeEnum } from '@ohos/utils';
 import { AcademicCalender } from '../components/AcademicCalendarComponent';
 import { ElectricityInquiryTool } from '../components/ElectricityInquiryComponent';
 
@@ -7,6 +8,7 @@ import { ElectricityInquiryTool } from '../components/ElectricityInquiryComponen
 export struct Tools {
   @Consume('appPathStack') appPathStack: NavPathStack;
   @StorageLink('Cookie') cookie: string = '';
+  @StorageLink('currentBreakPoint') currentBreakPoint: string = BreakPointTypeEnum.MD;
   private webviewController: webview.WebviewController = new webview.WebviewController();
   private webResult: string = '';
 
@@ -29,20 +31,24 @@ export struct Tools {
 
   build() {
     Navigation() {
-      List({ space: 10 }) {
-        ListItem() {
-          Column()
-            .height($r('app.float.navigation_title_bar_half_height'))
-        }
-
-        ListItem() {
+      Column()
+        .height($r('app.float.navigation_title_bar_height'))
+        .padding({top: AppStorage.get<number>('statusBarHeight')})
+      WaterFlow() {
+        FlowItem() {
           ElectricityInquiryTool({ webViewController: this.webviewController })
         }
+        .padding(this.currentBreakPoint === BreakPointTypeEnum.LG ? {right: 5, top: 5, bottom: 5} : 0)
 
-        ListItem() {
+        FlowItem() {
           AcademicCalender()
         }
+        .padding(this.currentBreakPoint === BreakPointTypeEnum.LG ? {right: 5, top: 5, bottom: 5} : 0)
+
       }
+      .columnsTemplate(new BreakPointType({ sm: '1fr', md: '1fr 1fr', lg: 'repeat(auto-fill, 300)'}).getValue(this.currentBreakPoint))
+      .columnsGap(10)
+      .rowsGap(10)
       .padding({ left: 16, right: 16 })
 
     }
@@ -53,7 +59,6 @@ export struct Tools {
     }, {
       barStyle: BarStyle.STACK
     })
-    .titleMode(NavigationTitleMode.Mini)
     .hideTitleBar(false)
     .hideBackButton(true)
 

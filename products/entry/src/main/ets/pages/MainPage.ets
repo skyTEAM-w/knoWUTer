@@ -57,12 +57,12 @@ struct Index {
     }
     .width('100%')
     .height('100%')
-    .border({ width: { top: 0.5 }, color: "#FF182431" })
+    .border({ width: this.currentBreakPoint === BreakPointTypeEnum.LG ? {top: 0, right: 0.5} : {top : 0.5, right: 0}, color: "#FF182431" })
     .backgroundColor(Color.Transparent)
     .blur(BlurStyle.Regular)
     .padding({
-      bottom: AppStorage.get<number>('naviIndicatorHeight'),
-      top: 8
+      bottom: this.currentBreakPoint === BreakPointTypeEnum.LG ? 8 : AppStorage.get<number>('naviIndicatorHeight'),
+      top: this.currentBreakPoint === BreakPointTypeEnum.LG ? AppStorage.get<number>('statusBarHeight') : 8
     })
   }
 
@@ -92,8 +92,8 @@ struct Index {
 
         }
         .width('100%')
-        .vertical(false)
-        .barHeight('10%')
+        .barHeight(this.currentBreakPoint === BreakPointTypeEnum.LG ? '100%' : '10%')
+        .barWidth(this.currentBreakPoint === BreakPointTypeEnum.LG ? '5%' : '100%')
         .scrollable(false)
         .onChange((index: number) => {
           this.bottomTabIndex = index;

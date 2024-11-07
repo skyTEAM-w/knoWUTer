@@ -8,6 +8,9 @@ import { ServiceModel } from '../model/ServiceModel';
 import { LazyDataSource } from '@ohos/utils';
 import { ServiceShowType } from '@ohos/utils';
 import { NavigationTitleBar } from '@ohos/uicomponents';
+import { ServiceBanner } from '../components/ServiceBanner';
+import { ServiceBlocks } from '../components/ServiceBlocks';
+import { ServiceList } from '../components/ServiceList';
 
 
 @Component
@@ -178,134 +181,6 @@ export struct Service {
   }
 }
 
-@Component
-export struct ServiceBlocks {
-  @ObjectLink blockList: LazyDataSource<ServiceBlockClass>;
-  handleClick: (item: ServiceUrl) => void = () => {
-  }
 
-  build() {
-    Column() {
-      Flex({
-        wrap: FlexWrap.Wrap,
-        justifyContent: FlexAlign.SpaceBetween,
-        space: { main: LengthMetrics.px(10), cross: LengthMetrics.px(20) }
-      }) {
-        LazyForEach(this.blockList, (item: ServiceBlockClass, index: number) => {
-          Row() {
-            Text(item.title)
-              .fontSize(16)
-              .textAlign(TextAlign.Center)
-              .fontWeight(500)
-              .fontColor((index % 2 === 0) ? $r('app.color.whut_yellow') : $r('app.color.whut_blue'))
-          }
-          .width('49%')
-          .height(88)
-          .clickEffect({ level: ClickEffectLevel.HEAVY })
-          .backgroundColor((index % 2 === 0) ? $r('app.color.whut_blue') : $r('app.color.whut_yellow'))
-          .borderRadius(16)
-          .justifyContent(FlexAlign.Center)
-          .onClick(() => {
-            this.handleClick(item)
-            console.log(item.url);
-          })
-        })
-      }
-      .padding({
-        top: 11,
-        left: 16,
-        right: 16,
-        bottom: 11
-      })
-    }
-  }
-}
 
-@Component
-export struct ServiceBanner {
-  @Prop bannerList: ServiceBannerClass[];
-  handleClick: (item: ServiceUrl) => void = () => {
-  }
 
-  build() {
-    Swiper() {
-      ForEach(this.bannerList, (item: ServiceBannerClass) => {
-        Image($r(item.imageSrc))
-          .objectFit(ImageFit.Contain)
-          .width('100%')
-          .borderRadius($r('app.float.border_radius'))
-          .padding({
-            top: 11,
-            left: 16,
-            right: 16,
-            bottom: 5
-          })
-          .onClick(() => {
-            this.handleClick(item)
-            console.log(item.url);
-          })
-      }, (item: ServiceBannerClass) => item.id)
-    }
-    .autoPlay(true)
-    .loop(true)
-    .indicator(
-      new DotIndicator()
-        .color($r('app.color.swiper_dot_color'))
-        .selectedColor($r('app.color.swiper_dot_color_selected')))
-  }
-}
-
-@Component
-export struct ServiceList {
-  @ObjectLink listList: LazyDataSource<ServiceListClass>;
-  handleClick: (item: ServiceUrl) => void = () => {
-  }
-
-  @Builder
-  ServiceListItem(item: ServiceListClass) {
-    Row({ space: 5 }) {
-      Image($r(item.imageUrl))
-        .objectFit(ImageFit.Contain)
-        .height('90%')
-        .width('10%')
-      Column() {
-        Text(item.serviceName)
-          .fontColor(Color.White)
-          .fontWeight(400)
-      }
-      .justifyContent(FlexAlign.Center)
-      .height('95%')
-      .width('88%')
-      .backgroundColor($r('app.color.service_list_background'))
-      .borderRadius(8)
-    }
-    .onClick(() => {
-      this.handleClick(item)
-    })
-    .height(44)
-    .width('100%')
-    .clickEffect({ level: ClickEffectLevel.HEAVY })
-    .backgroundColor($r('app.color.normal_background_grey'))
-    .justifyContent(FlexAlign.SpaceBetween)
-    .borderRadius(8)
-    .padding({ left: 5 })
-  }
-
-  build() {
-    Column() {
-      Column({ space: 5 }) {
-        LazyForEach(this.listList, (item: ServiceListClass, index: number) => {
-          if (item.inMainPage === ServiceShowType.TRUE) {
-            this.ServiceListItem(item)
-          }
-        })
-      }
-      .padding({
-        top: 11,
-        left: 16,
-        right: 16,
-        bottom: 11
-      })
-    }
-  }
-}

@@ -39,6 +39,7 @@ export class WindowUtil {
       let properties = data.getWindowProperties();
       AppStorage.setOrCreate<number>('deviceHeight', px2vp(properties.windowRect.height));
       AppStorage.setOrCreate<number>('deviceWidth', px2vp(properties.windowRect.width));
+      console.debug(px2vp(properties.windowRect.width).toString())
     });
   }
 }

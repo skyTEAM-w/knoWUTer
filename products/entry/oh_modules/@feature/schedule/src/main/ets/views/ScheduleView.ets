@@ -7,15 +7,8 @@ export struct Schedule {
       Column() {
       }
     }
-    .mode(NavigationMode.Stack)
-    .title({
-      builder: NavigationTitleBar($r('app.string.text_schedule')),
-      height: $r('app.float.navigation_title_bar_height')
-    }, {
-      barStyle: BarStyle.STACK
-    })
-    .titleMode(NavigationTitleMode.Mini)
-    .hideTitleBar(false)
+
+    .hideTitleBar(true)
     .hideBackButton(true)
 
   }

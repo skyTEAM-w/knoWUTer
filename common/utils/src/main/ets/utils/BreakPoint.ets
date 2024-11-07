@@ -18,10 +18,10 @@ export class BreakPointType<T> {
   md: T;
   lg: T;
 
-  constructor(sm: T, md: T, lg: T) {
-    this.sm = sm;
-    this.md = md;
-    this.lg = lg;
+  constructor(param: BreakPointTypes<T>) {
+    this.sm = param.sm;
+    this.md = param.md;
+    this.lg = param.lg;
   }
 
   getValue(currentBreakpoint: string): T {
@@ -85,7 +85,7 @@ export class BreakPointSystem {
     if (this.lgListener?.matches) {
       this.updateCurrentBreakPoint(BreakPointTypeEnum.LG);
     }
-    this.mdListener?.on('change', this.isLG);
+    this.lgListener?.on('change', this.isLG);
   }
 
   public unregister() {
