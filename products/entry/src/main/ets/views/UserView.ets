@@ -58,6 +58,7 @@ export struct User {
       barStyle: BarStyle.STACK
     })
     .titleMode(NavigationTitleMode.Mini)
+    .mode(NavigationMode.Auto)
     .hideTitleBar(false)
     .hideBackButton(true)
   }

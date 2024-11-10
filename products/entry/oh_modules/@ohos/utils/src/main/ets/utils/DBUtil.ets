@@ -69,11 +69,11 @@ const DORM_LOCATION_TABLE_SQL = 'CREATE TABLE IF NOT EXISTS DormitoryLocation (\
 const SCHEDULE_TABLE_INFO_TABLE_SQL = 'CREATE TABLE IF NOT EXISTS ScheduleTableInformation (' +
   '    TableId INTEGER PRIMARY KEY AUTOINCREMENT,' +
   '    TableName VARCHAR(255) NOT NULL,' +
-  '    StartDate TEXT NOTNULL' +
+  '    StartDate TEXT NOT NULL' +
   ');';
 
 const COURSE_INFO_TABLE_SQL = 'CREATE TABLE IF NOT EXISTS CourseInformation (' +
-  '    TableId VARCHAR(255) NOT NULL,' +
+  '    TableId INTEGER NOT NULL,' +
   '    ClassId VARCHAR(255) NOT NULL,\n' +
   '    CourseName VARCHAR(255) NOT NULL,\n' +
   '    Credit VARCHAR(255) DEFAULT NULL,\n' +
@@ -81,7 +81,7 @@ const COURSE_INFO_TABLE_SQL = 'CREATE TABLE IF NOT EXISTS CourseInformation (' +
   '    ExamPlace VARCHAR(255) DEFAULT NULL,\n' +
   '    ExamDate VARCHAR(255) DEFAULT NULL,\n' +
   '    TeachingProcess VARCHAR(255) DEFAULT NULL,\n' +
-  '    ClassDateAndPlace VARCHAR(255) DEFAULT NULL,\n' +
+  '    ClassDateAndPlace TEXT DEFAULT NULL,\n' +
   '    CourseNo VARCHAR(255) NOT NULL,\n' +
   '    CourseSerialNum VARCHAR(255) NOT NULL,' +
   '    Color TEXT DEFAULT NULL,' +
@@ -90,15 +90,14 @@ const COURSE_INFO_TABLE_SQL = 'CREATE TABLE IF NOT EXISTS CourseInformation (' +
   ');';
 
 const COURSE_SCHEDULE_TABLE_SQL = 'CREATE TABLE IF NOT EXISTS CourseSchedule (' +
-  '   TableId VARCHAR(255) NOT NULL,' +
+  '   TableId INTEGER NOT NULL,' +
   '   ClassId VARCHAR(255) NOT NULL,' +
   '   ScheduleId VARCHAR(255) NOT NULL,' +
-  '   StartWeek INTEGER NOT NULL,' +
-  '   EndWeek INTEGER NOT NULL,' +
+  '   WeekRanges VARCHAR(255) NOT NULL,' +
   '   WeekDay TEXT NOT NULL,' +
-  '   StarSession INTEGER NOT NULL,' +
+  '   StartSession INTEGER NOT NULL,' +
   '   EndSession INTEGER NOT NULL,' +
-  '   Place TEXT NOT NULL,' +
+  '   Place TEXT,' +
   '   UNIQUE(TableId, ClassId, ScheduleId),' +
   '   FOREIGN KEY (TableId) REFERENCES ScheduleTableInformation(TableId),' +
   '   FOREIGN KEY (ClassId) REFERENCES CourseInformation(ClassId)' +
@@ -124,7 +123,9 @@ export class DBUtil {
     relationalStore.getRdbStore(this.context, storeConfig).then((store: relationalStore.RdbStore) => {
       this.store = store;
       try {
-        // this.executeMySql('drop table ScheduleTableInformation;')
+        // this.executeMySql('drop table CourseSchedule;');
+        // this.executeMySql('drop table CourseInformation;')
+        // ;this.executeMySql('drop table ScheduleTableInformation;')
         this.executeMySql(AREAS_TABLE_SQL);
         this.executeMySql(BUILDINGS_TABLE_SQL);
         this.executeMySql(FLOOR_TABLE_SQL);
@@ -185,13 +186,13 @@ export class DBUtil {
       let rows: number = (this.store as relationalStore.RdbStore).insertSync(tableName, valueBucket, conflictResolve);
       if (rows > 0) {
         console.info(TAG, 'insertMyValueBucket', `Insert row at: ${rows}`)
-        return true;
+        return rows;
       } else {
-        return false;
+        return -1;
       }
     } catch (error) {
       console.error(TAG, 'insertMyValueBucket', `failed, code is ${error.code},message is ${error.message}`)
-      return false;
+      return -1;
     }
   }
 
@@ -206,6 +207,20 @@ export class DBUtil {
       return false;
     } catch (error) {
       console.error(TAG, 'updateMyValueBucket', `Update failed, code is ${error.code},message is ${error.message}`)
+      return false;
+    }
+  }
+
+  deleteMyPredicate(predicates: relationalStore.RdbPredicates) {
+    try {
+      let rows: number = (this.store as relationalStore.RdbStore).deleteSync(predicates);
+      if (rows && rows > 0) {
+        console.info(TAG, 'deleteMyPredicate', `Delete row count: ${rows}`)
+        return true;
+      }
+      return false;
+    } catch (err) {
+      console.error(TAG, 'deleteMyPredicate', `Delete failed, code is ${err.code},message is ${err.message}`);
       return false;
     }
   }

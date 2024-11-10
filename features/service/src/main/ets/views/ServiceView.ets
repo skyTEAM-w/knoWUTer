@@ -1,7 +1,7 @@
 import { ServiceBlockClass } from '../model/ServiceBlockClass';
 import { ServiceBannerClass } from '../model/ServiceBannerClass';
 import { ServiceListClass } from '../model/ServiceListClass';
-import { bufferToString, ServiceUrl } from '@ohos/utils';
+import { BreakPointTypeEnum, bufferToString, ServiceUrl } from '@ohos/utils';
 import { ServiceModel } from '../model/ServiceModel';
 import { NavigationTitleBar } from '@ohos/uicomponents';
 import { ServiceBanner } from '../components/ServiceBanner';
@@ -13,6 +13,7 @@ import { ServiceList } from '../components/ServiceList';
 export struct Service {
   @Consume('serviceStack') serviceStack: NavPathStack;
   @Consume('appPathStack') appPathStack: NavPathStack;
+  @StorageLink('currentBreakPoint') currentBreakPoint: string = BreakPointTypeEnum.MD;
   @State serviceModel: ServiceModel = new ServiceModel();
 
   aboutToAppear(): void {

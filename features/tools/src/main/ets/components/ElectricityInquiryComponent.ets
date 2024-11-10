@@ -268,7 +268,7 @@ export struct ElectricityInquiryTool {
         }
       }
       .sticky(StickyStyle.Header)
-      .padding({ left: 16, right: 16 })
+      .margin({ left: 16, right: 16 })
     } else {
       Web({ src: new ElectricityFeeUrl().url, controller: this.webViewController })
         .onPageEnd(() => {

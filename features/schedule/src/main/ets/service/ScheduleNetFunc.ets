@@ -2,11 +2,11 @@ import { JSON } from '@kit.ArkTS';
 import { HttpUtil } from '@ohos/network';
 import { FormEncoder } from '@ohos/httpclient';
 import { Course, HttpResponseBody, Term } from '../model/Course';
+import { LazyDataSource } from '@ohos/utils';
 
 const TAG = '[ScheduleNetFunc]'
 
 export class ScheduleNetFunc {
-
   public async getSchedule(cookie: string, termCode?: string) {
     let formEncoder = new FormEncoder.Builder().add("termCode", "2024-2025-1").build();
     let feBode = formEncoder.createRequestBody();
@@ -15,9 +15,9 @@ export class ScheduleNetFunc {
     console.debug(TAG, response?.result)
     if (response) {
       let httpCourse: HttpResponseBody = JSON.parse(response.result) as HttpResponseBody;
-      let courseList: Course[] = [];
+      let courseList: LazyDataSource<Course> = new LazyDataSource();
       httpCourse.datas.forEach((value: object) => {
-        courseList.push(value as Course);
+        courseList.pushData(value as Course);
       })
       console.debug(TAG, 'getSchedule', JSON.stringify(courseList));
       return courseList;
@@ -41,5 +41,15 @@ export class ScheduleNetFunc {
       return term;
     }
     return undefined;
+  }
+
+  public async checkJWXTLoginStatus() {
+    let cookie = AppStorage.get<string>('schedule_cookie') || '';
+    let response = await HttpUtil.getInstance()
+      .HttpGet('https://jwxt.whut.edu.cn/jwapp/sys/homeapp/api/home/kb/xnxq.do', cookie);
+    if (response && response.getBody().toString().search('登录') > 0) {
+      return false;
+    }
+    return true;
   }
 }

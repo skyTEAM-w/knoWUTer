@@ -4,7 +4,7 @@ export class  DateUtil extends Date {
     let end = new Date(endDate);
 
     let differenceInMilliseconds = end.getTime() - start.getTime();
-    let differenceInDays = differenceInMilliseconds / (1000 * 60 * 60 * 24);
+    let differenceInDays = Math.ceil(differenceInMilliseconds / (1000 * 60 * 60 * 24));
     let differenceInWeeks = differenceInDays / 7;
 
     return Math.ceil(differenceInWeeks);

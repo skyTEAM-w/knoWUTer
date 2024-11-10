@@ -1,3 +1,4 @@
+@Observed
 export class Schedule {
   scheduleId: string;
   scheduleName: string;

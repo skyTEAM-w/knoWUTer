@@ -2,9 +2,9 @@ import { BottomTabsList } from '../viewmodel/BottomTabsModel';
 import { Home } from '../views/HomeView';
 import { Tools } from '@feature/tools';
 import { Service } from '@feature/service';
-import { Schedule } from '@feature/schedule';
+import { Schedule, ScheduleSettingFunc } from '@feature/schedule';
 import { User } from '../views/UserView';
-import { BreakPointSystem, BreakPointTypeEnum, DBUtil, UserSettingUtil } from '@ohos/utils';
+import { BreakPointSystem, BreakPointTypeEnum, CookieUtil, DBUtil, UserSettingUtil } from '@ohos/utils';
 import { WebViewPage } from '@ohos/uicomponents';
 
 @Preview
@@ -15,6 +15,7 @@ struct Index {
   @State bottomTabEffectIndex: number = 2;
   @Provide('serviceStack') serviceStack: NavPathStack = new NavPathStack();
   @Provide('appPathStack') appPathStack: NavPathStack = new NavPathStack();
+  @Provide('schedulePathStack') schedulePathStack: NavPathStack = new NavPathStack();
   @StorageLink('currentBreakPoint') currentBreakPoint: string = BreakPointTypeEnum.MD;
   private bottomTabController: TabsController = new TabsController();
   private breakPointSystem: BreakPointSystem = new BreakPointSystem();
@@ -22,7 +23,8 @@ struct Index {
   onPageShow(): void {
     UserSettingUtil.getInstance().checkAllSetting();
     DBUtil.getInstance();
-
+    ScheduleSettingFunc.getInstance().checkAllScheduleSetting()
+    CookieUtil.getInstance().checkAllCookies();
   }
 
   aboutToAppear(): void {
@@ -45,6 +47,8 @@ struct Index {
     Column() {
       SymbolGlyph(this.bottomTabIndex === index ? BottomTabsList[index].iconSelected : BottomTabsList[index].icon)
         .fontSize(25)
+        .renderingStrategy(this.bottomTabIndex === index ? SymbolRenderingStrategy.MULTIPLE_COLOR : SymbolRenderingStrategy.MULTIPLE_COLOR)
+        .fontColor(this.bottomTabIndex === index ? [$r('app.color.whut_blue'), $r('app.color.whut_yellow')] : [Color.Black])
         .symbolEffect(new BounceSymbolEffect(EffectScope.WHOLE, EffectDirection.DOWN),
           this.bottomTabEffectIndex === index)
 

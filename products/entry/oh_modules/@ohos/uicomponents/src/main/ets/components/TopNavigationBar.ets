@@ -36,7 +36,8 @@ export struct TopNavigationView {
     .height($r('app.float.navigation_height'))
     .padding({
       left: $r('app.float.xxl_padding_margin'),
-      right: $r('app.float.xxl_padding_margin')
+      right: $r('app.float.xxl_padding_margin'),
+      top: AppStorage.get<number>('statusBarHeight') as number + 5
     })
   }
 }

@@ -5,7 +5,9 @@
       "runtimeOnly": {
         "packages": [
           "@feature/service",
-          "@ohos/utils"
+          "@ohos/utils",
+          "@feature/schedule",
+          "@ohos/uicomponents"
         ]
       }
     },

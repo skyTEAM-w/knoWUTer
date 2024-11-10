@@ -12,8 +12,8 @@ export const BottomTabsList: Array<BottomTabsItem> = [
     text: $r('app.string.bottom_text_service')
   },
   {
-    icon: $r('sys.symbol.house'),
-    iconSelected: $r('sys.symbol.house_fill'),
+    icon: $r('sys.symbol.book'),
+    iconSelected: $r('sys.symbol.book_open_fill'),
     text: $r('app.string.bottom_text_home')
   },
   {
@@ -23,7 +23,7 @@ export const BottomTabsList: Array<BottomTabsItem> = [
   },
   {
     icon: $r('sys.symbol.person'),
-    iconSelected: $r('sys.symbol.person_fill'),
+    iconSelected: $r('sys.symbol.person_2_fill'),
     text: $r('app.string.bottom_text_user')
   }
 ]

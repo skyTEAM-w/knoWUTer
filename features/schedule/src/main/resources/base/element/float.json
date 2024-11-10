@@ -10,6 +10,34 @@
     },
     {
       "name": "schedule_navigation_height",
+      "value": "88"
+    },
+    {
+      "name": "interactive_row_height",
+      "value": "66"
+    },
+    {
+      "name": "main_border_radius",
+      "value": "16"
+    },
+    {
+      "name": "class_card_height",
+      "value": "188"
+    },
+    {
+      "name": "course_card_padding",
+      "value": "5"
+    },
+    {
+      "name": "schedule_card_item_height",
+      "value": "22"
+    },
+    {
+      "name": "schedule_card_height",
+      "value": "66"
+    },
+    {
+      "name": "schedule_card_width",
       "value": "66"
     }
   ]

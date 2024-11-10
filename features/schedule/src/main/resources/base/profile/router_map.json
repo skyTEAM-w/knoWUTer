@@ -1,0 +1,14 @@
+{
+  "routerMap": [
+    {
+      "name": "CreateNewSchedule",
+      "pageSourceFile": "src/main/ets/views/CreateNewSchedule.ets",
+      "buildFunction": "CreateNewScheduleBuilder"
+    },
+    {
+      "name": "ManageSchedule",
+      "pageSourceFile": "src/main/ets/views/ManageSchedule.ets",
+      "buildFunction": "ManageScheduleBuilder"
+    }
+  ]
+}

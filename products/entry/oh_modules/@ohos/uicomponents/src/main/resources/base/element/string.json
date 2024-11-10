@@ -11,6 +11,14 @@
     {
       "name": "UicomponentsAbility_label",
       "value": "label"
+    },
+    {
+      "name": "cancel",
+      "value": "Cancel"
+    },
+    {
+      "name": "confirm",
+      "value": "Confirm"
     }
   ]
 }

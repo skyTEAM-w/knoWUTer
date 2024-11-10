@@ -3,6 +3,7 @@
     "name": "schedule",
     "type": "har",
     "description": "$string:module_desc",
+    "routerMap": "$profile:router_map",
     "deviceTypes": [
       "phone",
       "tablet",

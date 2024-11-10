@@ -184,8 +184,6 @@ export struct AllServiceList {
           bottom: 11
         })
       }
-      .padding({ top: AppStorage.get<number>('statusBarHeight') })
-
     }
     .hideTitleBar(true)
     .onReady((serviceListNavContext: NavDestinationContext) => {

@@ -22,3 +22,5 @@ export { DBUtil } from './src/main/ets/utils/DBUtil';
 export { BreakPointTypeEnum, BreakPointTypes, BreakPointType, BreakPointSystem } from './src/main/ets/utils/BreakPoint';
 
 export { DateUtil } from './src/main/ets/utils/DateUtil';
+
+export { CookieUtil } from './src/main/ets/utils/CookieUtil';
