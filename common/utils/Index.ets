@@ -24,3 +24,5 @@ export { BreakPointTypeEnum, BreakPointTypes, BreakPointType, BreakPointSystem }
 export { DateUtil } from './src/main/ets/utils/DateUtil';
 
 export { CookieUtil } from './src/main/ets/utils/CookieUtil';
+
+export {Day, CalendarData} from './src/main/ets/model/CalendarModel';

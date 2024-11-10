@@ -1,10 +1,10 @@
-import { PreferencesUtil } from "@ohos/datastore";
+import { PreferencesUtil } from '@ohos/datastore';
 
 const SELECT_SCHEDULE_INDEX = 'select_schedule_index'
 
 export class ScheduleSettingFunc {
+  private static instance: ScheduleSettingFunc;
   private preferenceUtil: PreferencesUtil = PreferencesUtil.getInstance();
-  private static  instance: ScheduleSettingFunc;
 
   public static getInstance() {
     if (!ScheduleSettingFunc.instance) {
@@ -13,7 +13,7 @@ export class ScheduleSettingFunc {
     return ScheduleSettingFunc.instance;
   }
 
-  public saveSelectScheduleIndex(selectIndex: number){
+  public saveSelectScheduleIndex(selectIndex: number) {
     this.preferenceUtil.setValue<number>(SELECT_SCHEDULE_INDEX, selectIndex);
     AppStorage.setOrCreate('selectScheduleIndex', selectIndex);
   }

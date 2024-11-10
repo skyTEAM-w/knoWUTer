@@ -23,10 +23,6 @@ export struct CreateNewSchedule {
   @StorageLink('currentBreakPoint') currentBreakPoint: BreakPointTypeEnum = BreakPointTypeEnum.MD;
   @State scheduleName: string = '未命名';
   @State inputName: string = '未命名';
-  private scheduleNetFunc: ScheduleNetFunc = new ScheduleNetFunc();
-  private dateUtil = new DateUtil();
-  private scheduleDBFunc = new ScheduleDatabaseFunc();
-  @State selectedDate: Date = new Date(this.dateUtil.getToday())
   textInputDialogController: CustomDialogController | null = new CustomDialogController({
     builder: TextInputDialog({
       textValue: $inputName,
@@ -52,12 +48,17 @@ export struct CreateNewSchedule {
         value: $r('app.string.confirm'),
         action: () => {
           this.saveNewSchedule();
-          promptAction.showToast({message: '保存成功'})
+          promptAction.showToast({ message: '保存成功' })
           this.onDestinationBack()
         }
       }
     })
   })
+  private scheduleNetFunc: ScheduleNetFunc = new ScheduleNetFunc();
+  private dateUtil = new DateUtil();
+  @State selectedDate: Date = new Date(this.dateUtil.getToday())
+  private scheduleDBFunc = new ScheduleDatabaseFunc();
+
   onDestinationBack: () => void = () => {
   };
 
@@ -81,18 +82,19 @@ export struct CreateNewSchedule {
   saveNewSchedule() {
     if (this.courseList) {
       let resultSet = this.scheduleDBFunc.queryScheduleInfomationByScheduleName(new Schedule('', this.scheduleName,
-        new intl.DateTimeFormat("zh-cn", {dateStyle: 'short'}).format(this.selectedDate)));
+        new intl.DateTimeFormat("zh-cn", { dateStyle: 'short' }).format(this.selectedDate)));
 
       if (resultSet && resultSet.rowCount > 0) {
         this.scheduleName += resultSet.rowCount.toString()
       }
       let scheduleId = this.scheduleDBFunc.insertScheduleInformation(new Schedule('', this.scheduleName,
-        new intl.DateTimeFormat("zh-cn", {dateStyle: 'short'}).format(this.selectedDate)));
+        new intl.DateTimeFormat("zh-cn", { dateStyle: 'short' }).format(this.selectedDate)));
       console.debug(TAG, 'scheduleId', scheduleId);
       let courseArray: Course[] | undefined = this.courseList?.getDataList();
       if (courseArray && scheduleId) {
         const scheduleInfomation =
-          new Schedule(scheduleId.toString(), this.scheduleName, new intl.DateTimeFormat("zh-cn", {dateStyle: 'short'}).format(this.selectedDate))
+          new Schedule(scheduleId.toString(), this.scheduleName,
+            new intl.DateTimeFormat("zh-cn", { dateStyle: 'short' }).format(this.selectedDate))
         console.debug(TAG, 'scheduleInfomation', JSON.stringify(scheduleInfomation))
         this.scheduleDBFunc.insertCourseInformation(courseArray, scheduleInfomation);
         courseArray.forEach((course: Course) => {
@@ -142,7 +144,7 @@ export struct CreateNewSchedule {
                   .fontSize(18)
                   .fontWeight(FontWeight.Medium)
 
-                Text(new intl.DateTimeFormat("zh-cn", {dateStyle: 'short'}).format(this.selectedDate))
+                Text(new intl.DateTimeFormat("zh-cn", { dateStyle: 'short' }).format(this.selectedDate))
                   .fontSize(14)
                   .fontColor(Color.Grey)
                   .height('100%')
@@ -221,7 +223,7 @@ export struct CreateNewSchedule {
             .edgeEffect(EdgeEffect.Spring, { alwaysEnabled: true })
           }
         }
-        .margin({top: 10})
+        .margin({ top: 10 })
       }
       .height('100%')
     }

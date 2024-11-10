@@ -8,7 +8,6 @@ import { classDateAndPlaceToCourseSchedule } from '../service/ScheduleBaseFunc';
 export struct ClassInformationCard {
   @ObjectLink courseInfomation: Course;
   @Prop courseSchedules: CourseSchedule[] | undefined = undefined;
-
   private mDate = new DateUtil();
 
   @Styles

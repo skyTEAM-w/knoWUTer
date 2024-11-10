@@ -37,7 +37,7 @@ export class ScheduleDatabaseFunc {
           ExamPlace: course.examPlace,
           ExamDate: course.examDate,
           TeachingProcess: course.teachingProcess.toString(),
-          ClassDateAndPlace: course.classDateAndPlace ?  course.classDateAndPlace : null,
+          ClassDateAndPlace: course.classDateAndPlace ? course.classDateAndPlace : null,
           CourseSerialNum: course.courseSerialNum,
           CourseNo: course.courseNo,
           Color: '#FFFFFF'
@@ -91,6 +91,7 @@ export class ScheduleDatabaseFunc {
     predicates.equalTo('TableName', schedule.scheduleName);
     return this.dbUtil.queryMyPredicates(predicates);
   }
+
   public queryScheduleId(schedule: Schedule) {
     let predicates: relationalStore.RdbPredicates = new relationalStore.RdbPredicates(ScheduleInfoTable);
     predicates.equalTo('TableName', schedule.scheduleName).and().equalTo('StartDate', schedule.StartDate);
@@ -153,7 +154,8 @@ export class ScheduleDatabaseFunc {
   }
 
   public deleteSchedule(schedule: Schedule) {
-    let courseSchedulePredicates: relationalStore.RdbPredicates = new relationalStore.RdbPredicates(CourseScheduleTable);
+    let courseSchedulePredicates: relationalStore.RdbPredicates =
+      new relationalStore.RdbPredicates(CourseScheduleTable);
     courseSchedulePredicates.equalTo('TableId', schedule.scheduleId);
     if (this.dbUtil.deleteMyPredicate(courseSchedulePredicates)) {
       let courseInfoPredicates: relationalStore.RdbPredicates = new relationalStore.RdbPredicates(CourseInfoTable);
@@ -161,7 +163,7 @@ export class ScheduleDatabaseFunc {
       if (this.dbUtil.deleteMyPredicate(courseInfoPredicates)) {
         let schedulePredicates: relationalStore.RdbPredicates = new relationalStore.RdbPredicates(ScheduleInfoTable);
         schedulePredicates.equalTo('TableId', schedule.scheduleId);
-        if(this.dbUtil.deleteMyPredicate(schedulePredicates)) {
+        if (this.dbUtil.deleteMyPredicate(schedulePredicates)) {
           return true;
         }
       }

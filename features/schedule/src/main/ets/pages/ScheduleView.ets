@@ -1,18 +1,22 @@
 import { webview } from '@kit.ArkWeb';
-import { BreakPointType, BreakPointTypeEnum, CookieUtil, DateUtil, LazyDataSource } from '@ohos/utils';
+import { BreakPointTypeEnum, CookieUtil, DateUtil, LazyDataSource } from '@ohos/utils';
 import { ScheduleNavigation } from '../components/ScheduleNavigationTitle';
 import { ScheduleNetFunc } from '../service/ScheduleNetFunc';
-import { intl } from '@kit.LocalizationKit';
 import { Schedule } from '../model/Schedule';
 import { Course } from '../model/Course';
 import { ScheduleCard } from '../components/ScheduleCard';
 import { ScheduleDatabaseFunc } from '../service/ScheduleDatabaseFunc';
-import { ClassInformationCard } from '../components/CourseInformationCard';
-import { classDateAndPlaceToCourseSchedule, ScheduleBaseFunc } from '../service/ScheduleBaseFunc';
+import { ScheduleBaseFunc } from '../service/ScheduleBaseFunc';
 import { JSON } from '@kit.ArkTS';
 import { ScheduleSettingFunc } from '../service/ScheduleSettingFunc';
-import { ItemRestriction, SegmentButton, SegmentButtonOptions,
-  SegmentButtonTextItem } from '@ohos.arkui.advanced.SegmentButton';
+import {
+    ItemRestriction,
+    SegmentButton,
+    SegmentButtonOptions,
+    SegmentButtonTextItem
+} from '@ohos.arkui.advanced.SegmentButton';
+import { ScheduleDayView } from '../views/ScheduleDayView';
+import { ScheduleWeekView } from '../views/ScheduleWeekView';
 
 const TAG = '[ScheduleTable]'
 
@@ -22,11 +26,11 @@ export struct ScheduleTable {
   @StorageLink('schedule_cookie') ScheduleCookie: string = AppStorage.get<string>('schedule_cookie') || '';
   @Consume('schedulePathStack') schedulePathStack: NavPathStack;
   @Consume('appPathStack') appPathStack: NavPathStack;
-  @StorageLink('selectScheduleIndex') @Watch('getAllSchedule') selectedScheduleTableIndex: number  = AppStorage.get<number>('selectScheduleIndex') || -1;
+  @StorageLink('selectScheduleIndex') @Watch('getAllSchedule') selectedScheduleTableIndex: number =
+    AppStorage.get<number>('selectScheduleIndex') || -1;
   @State isCookieShow: boolean = false;
   @State @Watch('getAllSchedule') isSettingShow: boolean = false;
   @State cookie: string = '';
-  @State currentWeek: number = 1;
   @State scheduleTableList: LazyDataSource<Schedule> = new LazyDataSource();
   @State selectedSchedule: Schedule | undefined = undefined;
   @State courseList: LazyDataSource<Course> | undefined = undefined;
@@ -36,14 +40,16 @@ export struct ScheduleTable {
     backgroundBlurStyle: BlurStyle.BACKGROUND_THICK
   })
   @State tabSelectedIndexes: number[] = [1]
-
   private webViewController: webview.WebviewController = new webview.WebviewController();
   private scheduleNetFunc = new ScheduleNetFunc();
   private scheduleDBFunc = new ScheduleDatabaseFunc();
   private scheduleBaseFunc = new ScheduleBaseFunc();
   private scheduleSettingFunc = ScheduleSettingFunc.getInstance();
   private mDate = new DateUtil();
-  @State selectedDate: Date = new Date(this.mDate.getToday());
+  private currentWeek: number = 0;
+  @State sliderValue: number = 1;
+  @State mToday: Date = new Date(this.mDate.getToday());
+  @State selectedWeek: number = 0;
 
   aboutToAppear(): void {
     ScheduleSettingFunc.getInstance().checkSelectScheduleIndex();
@@ -64,6 +70,9 @@ export struct ScheduleTable {
     this.scheduleTableList.pushArrayData(this.scheduleDBFunc.queryAllScheduleTable() as Schedule[]);
     console.debug(TAG, 'getAllSchedule', JSON.stringify(this.scheduleTableList))
     this.selectedSchedule = this.scheduleTableList.getData(this.selectedScheduleTableIndex);
+    this.selectedWeek = this.mDate.getWeeksBetweenDates(this.selectedSchedule.StartDate, this.mDate.getToday());
+    this.currentWeek = this.selectedWeek;
+    this.sliderValue = this.currentWeek;
     this.getCourseList();
   }
 
@@ -101,8 +110,9 @@ export struct ScheduleTable {
 
   @Styles
   marginStyle() {
-    .margin(this.currentBreakPoint === BreakPointTypeEnum.LG ? {left: $r('app.float.xxl_padding_margin'), right: $r('app.float.xxl_padding_margin')} :
-      {left: $r('app.float.md_padding_margin'), right: $r('app.float.md_padding_margin')})
+    .margin(this.currentBreakPoint === BreakPointTypeEnum.LG ?
+      { left: $r('app.float.xxl_padding_margin'), right: $r('app.float.xxl_padding_margin') } :
+      { left: $r('app.float.md_padding_margin'), right: $r('app.float.md_padding_margin') })
   }
 
   @Builder
@@ -120,7 +130,7 @@ export struct ScheduleTable {
 
   @Builder
   settingBindSheet() {
-    Column({space: 10}){
+    Column({ space: 10 }) {
 
       if (this.currentBreakPoint === BreakPointTypeEnum.SM) {
         Column() {
@@ -128,8 +138,9 @@ export struct ScheduleTable {
             options: this.tabOptions,
             selectedIndexes: $tabSelectedIndexes
           })
-            .margin(this.currentBreakPoint !== BreakPointTypeEnum.SM ?  {left: $r('app.float.md_padding_margin'), right: $r('app.float.md_padding_margin'), top: 5}:
-            {left: $r('app.float.xxl_padding_margin'), right: $r('app.float.xxl_padding_margin'), top: 5})
+            .margin(this.currentBreakPoint !== BreakPointTypeEnum.SM ?
+              { left: $r('app.float.md_padding_margin'), right: $r('app.float.md_padding_margin'), top: 5 } :
+              { left: $r('app.float.xxl_padding_margin'), right: $r('app.float.xxl_padding_margin'), top: 5 })
         }
         .width('100%')
         .alignItems(HorizontalAlign.Start)
@@ -147,7 +158,7 @@ export struct ScheduleTable {
             .textAlign(TextAlign.End)
             .fontColor(Color.Blue)
             .width("20%")
-            .margin({right: $r('app.float.xxl_padding_margin') })
+            .margin({ right: $r('app.float.xxl_padding_margin') })
             .onClick(() => {
               this.jumpManageSchedule();
               this.isSettingShow = false;
@@ -158,9 +169,9 @@ export struct ScheduleTable {
         .width('100%')
 
         Scroll() {
-          Row({space: 5}) {
+          Row({ space: 5 }) {
             LazyForEach(this.scheduleTableList, (item: Schedule, index: number) => {
-              ScheduleCard({schedule: item, selectedScheduleIndex: this.selectedScheduleTableIndex, index: index})
+              ScheduleCard({ schedule: item, selectedScheduleIndex: this.selectedScheduleTableIndex, index: index })
             })
             Row()
               .width('90%')
@@ -168,7 +179,7 @@ export struct ScheduleTable {
           .marginStyle()
         }
         .width('100%')
-        .margin({top: 5})
+        .margin({ top: 5 })
         .scrollBar(BarState.Off)
         .scrollable(ScrollDirection.Horizontal)
         .edgeEffect(EdgeEffect.Spring)
@@ -184,16 +195,21 @@ export struct ScheduleTable {
           .marginStyle()
           .width('100%')
         Slider({
-          value: this.currentWeek,
+          value: this.selectedWeek,
           min: 1,
           max: 20,
           step: 1,
           style: SliderStyle.InSet
         })
-          .showTips(true, this.currentWeek.toString())
+          .showTips(true, this.sliderValue.toString())
           .showSteps(true)
           .onChange((value: number, mode: SliderChangeMode) => {
-            this.currentWeek = value
+            if (mode === SliderChangeMode.End) {
+              this.selectedWeek = value;
+            } else {
+              this.sliderValue = value;
+            }
+
             console.info('value:' + value + 'mode:' + mode.toString())
           })
           .marginStyle()
@@ -209,43 +225,28 @@ export struct ScheduleTable {
       .width("100%")
     }
     .width("100%")
-    .margin(this.currentBreakPoint === BreakPointTypeEnum.LG ? {top: AppStorage.get<number>('statusBarHeight')} : {top: 20})
+    .margin(this.currentBreakPoint === BreakPointTypeEnum.LG ? { top: AppStorage.get<number>('statusBarHeight') } :
+      { top: 20 })
   }
 
   build() {
     Navigation(this.schedulePathStack) {
       Column() {
-        Stack({alignContent: Alignment.Top}) {
+        Stack({ alignContent: Alignment.Top }) {
           Scroll() {
             Column() {
               Column()
                 .height(88)
               if (this.courseList) {
-                WaterFlow() {
-                  LazyForEach(this.courseList, (item: Course, index: number) => {
-                    FlowItem() {
-                      ClassInformationCard({ courseInfomation: item })
-                    }
-                    .padding({ left: $r('app.float.md_padding_margin'), right: $r('app.float.md_padding_margin') })
+                if (this.tabSelectedIndexes[0] === 1) {
+                  ScheduleDayView({ courseList: this.courseList })
+                } else {
+                  ScheduleWeekView({
+                    selectedSchedule: this.selectedSchedule,
+                    selectedWeek: this.selectedWeek
                   })
-                  FlowItem() {
-
-                  }
-                  .height('50%')
                 }
-                .cachedCount(0)
-                .columnsTemplate(new BreakPointType({
-                  sm: '1fr',
-                  md: '1fr 1fr',
-                  lg: '1fr 1fr 1fr'
-                }).getValue(this.currentBreakPoint))
-                .columnsGap($r('app.float.course_card_padding'))
-                .rowsGap($r('app.float.course_card_padding'))
-                .scrollBar(BarState.Off)
-                .height("100%")
-                .nestedScroll({scrollForward: NestedScrollMode.PARENT_FIRST, scrollBackward: NestedScrollMode.SELF_FIRST})
-                .edgeEffect(EdgeEffect.Spring, { alwaysEnabled: true })
-                .padding({top: 5})
+
               }
             }
           }
@@ -253,16 +254,17 @@ export struct ScheduleTable {
           .height('100%')
 
           ScheduleNavigation({
-            selectedDate: this.selectedDate,
+            selectedDate: this.mToday,
             isCookieShow: this.isCookieShow,
             isSettingShow: this.isSettingShow,
             schedule: this.selectedSchedule,
             loginStatus: this.loginStatus,
             tabOptions: this.tabOptions,
-            tabSelectedIndexes: this.tabSelectedIndexes
+            tabSelectedIndexes: this.tabSelectedIndexes,
+            selectWeek: this.selectedWeek,
+            currentWeek: this.currentWeek
           });
         }
-
 
       }
       .alignItems(HorizontalAlign.Center)

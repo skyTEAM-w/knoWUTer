@@ -2,12 +2,12 @@
   "routerMap": [
     {
       "name": "CreateNewSchedule",
-      "pageSourceFile": "src/main/ets/views/CreateNewSchedule.ets",
+      "pageSourceFile": "src/main/ets/pages/CreateNewSchedule.ets",
       "buildFunction": "CreateNewScheduleBuilder"
     },
     {
       "name": "ManageSchedule",
-      "pageSourceFile": "src/main/ets/views/ManageSchedule.ets",
+      "pageSourceFile": "src/main/ets/pages/ManageSchedule.ets",
       "buildFunction": "ManageScheduleBuilder"
     }
   ]

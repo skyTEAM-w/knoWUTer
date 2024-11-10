@@ -2,12 +2,11 @@ import { BreakPointTypeEnum, CookieUtil, DateUtil } from '@ohos/utils';
 import { Schedule } from '../model/Schedule';
 import { webview } from '@kit.ArkWeb';
 import { ScheduleNetFunc } from '../service/ScheduleNetFunc';
-import { ItemRestriction, promptAction,
-  SegmentButton,
-  SegmentButtonOptions,
-  SegmentButtonTextItem,
-  SymbolGlyphModifier } from '@kit.ArkUI';
-import { it } from '@ohos/hypium';
+import {
+    promptAction,
+    SegmentButton,
+    SegmentButtonOptions, SymbolGlyphModifier
+} from '@kit.ArkUI';
 
 @Component
 export struct ScheduleNavigation {
@@ -15,6 +14,7 @@ export struct ScheduleNavigation {
   @Link isCookieShow: boolean;
   @Link isSettingShow: boolean;
   @Link loginStatus: boolean | undefined;
+  @Link selectWeek: number;
   @ObjectLink tabOptions: SegmentButtonOptions;
   @Link tabSelectedIndexes: number[];
   @Consume('schedulePathStack') schedulePathStack: NavPathStack;
@@ -22,7 +22,7 @@ export struct ScheduleNavigation {
   @StorageLink('currentBreakPoint') currenBreakPoint: BreakPointTypeEnum = BreakPointTypeEnum.MD;
   @Prop cookie: string = '';
   @ObjectLink schedule: Schedule | undefined;
-
+  @Prop currentWeek: number = 1;
   private mDate = new DateUtil();
   private webViewController: webview.WebviewController = new webview.WebviewController();
   private scheduleNetFunc = new ScheduleNetFunc();
@@ -75,12 +75,13 @@ export struct ScheduleNavigation {
     Menu() {
       MenuItem({
         symbolStartIcon: new SymbolGlyphModifier($r('sys.symbol.download')).fontSize(24),
-        content: '从教务导入' })
+        content: '从教务导入'
+      })
         .onClick(() => {
           if (this.loginStatus) {
             this.jumpCreateNewSchedule();
           } else {
-            promptAction.showToast({message: '教务系统未登录'})
+            promptAction.showToast({ message: '教务系统未登录' })
           }
         })
     }
@@ -88,17 +89,22 @@ export struct ScheduleNavigation {
 
   build() {
     Row() {
-      GridRow({columns: {sm: 8, md: 10, lg: 12}}) {
-        GridCol({span: {sm: 4, md: 5, lg: 6}}) {
+      GridRow({ columns: { sm: 6, md: 10, lg: 12 } }) {
+        GridCol({ span: { sm: 3, md: 3, lg: 3 } }) {
           Column() {
             TextClock()
               .format('yyyy/MM/dd')
               .fontSize(22)
               .fontWeight(FontWeight.Bold)
-            Row({space: 5}) {
-              Text('第' + this.mDate.getWeeksBetweenDates(this.schedule?.StartDate, this.mDate.getToday()) + '周')
-              TextClock()
-                .format('EEEE')
+            Row({ space: 5 }) {
+              Text('第' + this.selectWeek + '周')
+              if (this.currentWeek === this.selectWeek) {
+                TextClock()
+                  .format('EEEE')
+              } else {
+                Text('非本周')
+              }
+
             }
           }
           .width('100%')
@@ -107,7 +113,7 @@ export struct ScheduleNavigation {
         }
         .alignSelf(ItemAlign.Start)
 
-        GridCol({span: {sm: 1, md: 2, lg: 3}}) {
+        GridCol({ span: { sm: 1, md: 4, lg: 6 } }) {
           if (this.currenBreakPoint !== BreakPointTypeEnum.SM) {
             SegmentButton({
               options: this.tabOptions,
@@ -116,7 +122,7 @@ export struct ScheduleNavigation {
           }
         }
 
-        GridCol({span: {sm: 3, md: 3, lg: 3}}) {
+        GridCol({ span: { sm: 2, md: 3, lg: 3 } }) {
           Row() {
             Button({ type: ButtonType.Circle }) {
               SymbolGlyph($r('sys.symbol.plus'))

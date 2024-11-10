@@ -1,13 +1,14 @@
-import { Schedule } from "../model/Schedule"
+import { Schedule } from '../model/Schedule';
 
 @Component
 export struct ScheduleCard {
   @ObjectLink schedule: Schedule;
   @Link selectedScheduleIndex: number;
   index?: number = undefined;
+
   build() {
     Column() {
-      Rect({width: 40, height: 40})
+      Rect({ width: 40, height: 40 })
         .radius(8)
         .fill(this.selectedScheduleIndex === this.index ? $r('app.color.whut_yellow') : $r('app.color.whut_blue'))
       Text(this.schedule.scheduleName)
@@ -18,10 +19,10 @@ export struct ScheduleCard {
         .textAlign(TextAlign.Center)
         .width('100%')
     }
-    .clickEffect({level: ClickEffectLevel.LIGHT, scale: 0.8})
+    .clickEffect({ level: ClickEffectLevel.LIGHT, scale: 0.8 })
     .onClick(() => {
       console.debug('selectedIndex', this.index)
-      if(this.index !== undefined) {
+      if (this.index !== undefined) {
         console.debug('selectedIndex', this.index)
         this.selectedScheduleIndex = this.index;
       }
