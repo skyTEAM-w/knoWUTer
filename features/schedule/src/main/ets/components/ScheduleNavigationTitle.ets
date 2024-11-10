@@ -57,7 +57,7 @@ export struct ScheduleNavigation {
   @Builder
   cookieBindSheet() {
     Web({
-      src: 'https://jwxt.whut.edu.cn/jwapp/sys/homeapp/home/index.html',
+      src: 'https://jwxt.whut.edu.cn/',
       controller: this.webViewController
     })
       .onPageEnd(() => {

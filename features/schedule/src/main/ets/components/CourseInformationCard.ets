@@ -1,3 +1,4 @@
+import { DateUtil } from '@ohos/utils/src/main/ets/utils/DateUtil';
 import { Course } from '../model/Course';
 import { CourseSchedule } from '../model/CourseSchedule';
 import { Schedule } from '../model/Schedule';
@@ -7,6 +8,8 @@ import { classDateAndPlaceToCourseSchedule } from '../service/ScheduleBaseFunc';
 export struct ClassInformationCard {
   @ObjectLink courseInfomation: Course;
   @Prop courseSchedules: CourseSchedule[] | undefined = undefined;
+
+  private mDate = new DateUtil();
 
   @Styles
   scheduleCardStyle() {

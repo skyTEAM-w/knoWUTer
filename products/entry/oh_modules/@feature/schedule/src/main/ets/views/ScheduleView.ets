@@ -140,12 +140,14 @@ export struct ScheduleTable {
           Text('课程表')
             .fontWeight(FontWeight.Medium)
             .textAlign(TextAlign.Start)
+            .width("50%")
           Text('管理')
             .fontSize(12)
             .fontWeight(FontWeight.Medium)
-            .textAlign(TextAlign.Start)
+            .textAlign(TextAlign.End)
             .fontColor(Color.Blue)
-            .padding({right: $r('app.float.xxl_padding_margin') })
+            .width("20%")
+            .margin({right: $r('app.float.xxl_padding_margin') })
             .onClick(() => {
               this.jumpManageSchedule();
               this.isSettingShow = false;

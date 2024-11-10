@@ -1,13 +1,15 @@
 export class  DateUtil extends Date {
   public getWeeksBetweenDates(startDate: string, endDate: string): number {
-    let start = new Date(startDate);
-    let end = new Date(endDate);
-
-    let differenceInMilliseconds = end.getTime() - start.getTime();
-    let differenceInDays = Math.ceil(differenceInMilliseconds / (1000 * 60 * 60 * 24));
-    let differenceInWeeks = differenceInDays / 7;
-
-    return Math.ceil(differenceInWeeks);
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    const timeDifference = end.getTime() - start.getTime();
+    const oneWeekInMs = 7 * 24 * 60 * 60 * 1000;
+    const weeks = Math.ceil(timeDifference / oneWeekInMs)
+    if (weeks === 0) {
+      return weeks + 1;
+    } else {
+      return weeks;
+    }
   }
 
   public getToday() {
@@ -15,3 +17,5 @@ export class  DateUtil extends Date {
   }
 
 }
+
+

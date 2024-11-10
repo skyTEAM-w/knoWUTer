@@ -81,18 +81,18 @@ export struct CreateNewSchedule {
   saveNewSchedule() {
     if (this.courseList) {
       let resultSet = this.scheduleDBFunc.queryScheduleInfomationByScheduleName(new Schedule('', this.scheduleName,
-        new intl.DateTimeFormat("zh-cn").format(this.selectedDate)));
+        new intl.DateTimeFormat("zh-cn", {dateStyle: 'short'}).format(this.selectedDate)));
 
       if (resultSet && resultSet.rowCount > 0) {
         this.scheduleName += resultSet.rowCount.toString()
       }
       let scheduleId = this.scheduleDBFunc.insertScheduleInformation(new Schedule('', this.scheduleName,
-        new intl.DateTimeFormat("zh-cn").format(this.selectedDate)));
+        new intl.DateTimeFormat("zh-cn", {dateStyle: 'short'}).format(this.selectedDate)));
       console.debug(TAG, 'scheduleId', scheduleId);
       let courseArray: Course[] | undefined = this.courseList?.getDataList();
       if (courseArray && scheduleId) {
         const scheduleInfomation =
-          new Schedule(scheduleId.toString(), this.scheduleName, new intl.DateTimeFormat("zh-cn").format(this.selectedDate))
+          new Schedule(scheduleId.toString(), this.scheduleName, new intl.DateTimeFormat("zh-cn", {dateStyle: 'short'}).format(this.selectedDate))
         console.debug(TAG, 'scheduleInfomation', JSON.stringify(scheduleInfomation))
         this.scheduleDBFunc.insertCourseInformation(courseArray, scheduleInfomation);
         courseArray.forEach((course: Course) => {
@@ -142,7 +142,7 @@ export struct CreateNewSchedule {
                   .fontSize(18)
                   .fontWeight(FontWeight.Medium)
 
-                Text(new intl.DateTimeFormat("zh-cn").format(this.selectedDate))
+                Text(new intl.DateTimeFormat("zh-cn", {dateStyle: 'short'}).format(this.selectedDate))
                   .fontSize(14)
                   .fontColor(Color.Grey)
                   .height('100%')
