@@ -1,7 +1,7 @@
 'use strict';
 
-import bind from './helpers/bind';
-import FormData from './platform/ohos/classes/FormData'
+import bind from './helpers/bind.js';
+import FormData from './platform/ohos/classes/FormData.js'
 
 // utils is a library of generic helper functions non-specific to axios
 

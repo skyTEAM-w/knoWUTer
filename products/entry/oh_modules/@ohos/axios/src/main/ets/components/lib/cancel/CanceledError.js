@@ -1,7 +1,7 @@
 'use strict';
 
-import AxiosError from '../core/AxiosError';
-import utils from '../utils';
+import AxiosError from '../core/AxiosError.js';
+import utils from '../utils.js';
 
 /**
  * A `CanceledError` is an object that is thrown when an operation is canceled.

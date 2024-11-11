@@ -1,13 +1,13 @@
 'use strict';
 
-import utils from '../utils';
-import AxiosError from '../core/AxiosError';
-import transitionalDefaults from './transitional';
-import toFormData from '../helpers/toFormData';
-import toURLEncodedForm from '../helpers/toURLEncodedForm';
-import platform from '../platform/index';
-import formDataToJSON from '../helpers/formDataToJSON';
-import FormData from '../platform/ohos/classes/FormData'
+import utils from '../utils.js';
+import AxiosError from '../core/AxiosError.js';
+import transitionalDefaults from './transitional.js';
+import toFormData from '../helpers/toFormData.js';
+import toURLEncodedForm from '../helpers/toURLEncodedForm.js';
+import platform from '../platform/index.js';
+import formDataToJSON from '../helpers/formDataToJSON.js';
+import FormData from '../platform/ohos/classes/FormData.js'
 
 const DEFAULT_CONTENT_TYPE = {
   'Content-Type': undefined

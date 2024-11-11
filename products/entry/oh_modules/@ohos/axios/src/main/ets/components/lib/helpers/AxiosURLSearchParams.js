@@ -1,6 +1,6 @@
 'use strict';
 
-import toFormData from './toFormData';
+import toFormData from './toFormData.js';
 
 /**
  * It encodes a string by replacing all characters that are not in the unreserved set with

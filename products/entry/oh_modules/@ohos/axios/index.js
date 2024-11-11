@@ -1,4 +1,4 @@
-import axios from './src/main/ets/components/lib/axios'
+import axios from './src/main/ets/components/lib/axios.js'
 
 // This module is intended to unwrap Axios default export as named.
 // Keep top-level export same with static properties

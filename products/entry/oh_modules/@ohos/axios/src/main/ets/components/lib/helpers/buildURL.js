@@ -1,7 +1,7 @@
 'use strict';
 
-import utils from '../utils';
-import AxiosURLSearchParams from './AxiosURLSearchParams';
+import utils from '../utils.js';
+import AxiosURLSearchParams from '../helpers/AxiosURLSearchParams.js';
 
 /**
  * It replaces all instances of the characters `:`, `$`, `,`, `+`, `[`, and `]` with their

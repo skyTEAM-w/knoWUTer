@@ -26,10 +26,10 @@ export struct ScheduleTable {
   @StorageLink('schedule_cookie') ScheduleCookie: string = AppStorage.get<string>('schedule_cookie') || '';
   @Consume('schedulePathStack') schedulePathStack: NavPathStack;
   @Consume('appPathStack') appPathStack: NavPathStack;
-  @StorageLink('selectScheduleIndex') @Watch('getAllSchedule') selectedScheduleTableIndex: number =
+  @StorageLink('selectScheduleIndex') @Watch('onWeekNeedChange') selectedScheduleTableIndex: number =
     AppStorage.get<number>('selectScheduleIndex') || -1;
   @State isCookieShow: boolean = false;
-  @State @Watch('getAllSchedule') isSettingShow: boolean = false;
+  @State @Watch('onWeekNeedChange') isSettingShow: boolean = false;
   @State cookie: string = '';
   @State scheduleTableList: LazyDataSource<Schedule> = new LazyDataSource();
   @State selectedSchedule: Schedule | undefined = undefined;
@@ -66,14 +66,41 @@ export struct ScheduleTable {
     this.scheduleSettingFunc.saveSelectScheduleIndex(this.selectedScheduleTableIndex);
   }
 
+  onWeekNeedChange(propName: string){
+    if (propName == 'selectedScheduleTableIndex') {
+      this.selectedSchedule = this.scheduleTableList.getData(this.selectedScheduleTableIndex);
+      this.selectedWeek = DateUtil.getWeeksBetweenDates(this.selectedSchedule.StartDate, this.mDate.getToday());
+      this.currentWeek = this.selectedWeek;
+      this.getCourseList();
+    }
+  }
+
   getAllSchedule() {
+    // TODO: 存在代码冗余，测试后删减
     this.scheduleTableList.pushArrayData(this.scheduleDBFunc.queryAllScheduleTable() as Schedule[]);
     console.debug(TAG, 'getAllSchedule', JSON.stringify(this.scheduleTableList))
-    this.selectedSchedule = this.scheduleTableList.getData(this.selectedScheduleTableIndex);
-    this.selectedWeek = this.mDate.getWeeksBetweenDates(this.selectedSchedule.StartDate, this.mDate.getToday());
-    this.currentWeek = this.selectedWeek;
-    this.sliderValue = this.currentWeek;
-    this.getCourseList();
+    if (!this.scheduleTableList.isEmpty() && this.selectedScheduleTableIndex !== -1 && !this.isSettingShow) {
+      this.selectedSchedule = this.scheduleTableList.getData(this.selectedScheduleTableIndex);
+      this.selectedWeek = DateUtil.getWeeksBetweenDates(this.selectedSchedule.StartDate, this.mDate.getToday());
+      this.currentWeek = this.selectedWeek;
+      this.getCourseList();
+    } else if (this.isSettingShow) {
+      this.selectedSchedule = this.scheduleTableList.getData(this.selectedScheduleTableIndex);
+      this.selectedWeek = DateUtil.getWeeksBetweenDates(this.selectedSchedule.StartDate, this.mDate.getToday());
+      this.currentWeek = this.selectedWeek;
+      this.getCourseList();
+    }
+  }
+
+  settingGetSchedule() {
+    if (this.isSettingShow){
+      this.scheduleTableList.pushArrayData(this.scheduleDBFunc.queryAllScheduleTable() as Schedule[]);
+      this.selectedSchedule = this.scheduleTableList.getData(this.selectedScheduleTableIndex);
+      this.selectedWeek = DateUtil.getWeeksBetweenDates(this.selectedSchedule.StartDate, this.mDate.getToday());
+      this.currentWeek = this.selectedWeek;
+      this.sliderValue = this.currentWeek;
+      this.getCourseList();
+    }
   }
 
   getCourseList() {
@@ -195,21 +222,16 @@ export struct ScheduleTable {
           .marginStyle()
           .width('100%')
         Slider({
-          value: this.selectedWeek,
+          value: $$this.selectedWeek,
           min: 1,
           max: 20,
           step: 1,
           style: SliderStyle.InSet
         })
-          .showTips(true, this.sliderValue.toString())
+          .showTips(true, this.selectedWeek.toString())
           .showSteps(true)
           .onChange((value: number, mode: SliderChangeMode) => {
-            if (mode === SliderChangeMode.End) {
-              this.selectedWeek = value;
-            } else {
-              this.sliderValue = value;
-            }
-
+            this.selectedWeek = value;
             console.info('value:' + value + 'mode:' + mode.toString())
           })
           .marginStyle()
@@ -243,7 +265,8 @@ export struct ScheduleTable {
                 } else {
                   ScheduleWeekView({
                     selectedSchedule: this.selectedSchedule,
-                    selectedWeek: this.selectedWeek
+                    selectedWeek: this.selectedWeek,
+                    currentWeek: this.currentWeek
                   })
                 }
 

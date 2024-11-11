@@ -1,13 +1,13 @@
 'use strict';
 
-import utils from '../utils';
-import buildURL from '../helpers/buildURL';
-import InterceptorManager from './InterceptorManager';
-import dispatchRequest from './dispatchRequest';
-import mergeConfig from './mergeConfig';
-import buildFullPath from './buildFullPath';
-import validator from '../helpers/validator';
-import AxiosHeaders from './AxiosHeaders';
+import utils from './../utils.js';
+import buildURL from '../helpers/buildURL.js';
+import InterceptorManager from './InterceptorManager.js';
+import dispatchRequest from './dispatchRequest.js';
+import mergeConfig from './mergeConfig.js';
+import buildFullPath from './buildFullPath.js';
+import validator from '../helpers/validator.js';
+import AxiosHeaders from './AxiosHeaders.js';
 
 const validators = validator.validators;
 

@@ -1,8 +1,8 @@
 'use strict';
 
-import utils from '../utils';
-import defaults from '../defaults/index';
-import AxiosHeaders from './AxiosHeaders';
+import utils from './../utils.js';
+import defaults from '../defaults/index.js';
+import AxiosHeaders from '../core/AxiosHeaders.js';
 
 /**
  * Transform the data for a request or a response

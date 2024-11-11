@@ -1,22 +1,22 @@
 'use strict';
 
-import utils from './utils';
-import bind from './helpers/bind';
-import Axios from './core/Axios';
-import mergeConfig from './core/mergeConfig';
-import defaults from './defaults/index';
-import formDataToJSON from './helpers/formDataToJSON';
-import CanceledError from './cancel/CanceledError';
-import CancelToken from './cancel/CancelToken';
-import isCancel from './cancel/isCancel';
-import {VERSION} from './env/data';
-import toFormData from './helpers/toFormData';
-import AxiosError from './core/AxiosError';
-import spread from './helpers/spread';
-import isAxiosError from './helpers/isAxiosError';
-import AxiosHeaders from "./core/AxiosHeaders";
-import HttpStatusCode from './helpers/HttpStatusCode';
-import FormData from './env/classes/FormData'
+import utils from './utils.js';
+import bind from './helpers/bind.js';
+import Axios from './core/Axios.js';
+import mergeConfig from './core/mergeConfig.js';
+import defaults from './defaults/index.js';
+import formDataToJSON from './helpers/formDataToJSON.js';
+import CanceledError from './cancel/CanceledError.js';
+import CancelToken from './cancel/CancelToken.js';
+import isCancel from './cancel/isCancel.js';
+import {VERSION} from './env/data.js';
+import toFormData from './helpers/toFormData.js';
+import AxiosError from './core/AxiosError.js';
+import spread from './helpers/spread.js';
+import isAxiosError from './helpers/isAxiosError.js';
+import AxiosHeaders from "./core/AxiosHeaders.js";
+import HttpStatusCode from './helpers/HttpStatusCode.js';
+import FormData from './env/classes/FormData.js'
 
 /**
  * Create an instance of Axios

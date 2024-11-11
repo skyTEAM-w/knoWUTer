@@ -12,8 +12,8 @@
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
  */
-import URLSearchParams from './classes/URLSearchParams'
-import FormData from './classes/FormData'
+import URLSearchParams from './classes/URLSearchParams.js'
+import FormData from './classes/FormData.js'
 
 export default {
   isNode: true,

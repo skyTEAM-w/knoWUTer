@@ -1,7 +1,7 @@
 'use strict';
 
-import {VERSION} from '../env/data';
-import AxiosError from '../core/AxiosError';
+import {VERSION} from '../env/data.js';
+import AxiosError from '../core/AxiosError.js';
 
 const validators = {};
 

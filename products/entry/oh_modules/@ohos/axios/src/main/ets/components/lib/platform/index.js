@@ -1,3 +1,3 @@
-import platform from './ohos/index';
+import platform from './ohos/index.js';
 
 export {platform as default}

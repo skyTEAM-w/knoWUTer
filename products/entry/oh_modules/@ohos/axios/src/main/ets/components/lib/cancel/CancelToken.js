@@ -1,6 +1,6 @@
 'use strict';
 
-import CanceledError from './CanceledError';
+import CanceledError from './CanceledError.js';
 
 /**
  * A `CancelToken` is an object that can be used to request cancellation of an operation.

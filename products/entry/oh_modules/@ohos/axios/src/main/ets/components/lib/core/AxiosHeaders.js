@@ -1,7 +1,7 @@
 'use strict';
 
-import utils from '../utils';
-import parseHeaders from '../helpers/parseHeaders';
+import utils from '../utils.js';
+import parseHeaders from '../helpers/parseHeaders.js';
 
 const $internals = Symbol('internals');
 

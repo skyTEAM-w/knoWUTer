@@ -1,6 +1,6 @@
 'use strict';
 
-import AxiosError from './AxiosError';
+import AxiosError from './AxiosError.js';
 
 /**
  * Resolve or reject a Promise based on response status.

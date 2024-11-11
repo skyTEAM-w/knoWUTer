@@ -1,7 +1,7 @@
 'use strict';
 
-import utils from '../utils';
-import AxiosHeaders from "./AxiosHeaders";
+import utils from '../utils.js';
+import AxiosHeaders from "./AxiosHeaders.js";
 
 const headersToObject = (thing) => thing instanceof AxiosHeaders ? thing.toJSON() : thing;
 

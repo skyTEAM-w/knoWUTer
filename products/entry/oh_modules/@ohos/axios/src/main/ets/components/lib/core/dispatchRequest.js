@@ -1,11 +1,11 @@
 'use strict';
 
-import transformData from './transformData';
-import isCancel from '../cancel/isCancel';
-import defaults from '../defaults/index';
-import CanceledError from '../cancel/CanceledError';
-import AxiosHeaders from './AxiosHeaders';
-import adapters from "../adapters/adapters";
+import transformData from './transformData.js';
+import isCancel from '../cancel/isCancel.js';
+import defaults from '../defaults/index.js';
+import CanceledError from '../cancel/CanceledError.js';
+import AxiosHeaders from '../core/AxiosHeaders.js';
+import adapters from "../adapters/adapters.js";
 
 /**
  * Throws a `CanceledError` if cancellation has been requested.

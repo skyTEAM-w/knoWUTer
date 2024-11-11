@@ -1,8 +1,8 @@
 'use strict';
 
-import AxiosError from '../core/AxiosError';
-import parseProtocol from './parseProtocol';
-import platform from '../platform/index';
+import AxiosError from '../core/AxiosError.js';
+import parseProtocol from './parseProtocol.js';
+import platform from '../platform/index.js';
 
 const DATA_URL_PATTERN = /^(?:([^;]+);)?(?:[^;]+;)?(base64|),([\s\S]*)$/;
 

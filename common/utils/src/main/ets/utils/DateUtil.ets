@@ -1,5 +1,6 @@
 import { CalendarData, Day, DayInfo } from "../model/CalendarModel";
 import { i18n } from "@kit.LocalizationKit";
+import { JSON } from "@kit.ArkTS";
 
 export class  DateUtil extends Date {
 
@@ -32,9 +33,12 @@ export class  DateUtil extends Date {
     // 获取当前日期
     const CURRENT_DATE = new Date();
     // 获取当前日期是本周的周几（0-6，其中0代表周日，1代表周一，以此类推）
-    const WEEK_DAY = CURRENT_DATE.getDay();
-    // 计算并设置目标周的第一天(周日)的日期
-    const BEGIN_DATE = new Date(CURRENT_DATE.getTime() - WEEK_DAY * onDayInMs +
+    let WEEK_DAY = CURRENT_DATE.getDay();
+    if (WEEK_DAY === 0) {
+      WEEK_DAY = 7;  // 将周日视为一周的第七天
+    }
+    // 计算并设置目标周的第一天(周一)的日期
+    const BEGIN_DATE = new Date(CURRENT_DATE.getTime() - (WEEK_DAY - 1) * onDayInMs +
       (7 * weekNum) * onDayInMs);
     let days: CalendarData[] = [];
     let week: Day[] = [];
@@ -83,6 +87,24 @@ export class  DateUtil extends Date {
     // 将天数差转换为周数，向下取整得到完整的周数
     const DIFF_WEEKS = Math.floor(DIFF_DAYS / 7);
     return -DIFF_WEEKS;
+  }
+
+  static getWeeksBetweenDates(startDate:string, endDate: string): number {
+    const endDay = new Date(endDate);
+    const oneDayInMs = 86400000;
+    // 周视图中选中日期所属周的第一天（周日）
+    let startLastSunday: Date = DateUtil.getLastSunday(new Date(startDate));
+    console.debug('start', JSON.stringify(startLastSunday))
+    // 周视图中今天所属周的第一天（周日）
+    let endLastSunday: Date = DateUtil.getLastSunday(endDay);
+    console.debug('end', JSON.stringify(endLastSunday))
+    // 计算两个日期之间的毫秒差
+    const DIFF = endLastSunday.getTime() - startLastSunday.getTime();
+    // 将毫秒差转换为天数
+    const DIFF_DAYS = DIFF / oneDayInMs;
+    // 将天数差转换为周数，向下取整得到完整的周数
+    const DIFF_WEEKS = Math.floor(DIFF_DAYS / 7) + 1;
+    return DIFF_WEEKS;
   }
 
 }

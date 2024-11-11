@@ -1,8 +1,8 @@
 'use strict';
 
-import utils from '../utils';
-import toFormData from './toFormData';
-import platform from '../platform/index';
+import utils from '../utils.js';
+import toFormData from './toFormData.js';
+import platform from '../platform/index.js';
 
 export default function toURLEncodedForm(data, options) {
   return toFormData(data, new platform.classes.URLSearchParams(), Object.assign({

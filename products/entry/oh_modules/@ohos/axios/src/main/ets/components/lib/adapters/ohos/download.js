@@ -14,9 +14,9 @@
  */
 'use strict';
 
-import buildURL from '../../helpers/buildURL';
-import settle from "../../core/settle";
-import AxiosError from '../../core/AxiosError';
+import buildURL from '../../../lib/helpers/buildURL.js';
+import settle from "../../../lib/core/settle";
+import AxiosError from '../../../lib/core/AxiosError';
 import request from '@ohos.request';
 import fs from '@ohos.file.fs';
 import { setOptions, judgeMaxContentLength } from './index';

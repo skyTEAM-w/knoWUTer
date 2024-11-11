@@ -13,16 +13,16 @@
  * all copies or substantial portions of the Software.
  */
 
-import http from './http'
-import download from './download'
-import upload from './upload'
+import http from './http.js'
+import download from './download.js'
+import upload from './upload.js'
 import fs from '@ohos.file.fs';
 import utils from '../../utils';
 import buffer from '@ohos.buffer';
 import _http from '@ohos.net.http';
-import FormData from '../../env/classes/FormData'
-import AxiosError from '../../core/AxiosError'
-import buildFullPath from '../../core/buildFullPath';
+import FormData from '../../env/classes/FormData.js'
+import AxiosError from '../../../lib/core/AxiosError'
+import buildFullPath from '../../../lib/core/buildFullPath';
 
 const isXHRAdapterSupported = true
 const part = '/data/storage/';

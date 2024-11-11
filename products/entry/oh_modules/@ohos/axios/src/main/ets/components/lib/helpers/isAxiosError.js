@@ -1,6 +1,6 @@
 'use strict';
 
-import utils from '../utils';
+import utils from './../utils.js';
 
 /**
  * Determines whether the payload is an error thrown by Axios

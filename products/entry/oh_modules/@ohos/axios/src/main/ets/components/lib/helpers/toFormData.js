@@ -1,9 +1,9 @@
 'use strict';
 
-import utils from '../utils';
-import AxiosError from '../core/AxiosError';
+import utils from '../utils.js';
+import AxiosError from '../core/AxiosError.js';
 // temporary hotfix to avoid circular references until AxiosURLSearchParams is refactored
-import PlatformFormData from '../platform/ohos/classes/FormData';
+import PlatformFormData from '../platform/ohos/classes/FormData.js';
 
 /**
  * Determines if the given thing is a array or js object.

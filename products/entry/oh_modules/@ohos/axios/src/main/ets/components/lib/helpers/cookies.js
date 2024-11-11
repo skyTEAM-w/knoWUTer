@@ -1,7 +1,7 @@
 'use strict';
 
-import utils from '../utils';
-import platform from '../platform/index';
+import utils from './../utils.js';
+import platform from '../platform/index.js';
 
 export default platform.isStandardBrowserEnv ?
 

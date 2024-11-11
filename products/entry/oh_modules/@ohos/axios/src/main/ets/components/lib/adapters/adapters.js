@@ -1,6 +1,6 @@
-import utils from '../utils';
-import ohosAdapter from './ohos/index';
-import AxiosError from "../core/AxiosError";
+import utils from '../utils.js';
+import ohosAdapter from './ohos/index.js';
+import AxiosError from "../core/AxiosError.js";
 
 const knownAdapters = {
   ohos: ohosAdapter

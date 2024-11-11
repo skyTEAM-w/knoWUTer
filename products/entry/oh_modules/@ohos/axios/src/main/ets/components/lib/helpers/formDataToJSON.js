@@ -1,6 +1,6 @@
 'use strict';
 
-import utils from '../utils';
+import utils from '../utils.js';
 
 /**
  * It takes a string like `foo[x][y][z]` and returns an array like `['foo', 'x', 'y', 'z']

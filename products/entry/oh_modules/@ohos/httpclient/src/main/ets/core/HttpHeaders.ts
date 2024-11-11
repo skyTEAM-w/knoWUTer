@@ -15,7 +15,7 @@
 
 import http from '@ohos.net.http';
 import Request from '../Request'
-import Headers from './Headers'
+import Headers from '../core/Headers'
 import TreeSet from '@ohos.util.TreeSet';
 import StringUtil from '../utils/StringUtil';
 import ObjectUtil from '../utils/ObjectUtil';

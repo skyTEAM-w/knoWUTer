@@ -1,6 +1,6 @@
 'use strict';
 
-import utils from '../utils';
+import utils from './../utils.js';
 
 class InterceptorManager {
   constructor() {
