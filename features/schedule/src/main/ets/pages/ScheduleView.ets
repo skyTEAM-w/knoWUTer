@@ -36,10 +36,10 @@ export struct ScheduleTable {
   @State courseList: LazyDataSource<Course> | undefined = undefined;
   @State loginStatus: boolean | undefined = undefined;
   @State tabOptions: SegmentButtonOptions = SegmentButtonOptions.tab({
-    buttons: [{ text: '周视图' }, { text: '日视图' }] as ItemRestriction<SegmentButtonTextItem>,
-    backgroundBlurStyle: BlurStyle.BACKGROUND_THICK
+    buttons: [{ text: '日程' }, { text: '列表' }] as ItemRestriction<SegmentButtonTextItem>,
+    backgroundColor: $r('app.color.whut_blue_background_selected')
   })
-  @State tabSelectedIndexes: number[] = [1]
+  @State tabSelectedIndexes: number[] = [0]
   private webViewController: webview.WebviewController = new webview.WebviewController();
   private scheduleNetFunc = new ScheduleNetFunc();
   private scheduleDBFunc = new ScheduleDatabaseFunc();
@@ -69,9 +69,11 @@ export struct ScheduleTable {
   onWeekNeedChange(propName: string){
     if (propName == 'selectedScheduleTableIndex') {
       this.selectedSchedule = this.scheduleTableList.getData(this.selectedScheduleTableIndex);
-      this.selectedWeek = DateUtil.getWeeksBetweenDates(this.selectedSchedule.StartDate, this.mDate.getToday());
-      this.currentWeek = this.selectedWeek;
+      this.currentWeek = DateUtil.getWeeksBetweenDates(this.selectedSchedule.StartDate, this.mDate.getToday());
+      this.selectedWeek = this.currentWeek;
       this.getCourseList();
+    } else {
+      this.scheduleTableList.pushArrayData(this.scheduleDBFunc.queryAllScheduleTable() as Schedule[]);
     }
   }
 
@@ -81,13 +83,13 @@ export struct ScheduleTable {
     console.debug(TAG, 'getAllSchedule', JSON.stringify(this.scheduleTableList))
     if (!this.scheduleTableList.isEmpty() && this.selectedScheduleTableIndex !== -1 && !this.isSettingShow) {
       this.selectedSchedule = this.scheduleTableList.getData(this.selectedScheduleTableIndex);
-      this.selectedWeek = DateUtil.getWeeksBetweenDates(this.selectedSchedule.StartDate, this.mDate.getToday());
-      this.currentWeek = this.selectedWeek;
+      this.currentWeek = DateUtil.getWeeksBetweenDates(this.selectedSchedule.StartDate, this.mDate.getToday());
+      this.selectedWeek = this.currentWeek;
       this.getCourseList();
     } else if (this.isSettingShow) {
       this.selectedSchedule = this.scheduleTableList.getData(this.selectedScheduleTableIndex);
-      this.selectedWeek = DateUtil.getWeeksBetweenDates(this.selectedSchedule.StartDate, this.mDate.getToday());
-      this.currentWeek = this.selectedWeek;
+      this.currentWeek = DateUtil.getWeeksBetweenDates(this.selectedSchedule.StartDate, this.mDate.getToday());
+      this.selectedWeek = this.currentWeek;
       this.getCourseList();
     }
   }
@@ -224,7 +226,7 @@ export struct ScheduleTable {
         Slider({
           value: $$this.selectedWeek,
           min: 1,
-          max: 20,
+          max: 21,
           step: 1,
           style: SliderStyle.InSet
         })
@@ -255,43 +257,49 @@ export struct ScheduleTable {
     Navigation(this.schedulePathStack) {
       Column() {
         Stack({ alignContent: Alignment.Top }) {
-          Scroll() {
-            Column() {
-              Column()
-                .height(88)
-              if (this.courseList) {
-                if (this.tabSelectedIndexes[0] === 1) {
+          if (this.courseList) {
+            if (this.tabSelectedIndexes[0] === 1) {
+              Scroll() {
+                Column() {
+                  Column()
+                    .height(88)
+                    .backgroundColor(Color.Transparent)
                   ScheduleDayView({ courseList: this.courseList })
-                } else {
-                  ScheduleWeekView({
-                    selectedSchedule: this.selectedSchedule,
-                    selectedWeek: this.selectedWeek,
-                    currentWeek: this.currentWeek
-                  })
                 }
-
+              }
+              .scrollBar(BarState.Off)
+              .height('100%')
+            } else {
+              Column() {
+                Column()
+                  .height(88)
+                ScheduleWeekView({
+                  selectedSchedule: this.selectedSchedule,
+                  selectedWeek: this.selectedWeek,
+                  currentWeek: this.currentWeek
+                })
               }
             }
           }
-          .scrollBar(BarState.Off)
-          .height('100%')
+              ScheduleNavigation({
+                selectedDate: this.mToday,
+                isCookieShow: this.isCookieShow,
+                isSettingShow: this.isSettingShow,
+                schedule: this.selectedSchedule,
+                loginStatus: this.loginStatus,
+                tabOptions: this.tabOptions,
+                tabSelectedIndexes: this.tabSelectedIndexes,
+                selectWeek: this.selectedWeek,
+                currentWeek: this.currentWeek
+              });
 
-          ScheduleNavigation({
-            selectedDate: this.mToday,
-            isCookieShow: this.isCookieShow,
-            isSettingShow: this.isSettingShow,
-            schedule: this.selectedSchedule,
-            loginStatus: this.loginStatus,
-            tabOptions: this.tabOptions,
-            tabSelectedIndexes: this.tabSelectedIndexes,
-            selectWeek: this.selectedWeek,
-            currentWeek: this.currentWeek
-          });
+
+
         }
 
       }
-      .alignItems(HorizontalAlign.Center)
     }
+    .backgroundColor($r('app.color.whut_blue_background'))
     .bindSheet($$this.isSettingShow, this.settingBindSheet(), {
       preferType: this.currentBreakPoint === BreakPointTypeEnum.LG ? SheetType.CENTER : SheetType.BOTTOM,
       detents: [400],

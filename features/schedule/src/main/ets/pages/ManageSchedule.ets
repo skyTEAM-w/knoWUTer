@@ -5,6 +5,7 @@ import { ScheduleDatabaseFunc } from '../service/ScheduleDatabaseFunc';
 import { promptAction, SymbolGlyphModifier } from '@kit.ArkUI';
 import { JSON } from '@kit.ArkTS';
 import { it } from '@ohos/hypium';
+import { paddingCourseSchedule } from '../service/ScheduleBaseFunc';
 
 const TAG = 'ManageSchedule'
 
@@ -21,6 +22,10 @@ export struct ManageSchedule {
 
   aboutToAppear(): void {
     this.scheduleList.pushArrayData(this.scheduleDBFunc.queryAllScheduleTable() as Schedule[]);
+    // let csList = this.scheduleDBFunc.queryCourseScheduleByWeek(this.scheduleList.getData(1), 11, 4);
+    // if (csList) {
+    //   console.debug(TAG, JSON.stringify(paddingCourseSchedule(csList)))
+    // }
   }
 
   deleteSelectedSchedule(index: number) {

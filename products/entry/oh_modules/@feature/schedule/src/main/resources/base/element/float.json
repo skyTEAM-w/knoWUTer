@@ -39,6 +39,10 @@
     {
       "name": "schedule_card_width",
       "value": "66"
+    },
+    {
+      "name": "course_schedule_height",
+      "value": "60"
     }
   ]
 }

@@ -1,7 +1,7 @@
 import { relationalStore, ValuesBucket } from '@kit.ArkData';
 import { DBUtil, LazyDataSource } from '@ohos/utils';
-import { Course } from '../model/Course';
-import { CourseSchedule } from '../model/CourseSchedule';
+import { ColorArray, Course } from '../model/Course';
+import { CourseSchedule, WEEKS } from '../model/CourseSchedule';
 import { Schedule } from '../model/Schedule';
 
 
@@ -27,7 +27,7 @@ export class ScheduleDatabaseFunc {
 
   public insertCourseInformation(courseList: Course[], schedule: Schedule) {
     if (courseList.length > 0) {
-      courseList.forEach((course: Course) => {
+      courseList.forEach((course: Course, index:number) => {
         let valuesBucket: ValuesBucket = {
           TableId: Number(schedule.scheduleId),
           ClassId: course.classId,
@@ -40,7 +40,7 @@ export class ScheduleDatabaseFunc {
           ClassDateAndPlace: course.classDateAndPlace ? course.classDateAndPlace : null,
           CourseSerialNum: course.courseSerialNum,
           CourseNo: course.courseNo,
-          Color: '#FFFFFF'
+          Color: ColorArray[index % 6]
         }
         console.debug(TAG, 'insertCourseInformation', JSON.stringify(valuesBucket))
         this.dbUtil.insertMyValueBucket(valuesBucket, CourseInfoTable,
@@ -62,7 +62,8 @@ export class ScheduleDatabaseFunc {
           StartSession: value.StartSession,
           EndSession: value.EndSession,
           Place: value.Place,
-          ScheduleId: value.ScheduleId
+          ScheduleId: value.ScheduleId,
+          CourseName: value.CourseName
         };
         this.dbUtil.insertMyValueBucket(valueBucket, CourseScheduleTable,
           relationalStore.ConflictResolution.ON_CONFLICT_ROLLBACK);
@@ -101,6 +102,16 @@ export class ScheduleDatabaseFunc {
     }
     return undefined;
   }
+
+  // public queryCourseId(schedule: Schedule, course: Course) {
+  //   let predicates: relationalStore.RdbPredicates = new relationalStore.RdbPredicates(CourseInfoTable);
+  //   predicates.equalTo('TableId', schedule.scheduleId).and().equalTo('', schedule.StartDate);
+  //   let resultSet = this.dbUtil.queryMyPredicates(predicates, ['ScheduleId']);
+  //   if (resultSet && resultSet.goToFirstRow()) {
+  //     return resultSet.getString(resultSet.getColumnIndex('ScheduleId'))
+  //   }
+  //   return undefined;
+  // }
 
   public queryAllCourseInformation(schedule: Schedule) {
     let predicates: relationalStore.RdbPredicates = new relationalStore.RdbPredicates(CourseInfoTable);
@@ -145,12 +156,47 @@ export class ScheduleDatabaseFunc {
         const startSession = resultSet.getLong(resultSet.getColumnIndex('StartSession'));
         const endSession = resultSet.getLong(resultSet.getColumnIndex('EndSession'));
         const place = resultSet.getString(resultSet.getColumnIndex('Place'));
-        courseScheduleList.pushData(new CourseSchedule(weekRanges, schedule.scheduleId, course.classId, scheduleId,
+        courseScheduleList.pushData(new CourseSchedule(weekRanges, schedule.scheduleId, course.classId, course.courseName,scheduleId,
           weekDay, startSession, endSession, place));
       }
       return courseScheduleList;
     }
     return undefined;
+  }
+
+  public queryCourseScheduleByWeek(schedule: Schedule, week: number, weekDay: number) {
+    let predicates = this.weekPredicatesBuilder(week);
+    predicates.and().equalTo('TableId', schedule.scheduleId).and().equalTo('WeekDay', `${WEEKS[weekDay]}`)
+    let resultSet = this.dbUtil.queryMyPredicates(predicates);
+    if (resultSet) {
+      let dayScheduleList: CourseSchedule[] = [];
+      while (resultSet.goToNextRow()) {
+        const scheduleId = resultSet.getString(resultSet.getColumnIndex('ScheduleId'))
+        const weekRanges = resultSet.getString(resultSet.getColumnIndex('WeekRanges'));
+        const weekDay = resultSet.getString(resultSet.getColumnIndex('WeekDay'));
+        const startSession = resultSet.getLong(resultSet.getColumnIndex('StartSession'));
+        const endSession = resultSet.getLong(resultSet.getColumnIndex('EndSession'));
+        const place = resultSet.getString(resultSet.getColumnIndex('Place'));
+        const courseId = resultSet.getString(resultSet.getColumnIndex('ClassId'));
+        const courseName =resultSet.getString(resultSet.getColumnIndex('CourseName'));
+        dayScheduleList.push(new CourseSchedule(weekRanges, schedule.scheduleId, courseId, courseName, scheduleId,
+          weekDay, startSession, endSession, place));
+      }
+      console.debug(TAG, 'queryCourseScheduleByWeek', JSON.stringify(dayScheduleList))
+      return dayScheduleList;
+    }
+    return undefined;
+  }
+
+  public queryCourseColor(courseSchedule: CourseSchedule) {
+    let predicates: relationalStore.RdbPredicates = new relationalStore.RdbPredicates(CourseInfoTable);
+    predicates.equalTo('ClassId', courseSchedule.ClassId).and().equalTo('TableId', courseSchedule.TableId);
+    let resultSet = this.dbUtil.queryMyPredicates(predicates, ['Color']);
+    if (resultSet) {
+      resultSet.goToFirstRow()
+      return resultSet.getString(resultSet.getColumnIndex('Color'));
+    }
+    return '#800000F0';
   }
 
   public deleteSchedule(schedule: Schedule) {
@@ -169,5 +215,13 @@ export class ScheduleDatabaseFunc {
       }
     }
     return false;
+  }
+
+  weekPredicatesBuilder(week: number) {
+    const field: string = 'WeekRanges'
+   let predicates: relationalStore.RdbPredicates = new relationalStore.RdbPredicates(CourseScheduleTable);
+   predicates.beginWrap().like(field, `${week},%`).or().like(field, `%,${week}`).or().like(field, `%,${week},%`)
+     .or().equalTo(field, `${week}`).endWrap()
+    return predicates;
   }
 }

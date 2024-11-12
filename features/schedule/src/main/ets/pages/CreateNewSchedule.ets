@@ -2,24 +2,30 @@ import { TextInputDialog, TopNavigationView } from '@ohos/uicomponents';
 import { BreakPointType, BreakPointTypeEnum, DateUtil, LazyDataSource } from '@ohos/utils';
 import { intl } from '@kit.LocalizationKit';
 import { Course } from '../model/Course';
-import { ScheduleNetFunc } from '../service/ScheduleNetFunc';
+import { getSchedule, ScheduleNetFunc } from '../service/ScheduleNetFunc';
 import { ClassInformationCard } from '../components/CourseInformationCard';
 import { promptAction, TipsDialog } from '@kit.ArkUI';
 import { Schedule } from '../model/Schedule';
 import { ScheduleDatabaseFunc } from '../service/ScheduleDatabaseFunc';
 import { classDateAndPlaceToCourseSchedule } from '../service/ScheduleBaseFunc';
-import { JSON } from '@kit.ArkTS';
+import { JSON, taskpool } from '@kit.ArkTS';
+import json from '@ohos.util.json';
 
 const INTERVAL = 30;
 const DURATION = 300;
 
 const TAG = '[CreateNewSchedule]'
 
+async function  getCourseListTask(cookie: string) {
+  let task: taskpool.Task = new taskpool.Task(getSchedule, cookie);
+  return await taskpool.execute(task) as Course[];
+}
+
 @Component
 export struct CreateNewSchedule {
   @StorageLink('schedule_cookie') ScheduleCookie: string = AppStorage.get<string>('schedule_cookie') || '';
   @Consume('schedulePathStack') schedulePathStack: NavPathStack;
-  @State @Watch('triggerCourseCardAnimation') courseList: LazyDataSource<Course> | undefined = undefined;
+  @State @Watch('triggerCourseCardAnimation') courseList: LazyDataSource<Course>  = new LazyDataSource();
   @StorageLink('currentBreakPoint') currentBreakPoint: BreakPointTypeEnum = BreakPointTypeEnum.MD;
   @State scheduleName: string = '未命名';
   @State inputName: string = '未命名';
@@ -64,10 +70,19 @@ export struct CreateNewSchedule {
 
   aboutToAppear(): void {
     this.getCourseList();
+
   }
 
-  async getCourseList() {
-    this.courseList = await this.scheduleNetFunc.getSchedule(this.ScheduleCookie);
+  getCourseList() {
+    // this.courseList = await this.scheduleNetFunc.getSchedule(this.ScheduleCookie);
+    getCourseListTask(this.ScheduleCookie).then((courseList) => {
+      if (courseList) {
+        this.courseList.pushArrayData(courseList);
+        // this.courseList.reloadData();
+        console.debug(TAG, 'aboutToAppear', JSON.stringify(this.courseList))
+      }
+
+    })
   }
 
   triggerCourseCardAnimation() {
@@ -99,7 +114,7 @@ export struct CreateNewSchedule {
         this.scheduleDBFunc.insertCourseInformation(courseArray, scheduleInfomation);
         courseArray.forEach((course: Course) => {
           if (course.classDateAndPlace) {
-            const courseSchedule = classDateAndPlaceToCourseSchedule(course, scheduleInfomation);
+            const courseSchedule = classDateAndPlaceToCourseSchedule(course, scheduleInfomation, true);
             this.scheduleDBFunc.insertCourseSchedule(courseSchedule);
           }
         })
@@ -163,7 +178,7 @@ export struct CreateNewSchedule {
 
               Divider()
               Row() {
-                Text('课程表名')
+                Text('课表名称')
                   .fontSize(18)
                   .fontWeight(FontWeight.Medium)
 
@@ -196,22 +211,30 @@ export struct CreateNewSchedule {
               .padding($r('app.float.course_card_padding'))
           }
 
-          if (this.courseList) {
+          // if (!this.courseList.isEmpty()) {
             WaterFlow() {
               LazyForEach(this.courseList, (item: Course, index: number) => {
-                FlowItem() {
-                  ClassInformationCard({ courseInfomation: item })
+                if (!this.courseList.isEmpty()) {
+                  FlowItem() {
+                    ClassInformationCard({ courseInfomation: item })
+                  }
+                  .padding({ left: $r('app.float.md_padding_margin'), right: $r('app.float.md_padding_margin') })
+                  .transition(TransitionEffect.OPACITY.combine(TransitionEffect.scale({ x: 0.8, y: 0.8 }))
+                    .animation({ duration: DURATION, curve: Curve.Friction, delay: INTERVAL * index }))
+
+                } else {
+                  FlowItem() {
+                    LoadingProgress()
+                  }
+
                 }
-                .padding({ left: $r('app.float.md_padding_margin'), right: $r('app.float.md_padding_margin') })
-                .transition(TransitionEffect.OPACITY.combine(TransitionEffect.scale({ x: 0.8, y: 0.8 }))
-                  .animation({ duration: DURATION, curve: Curve.Friction, delay: INTERVAL * index }))
               })
               FlowItem() {
 
               }
               .height('90%')
             }
-            .cachedCount(0)
+            .cachedCount(3)
             .columnsTemplate(new BreakPointType({
               sm: '1fr',
               md: '1fr 1fr',
@@ -221,7 +244,7 @@ export struct CreateNewSchedule {
             .rowsGap($r('app.float.course_card_padding'))
             .scrollBar(BarState.Off)
             .edgeEffect(EdgeEffect.Spring, { alwaysEnabled: true })
-          }
+          // }
         }
         .margin({ top: 10 })
       }

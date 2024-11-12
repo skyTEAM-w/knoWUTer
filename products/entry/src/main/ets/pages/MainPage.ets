@@ -59,16 +59,15 @@ struct Index {
         $r('app.color.bottom_text_color_selected') : $r('app.color.bottom_text_color_normal'))
     }
     .width('100%')
-    .height('100%')
+    .height(this.currentBreakPoint === BreakPointTypeEnum.LG ?'15%': '100%')
     .border({
-      width: this.currentBreakPoint === BreakPointTypeEnum.LG ? { top: 0, right: 0.5 } : { top: 0.5, right: 0 },
+      width: this.currentBreakPoint === BreakPointTypeEnum.LG ? { top: 0, right: 0 } : { top: 0.5, right: 0 },
       color: "#FF182431"
     })
     .backgroundColor(Color.Transparent)
-    .blur(BlurStyle.Regular)
     .padding({
       bottom: this.currentBreakPoint === BreakPointTypeEnum.LG ? 8 : AppStorage.get<number>('naviIndicatorHeight'),
-      top: this.currentBreakPoint === BreakPointTypeEnum.LG ? AppStorage.get<number>('statusBarHeight') : 8
+      top: 8
     })
   }
 
@@ -109,12 +108,14 @@ struct Index {
         .barHeight(this.currentBreakPoint === BreakPointTypeEnum.LG ? '100%' : '10%')
         .barWidth(this.currentBreakPoint === BreakPointTypeEnum.LG ? '5%' : '100%')
         .scrollable(false)
+        .barMode(this.currentBreakPoint === BreakPointTypeEnum.LG ? BarMode.Scrollable : BarMode.Fixed, {nonScrollableLayoutStyle: LayoutStyle.ALWAYS_CENTER})
         .onChange((index: number) => {
           this.bottomTabIndex = index;
         })
         .onTabBarClick((index: number) => {
           this.bottomTabEffectIndex = index;
         })
+        .animationDuration(0)
         .height('100%')
         .barOverlap(this.currentBreakPoint !== BreakPointTypeEnum.LG)
         .barBackgroundColor(Color.Transparent)

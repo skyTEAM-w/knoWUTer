@@ -27,33 +27,97 @@ export struct ScheduleWeekView {
 
   aboutToAppear(): void {
     this.oldSelectWeek = this.selectedWeek
+    switch ((this.selectedWeek % 3)) {
+      case 0: {
+        this.weekNumOne = this.selectedWeek - this.currentWeek + 1;
+        this.weekNumTwo = this.selectedWeek - this.currentWeek - 1;
+        this.weekNumThree = this.selectedWeek - this.currentWeek;
+        this.swiperWeekIndex = 2;
+        break;
+      }
+      case 1: {
+        this.weekNumOne = this.selectedWeek - this.currentWeek;
+        this.weekNumTwo = this.selectedWeek - this.currentWeek + 1;
+        this.weekNumThree = this.selectedWeek - this.currentWeek - 1;
+        this.swiperWeekIndex = 0;
+        break;
+      }
+      case 2: {
+        this.weekNumOne = this.selectedWeek - this.currentWeek - 1;
+        this.weekNumTwo = this.selectedWeek - this.currentWeek;
+        this.weekNumThree = this.selectedWeek - this.currentWeek + 1
+        this.swiperWeekIndex = 1;
+        break;
+      }
+    }
   }
 
   refreshWeekNum() {
     if (!this.isSwiping) {
-      this.weekNumOne = this.selectedWeek - this.currentWeek - 1;
-      this.weekNumTwo = this.selectedWeek - this.currentWeek;
-      this.weekNumThree = this.selectedWeek - this.currentWeek + 1
-      this.oldSelectWeek = this.selectedWeek;
+      switch ((this.selectedWeek % 3)) {
+        case 0: {
+          this.weekNumOne = this.selectedWeek - this.currentWeek + 1;
+          this.weekNumTwo = this.selectedWeek - this.currentWeek - 1;
+          this.weekNumThree = this.selectedWeek - this.currentWeek;
+          this.swiperWeekIndex = 2;
+          break;
+        }
+        case 1: {
+          this.weekNumOne = this.selectedWeek - this.currentWeek;
+          this.weekNumTwo = this.selectedWeek - this.currentWeek + 1;
+          this.weekNumThree = this.selectedWeek - this.currentWeek - 1;
+          this.swiperWeekIndex = 0;
+          break;
+        }
+        case 2: {
+          this.weekNumOne = this.selectedWeek - this.currentWeek - 1;
+          this.weekNumTwo = this.selectedWeek - this.currentWeek;
+          this.weekNumThree = this.selectedWeek - this.currentWeek + 1
+          this.swiperWeekIndex = 1;
+          break;
+        }
+      }
     }
 
   }
 
   onScheduleChange() {
     console.debug(TAG, 'onScheduleChange', this.selectedWeek, this.currentWeek)
-    this.weekNumOne = -1;
-    this.weekNumTwo = 0;
-    this.weekNumThree = 1
-    this.swiperWeekIndex = 1
+    switch (this.selectedWeek % 3) {
+      case 0: {
+        console.debug(TAG, 'CASE 0')
+        this.weekNumOne = 1;
+        this.weekNumTwo = -1;
+        this.weekNumThree = 0;
+        this.swiperWeekIndex = 2;
+        break;
+      }
+      case 1: {
+        console.debug(TAG, 'CASE 1')
+        this.weekNumOne = 0;
+        this.weekNumTwo = 1;
+        this.weekNumThree = -1;
+        this.swiperWeekIndex = 0;
+        break;
+      }
+      case 2: {
+        console.debug(TAG, 'CASE 2')
+        this.weekNumOne = -1;
+        this.weekNumTwo = 0;
+        this.weekNumThree = 1;
+        this.swiperWeekIndex = 1;
+        break;
+      }
+    }
   }
 
 
   build() {
     Column() {
       Swiper() {
-        ScheduleWeekViewItem({weekNum: this.weekNumOne})
-        ScheduleWeekViewItem({weekNum: this.weekNumTwo})
-        ScheduleWeekViewItem({weekNum: this.weekNumThree})
+        ScheduleWeekViewItem({weekNum: this.weekNumOne, selectedWeek: this.selectedWeek, currentWeek: this.currentWeek, selectedSchedule: this.selectedSchedule})
+        ScheduleWeekViewItem({weekNum: this.weekNumTwo, selectedWeek: this.selectedWeek, currentWeek: this.currentWeek, selectedSchedule: this.selectedSchedule})
+        ScheduleWeekViewItem({weekNum: this.weekNumThree, selectedWeek: this.selectedWeek, currentWeek: this.currentWeek, selectedSchedule: this.selectedSchedule})
       }
       .onAnimationStart((index: number, targetIndex: number, extraInfo: SwiperAnimationEvent) => {
 
@@ -117,6 +181,7 @@ export struct ScheduleWeekView {
       .index($$this.swiperWeekIndex)
       .height('100%')
     }
+    .margin({top: 5})
     .height('100%')
     .width("100%")
   }

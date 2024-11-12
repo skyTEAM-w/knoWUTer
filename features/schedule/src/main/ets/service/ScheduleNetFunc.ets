@@ -1,7 +1,7 @@
 import { JSON } from '@kit.ArkTS';
 import { HttpUtil } from '@ohos/network';
 import { FormEncoder } from '@ohos/httpclient';
-import { Course, HttpResponseBody, Term } from '../model/Course';
+import { Course, CourseSendable, HttpResponseBody, Term } from '../model/Course';
 import { LazyDataSource } from '@ohos/utils';
 
 const TAG = '[ScheduleNetFunc]'
@@ -52,4 +52,24 @@ export class ScheduleNetFunc {
     }
     return true;
   }
+}
+
+@Concurrent
+export async function getSchedule(cookie: string, termCode?: string) {
+  const TAG = '[ScheduleNetFunc]';
+  let formEncoder = new FormEncoder.Builder().add("termCode", "2024-2025-1").build();
+  let feBode = formEncoder.createRequestBody();
+  let response = await HttpUtil.getInstance()
+    .HttpPost('https://jwxt.whut.edu.cn/jwapp/sys/homeapp/api/home/student/courses.do', cookie, feBode);
+  console.debug(TAG, response?.result)
+  if (response) {
+    let httpCourse: HttpResponseBody = JSON.parse(response.result) as HttpResponseBody;
+    let courseList: CourseSendable[]= []
+    httpCourse.datas.forEach((value: object) => {
+      courseList.push(value as CourseSendable);
+    })
+    // console.debug(TAG, 'getSchedule', JSON.stringify(courseList));
+    return courseList;
+  }
+  return undefined;
 }

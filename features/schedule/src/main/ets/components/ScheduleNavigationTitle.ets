@@ -71,6 +71,19 @@ export struct ScheduleNavigation {
   }
 
   @Builder
+  titleBindMenu() {
+    Menu() {
+      MenuItem({
+        symbolStartIcon: new SymbolGlyphModifier($r('sys.symbol.arrow_counterclockwise')).fontSize(24),
+        content: '回到当前周'
+      })
+        .onClick(() => {
+          this.selectWeek = this.currentWeek;
+        })
+    }
+  }
+
+  @Builder
   creatNewScheduleButtonMenu() {
     Menu() {
       MenuItem({
@@ -110,10 +123,20 @@ export struct ScheduleNavigation {
           .width('100%')
           .alignItems(HorizontalAlign.Start)
           .justifyContent(FlexAlign.SpaceBetween)
+          .bindMenu([{
+            value: '回到本周',
+            symbolIcon: new SymbolGlyphModifier($r('sys.symbol.arrow_counterclockwise')).fontSize(24),
+            action: () => {
+              this.selectWeek = this.currentWeek;
+            }
+          }], {placement: Placement.BottomLeft, offset:{x: 12, y: 0}})
         }
         .alignSelf(ItemAlign.Start)
 
-        GridCol({ span: { sm: 1, md: 4, lg: 6 } }) {
+
+        GridCol({span: {sm: 0, md: 0, lg: 1}})
+
+        GridCol({ span: { sm: 1, md: 4, lg: 4 } }) {
           if (this.currenBreakPoint !== BreakPointTypeEnum.SM) {
             SegmentButton({
               options: this.tabOptions,
@@ -121,6 +144,8 @@ export struct ScheduleNavigation {
             })
           }
         }
+
+        GridCol({span: {sm: 0, md: 0, lg: 1}})
 
         GridCol({ span: { sm: 2, md: 3, lg: 3 } }) {
           Row() {
@@ -170,8 +195,8 @@ export struct ScheduleNavigation {
     .backgroundColor(Color.Transparent)
     .height($r('app.float.schedule_navigation_height'))
     .width('100%')
-    .backgroundBlurStyle(BlurStyle.Thin)
-    .border({ width: 0.1, color: $r('app.color.whut_blue_background_selected') })
+    .backgroundBlurStyle(this.tabSelectedIndexes[0] === 1 ? BlurStyle.Thin : BlurStyle.NONE)
+    // .border({ width: 0.1, color: $r('app.color.whut_blue_background_selected') })
     .padding({
       top: AppStorage.get<number>('statusBarHeight') as number + 5,
       left: $r('app.float.md_padding_margin'),

@@ -92,6 +92,7 @@ const COURSE_INFO_TABLE_SQL = 'CREATE TABLE IF NOT EXISTS CourseInformation (' +
 const COURSE_SCHEDULE_TABLE_SQL = 'CREATE TABLE IF NOT EXISTS CourseSchedule (' +
   '   TableId INTEGER NOT NULL,' +
   '   ClassId VARCHAR(255) NOT NULL,' +
+  '   CourseName VARCHAR(255) NOT NULL,' +
   '   ScheduleId VARCHAR(255) NOT NULL,' +
   '   WeekRanges VARCHAR(255) NOT NULL,' +
   '   WeekDay TEXT NOT NULL,' +

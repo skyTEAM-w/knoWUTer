@@ -1,13 +1,25 @@
 import { DateUtil } from '@ohos/utils/src/main/ets/utils/DateUtil';
-import { Course } from '../model/Course';
+import { Course, CourseSendable } from '../model/Course';
 import { CourseSchedule } from '../model/CourseSchedule';
 import { Schedule } from '../model/Schedule';
-import { classDateAndPlaceToCourseSchedule } from '../service/ScheduleBaseFunc';
+import { classDateAndPlaceToCourseSchedule,
+  getCourseWeekRangeList,
+  ScheduleBaseFunc } from '../service/ScheduleBaseFunc';
+import { JSON, taskpool } from '@kit.ArkTS';
+import { classDateAndPlaceToCourseScheduleTask } from '../service/ScheduleTookPoolFunc';
+import { LazyDataSource } from '@ohos/utils';
+
+const TAG = '[ClassInformationCard]';
+
+async function getCourseScheduleTask(course: Course, isList: boolean) {
+  let task: taskpool.Task = new taskpool.Task(classDateAndPlaceToCourseScheduleTask, course, isList);
+  return await taskpool.execute(task) as CourseSchedule[]
+}
 
 @Component
 export struct ClassInformationCard {
   @ObjectLink courseInfomation: Course;
-  @Prop courseSchedules: CourseSchedule[] | undefined = undefined;
+  @State courseSchedules: LazyDataSource<CourseSchedule> = new LazyDataSource();
   private mDate = new DateUtil();
 
   @Styles
@@ -18,9 +30,21 @@ export struct ClassInformationCard {
   }
 
   aboutToAppear(): void {
-    if (this.courseInfomation.classDateAndPlace) {
-      this.courseSchedules = classDateAndPlaceToCourseSchedule(this.courseInfomation, new Schedule('', '', ''));
+    if (this.courseInfomation && this.courseInfomation.classDateAndPlace) {
+      console.debug(TAG, 'aboutToAppear', JSON.stringify(this.courseInfomation))
+      let courseScheduleList = classDateAndPlaceToCourseSchedule(this.courseInfomation, new Schedule('', '', ''), false);
+      if (courseScheduleList) {
+        this.courseSchedules.pushArrayData(courseScheduleList);
+      }
+      // this.getCourseSchedule()
     }
+  }
+
+  getCourseSchedule() {
+    getCourseScheduleTask(this.courseInfomation, false).then((courseScheduleList) => {
+      this.courseSchedules.pushArrayData(courseScheduleList);
+      console.debug(TAG, 'aboutToAppear', JSON.stringify(this.courseSchedules))
+    })
   }
 
   build() {
@@ -28,15 +52,15 @@ export struct ClassInformationCard {
       Row() {
         Text(this.courseInfomation.courseName)
           .fontSize(16)
-          .fontWeight(FontWeight.Medium)
+          .fontWeight(FontWeight.Bold)
+          .fontColor($r('app.color.course_card_font_default_color'))
       }
       .justifyContent(FlexAlign.Start)
       .width('100%')
       .padding($r('app.float.course_card_padding'))
 
       Column({ space: 5 }) {
-        if (this.courseSchedules) {
-          ForEach(this.courseSchedules, (item: CourseSchedule) => {
+          LazyForEach(this.courseSchedules, (item: CourseSchedule) => {
             Column() {
               Row() {
                 SymbolGlyph($r('sys.symbol.calendar_fill'))
@@ -77,12 +101,13 @@ export struct ClassInformationCard {
             .borderRadius($r('app.float.main_border_radius'))
             .padding($r('app.float.course_card_padding'))
           })
-        }
+
       }
     }
-    .backgroundColor($r('app.color.whut_blue_background'))
+    .backgroundColor($r('app.color.course_card_bg_default_color'))
+    .clickEffect({level: ClickEffectLevel.LIGHT, scale: 0.9})
+    // .backgroundBlurStyle(BlurStyle.BACKGROUND_THICK)
     .borderRadius($r('app.float.main_border_radius'))
-    .borderWidth(1)
     .padding($r('app.float.course_card_padding'))
     .renderFit(RenderFit.RESIZE_CONTAIN)
     .width('100%')

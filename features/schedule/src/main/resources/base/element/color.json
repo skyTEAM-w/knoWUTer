@@ -1,0 +1,12 @@
+{
+  "color": [
+    {
+      "name": "course_card_bg_default_color",
+      "value": "#8000489A"
+    },
+    {
+      "name": "course_card_font_default_color",
+      "value": "#FFFFFF"
+    }
+  ]
+}

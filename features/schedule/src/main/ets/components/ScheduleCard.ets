@@ -8,9 +8,14 @@ export struct ScheduleCard {
 
   build() {
     Column() {
-      Rect({ width: 40, height: 40 })
-        .radius(8)
-        .fill(this.selectedScheduleIndex === this.index ? $r('app.color.whut_yellow') : $r('app.color.whut_blue'))
+      Stack() {
+        Rect({ width: 40, height: 40 })
+          .radius(8)
+          .fill(this.selectedScheduleIndex === this.index ? $r('app.color.whut_yellow') : $r('app.color.whut_blue'))
+        if (this.selectedScheduleIndex === this.index) {
+          SymbolGlyph($r('sys.symbol.checkmark_circle'))
+        }
+      }
       Text(this.schedule.scheduleName)
         .fontSize(10)
         .textOverflow({ overflow: TextOverflow.Ellipsis })

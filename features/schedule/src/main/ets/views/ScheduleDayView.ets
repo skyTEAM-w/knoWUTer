@@ -3,6 +3,9 @@ import LazyDataSource from '@ohos/utils/src/main/ets/utils/LazyDataSource';
 import { Course } from '../model/Course';
 import { ClassInformationCard } from '../components/CourseInformationCard';
 
+const INTERVAL = 30;
+const DURATION = 300;
+
 @Component
 export struct ScheduleDayView {
   @ObjectLink courseList: LazyDataSource<Course> | undefined;
@@ -15,6 +18,8 @@ export struct ScheduleDayView {
           ClassInformationCard({ courseInfomation: item })
         }
         .padding({ left: $r('app.float.md_padding_margin'), right: $r('app.float.md_padding_margin') })
+        .transition(TransitionEffect.OPACITY.combine(TransitionEffect.scale({ x: 0.8, y: 0.8 }))
+          .animation({ duration: DURATION, curve: Curve.Friction, delay: INTERVAL * index }))
       })
       FlowItem() {
 
