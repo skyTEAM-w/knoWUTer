@@ -7,7 +7,9 @@ const INTERVAL = 30;
 const DURATION = 300;
 
 @Component
-export struct ScheduleDayView {
+export struct ScheduleListView {
+  @Consume('schedulePathStack') schedulePathStack: NavPathStack;
+  @Consume('appPathStack') appPathStack: NavPathStack;
   @ObjectLink courseList: LazyDataSource<Course> | undefined;
   @StorageLink('currentBreakPoint') currentBreakPoint: string = BreakPointTypeEnum.MD;
 
@@ -32,6 +34,7 @@ export struct ScheduleDayView {
       md: '1fr 1fr',
       lg: '1fr 1fr 1fr'
     }).getValue(this.currentBreakPoint))
+    .transition(TransitionEffect.opacity(0.8))
     .columnsGap($r('app.float.course_card_padding'))
     .rowsGap($r('app.float.course_card_padding'))
     .scrollBar(BarState.Off)

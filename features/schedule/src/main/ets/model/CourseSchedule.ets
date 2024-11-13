@@ -1,5 +1,6 @@
 export interface CourseSchedules {
   weekRanges: string;
+  weekRangesStr: string;
   WeekDay: string;
   StartSession: number;
   EndSession: number;
@@ -9,6 +10,7 @@ export interface CourseSchedules {
 @Observed
 export class CourseSchedule implements CourseSchedules {
   weekRanges: string;
+  weekRangesStr: string;
   TableId: string;
   ClassId: string;
   CourseName: string;
@@ -20,7 +22,7 @@ export class CourseSchedule implements CourseSchedules {
 
   constructor(weekRanges: string, TableId: string, ClassId: string, CourseName: string, ScheduleId: string,
     WeekDay: string,
-    StartSession: number, EndSession: number, Place: string) {
+    StartSession: number, EndSession: number, Place: string, weekRangesStr: string) {
     this.weekRanges = weekRanges;
     this.TableId = TableId;
     this.ClassId = ClassId;
@@ -30,12 +32,14 @@ export class CourseSchedule implements CourseSchedules {
     this.EndSession = EndSession;
     this.Place = Place;
     this.CourseName = CourseName;
+    this.weekRangesStr = weekRangesStr;
   }
 }
 
 @Sendable
 export class CourseScheduleSendable implements CourseSchedules {
   weekRanges: string;
+  weekRangesStr: string;
   TableId: string;
   ClassId: string;
   CourseName: string;
@@ -47,7 +51,7 @@ export class CourseScheduleSendable implements CourseSchedules {
 
   constructor(weekRanges: string, TableId: string, ClassId: string, CourseName: string, ScheduleId: string,
     WeekDay: string,
-    StartSession: number, EndSession: number, Place: string) {
+    StartSession: number, EndSession: number, Place: string, weekRangesStr: string) {
     this.weekRanges = weekRanges;
     this.TableId = TableId;
     this.ClassId = ClassId;
@@ -57,6 +61,7 @@ export class CourseScheduleSendable implements CourseSchedules {
     this.EndSession = EndSession;
     this.Place = Place;
     this.CourseName = CourseName;
+    this.weekRangesStr = weekRangesStr;
   }
 }
 
@@ -82,9 +87,9 @@ export const TIME_TABLE: Array<TimeTable> = [
     EndTime: '9:35'
   },
   {
-  session: 3,
-  StartTime: '9:55',
-  EndTime: '10:40'
+    session: 3,
+    StartTime: '9:55',
+    EndTime: '10:40'
   },
   {
     session: 4,

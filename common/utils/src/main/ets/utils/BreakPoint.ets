@@ -82,13 +82,11 @@ export class BreakPointSystem {
       this.updateCurrentBreakPoint(BreakPointTypeEnum.SM);
     }
   }
-
   private isMD = (mediaQueryResult: mediaquery.MediaQueryResult) => {
     if (mediaQueryResult.matches) {
       this.updateCurrentBreakPoint(BreakPointTypeEnum.MD);
     }
   }
-
   private isLG = (mediaQueryResult: mediaquery.MediaQueryResult) => {
     if (mediaQueryResult.matches) {
       this.updateCurrentBreakPoint(BreakPointTypeEnum.LG);

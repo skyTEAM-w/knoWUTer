@@ -1,5 +1,5 @@
 import { Course } from '../model/Course';
-import { CourseSchedule, CourseSchedules, CourseScheduleSendable } from '../model/CourseSchedule';
+import { CourseSchedule, CourseSchedules } from '../model/CourseSchedule';
 import { Schedule } from '../model/Schedule';
 import { JSON } from '@kit.ArkTS';
 
@@ -16,15 +16,15 @@ export function classDateAndPlaceToCourseSchedule(course: Course, schedule: Sche
     const weekRange = weekRangesRegex.exec(schedule);
     // console.debug(TAG, 'classDateAndPlaceToCourseSchedule', 'WeekRange', weekRange)
     let weekRanges: string = '';
-    if (isList) {
-      weekRanges = getCourseWeekRangeList(weekRange);
-    } else  {
-      weekRanges = getCourseWeekRange(weekRange)
-    }
+    weekRanges = getCourseWeekRangeList(weekRange);
+
+    let weekRangesStr = getCourseWeekRange(weekRange)
+
     const match = regex.exec(schedule.replace(/\[(.*?)\]/, ''));
     if (match) {
       return {
         weekRanges,
+        weekRangesStr,
         WeekDay: match[1],
         StartSession: Number(match[2]),
         EndSession: Number(match[3]),
@@ -39,8 +39,9 @@ export function classDateAndPlaceToCourseSchedule(course: Course, schedule: Sche
   let courseSchedule: CourseSchedule[] = [];
   parsedSchedules.forEach((value: CourseSchedules | null) => {
     if (value) {
-      courseSchedule.push(new CourseSchedule(value.weekRanges, schedule.scheduleId, course.classId, course.courseName, count.toString(),
-        value.WeekDay, value.StartSession, value.EndSession, value.Place));
+      courseSchedule.push(new CourseSchedule(value.weekRanges, schedule.scheduleId, course.classId, course.courseName,
+        count.toString(),
+        value.WeekDay, value.StartSession, value.EndSession, value.Place, value.weekRangesStr));
       count++;
     }
   })
@@ -83,7 +84,7 @@ export function getCourseWeekRangeList(weekRangeResult: RegExpExecArray | null) 
 export function paddingCourseSchedule(courseSchedule: CourseSchedule[]) {
   let startSessions: number[] = [];
   let endSessions: number[] = [];
-  const  paddingCount: number = 13;
+  const paddingCount: number = 13;
   courseSchedule.forEach((item: CourseSchedule) => {
     startSessions.push(item.StartSession)
     endSessions.push(item.EndSession)
@@ -94,7 +95,7 @@ export function paddingCourseSchedule(courseSchedule: CourseSchedule[]) {
       result.push(courseSchedule[startSessions.indexOf(i)])
       i = courseSchedule[startSessions.indexOf(i)].EndSession
     } else {
-      result.push(new CourseSchedule('', '', '', '', '', '', -1, -1, ''))
+      result.push(new CourseSchedule('', '', '', '', '', '', -1, -1, '', ''))
     }
   }
   return result;
@@ -114,7 +115,7 @@ export class ScheduleBaseFunc {
       let weekRanges: string = '';
       if (isList) {
         weekRanges = this.getCourseWeekRangeList(weekRange);
-      } else  {
+      } else {
         weekRanges = this.getCourseWeekRange(weekRange)
       }
       const match = regex.exec(schedule.replace(/\[(.*?)\]/, ''));
@@ -135,8 +136,9 @@ export class ScheduleBaseFunc {
     let courseSchedule: CourseSchedule[] = [];
     parsedSchedules.forEach((value: CourseSchedules | null) => {
       if (value) {
-        courseSchedule.push(new CourseSchedule(value.weekRanges, schedule.scheduleId, course.classId, course.courseName, count.toString(),
-          value.WeekDay, value.StartSession, value.EndSession, value.Place));
+        courseSchedule.push(new CourseSchedule(value.weekRanges, schedule.scheduleId, course.classId, course.courseName,
+          count.toString(),
+          value.WeekDay, value.StartSession, value.EndSession, value.Place, value.weekRangesStr));
         count++;
       }
     })

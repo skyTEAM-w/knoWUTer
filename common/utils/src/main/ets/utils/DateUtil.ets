@@ -1,27 +1,9 @@
-import { CalendarData, Day, DayInfo } from "../model/CalendarModel";
-import { i18n } from "@kit.LocalizationKit";
-import { JSON } from "@kit.ArkTS";
+import { CalendarData, Day, DayInfo } from '../model/CalendarModel';
+import { i18n } from '@kit.LocalizationKit';
+import { JSON } from '@kit.ArkTS';
 
-export class  DateUtil extends Date {
-
+export class DateUtil extends Date {
   public static readonly WEEKS: string[] = ["日", "一", "二", "三", "四", "五", "六"];
-
-  public getWeeksBetweenDates(startDate: string, endDate: string): number {
-    const start = new Date(startDate);
-    const end = new Date(endDate);
-    const timeDifference = end.getTime() - start.getTime();
-    const oneWeekInMs = 7 * 24 * 60 * 60 * 1000;
-    const weeks = Math.ceil(timeDifference / oneWeekInMs)
-    if (weeks === 0) {
-      return weeks + 1;
-    } else {
-      return weeks;
-    }
-  }
-
-  public getToday() {
-    return this.getFullYear().toString() + '/' + (this.getMonth() + 1).toString() + '/' + this.getDate().toString();
-  }
 
   static getWeekDay(year: number, month: number, day: number): number {
     const DATE = new Date(year, month - 1, day);
@@ -35,7 +17,7 @@ export class  DateUtil extends Date {
     // 获取当前日期是本周的周几（0-6，其中0代表周日，1代表周一，以此类推）
     let WEEK_DAY = CURRENT_DATE.getDay();
     if (WEEK_DAY === 0) {
-      WEEK_DAY = 7;  // 将周日视为一周的第七天
+      WEEK_DAY = 7; // 将周日视为一周的第七天
     }
     // 计算并设置目标周的第一天(周一)的日期
     const BEGIN_DATE = new Date(CURRENT_DATE.getTime() - (WEEK_DAY - 1) * onDayInMs +
@@ -89,7 +71,7 @@ export class  DateUtil extends Date {
     return -DIFF_WEEKS;
   }
 
-  static getWeeksBetweenDates(startDate:string, endDate: string): number {
+  static getWeeksBetweenDates(startDate: string, endDate: string): number {
     const endDay = new Date(endDate);
     const oneDayInMs = 86400000;
     // 周视图中选中日期所属周的第一天（周日）
@@ -107,6 +89,22 @@ export class  DateUtil extends Date {
     return DIFF_WEEKS;
   }
 
+  public getWeeksBetweenDates(startDate: string, endDate: string): number {
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    const timeDifference = end.getTime() - start.getTime();
+    const oneWeekInMs = 7 * 24 * 60 * 60 * 1000;
+    const weeks = Math.ceil(timeDifference / oneWeekInMs)
+    if (weeks === 0) {
+      return weeks + 1;
+    } else {
+      return weeks;
+    }
+  }
+
+  public getToday() {
+    return this.getFullYear().toString() + '/' + (this.getMonth() + 1).toString() + '/' + this.getDate().toString();
+  }
 }
 
 

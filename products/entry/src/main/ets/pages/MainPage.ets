@@ -4,7 +4,8 @@ import { Tools } from '@feature/tools';
 import { Service } from '@feature/service';
 import { Schedule, ScheduleSettingFunc } from '@feature/schedule';
 import { User } from '../views/UserView';
-import { BreakPointSystem, BreakPointTypeEnum, CookieUtil, DBUtil, UserSettingUtil } from '@ohos/utils';
+import { BreakPointSystem, BreakPointTypeEnum, CookieUtil, UserSettingUtil } from '@ohos/utils';
+import { DBUtil } from '@ohos/datastore';
 import { WebViewPage } from '@ohos/uicomponents';
 
 @Preview
@@ -47,8 +48,10 @@ struct Index {
     Column() {
       SymbolGlyph(this.bottomTabIndex === index ? BottomTabsList[index].iconSelected : BottomTabsList[index].icon)
         .fontSize(25)
-        .renderingStrategy(this.bottomTabIndex === index ? SymbolRenderingStrategy.MULTIPLE_COLOR : SymbolRenderingStrategy.MULTIPLE_COLOR)
-        .fontColor(this.bottomTabIndex === index ? [$r('app.color.whut_blue'), $r('app.color.whut_yellow')] : [Color.Black])
+        .renderingStrategy(this.bottomTabIndex === index ? SymbolRenderingStrategy.MULTIPLE_COLOR :
+        SymbolRenderingStrategy.MULTIPLE_COLOR)
+        .fontColor(this.bottomTabIndex === index ? [$r('app.color.whut_blue'), $r('app.color.whut_yellow')] :
+          [Color.Black])
         .symbolEffect(new BounceSymbolEffect(EffectScope.WHOLE, EffectDirection.DOWN),
           this.bottomTabEffectIndex === index)
 
@@ -59,7 +62,7 @@ struct Index {
         $r('app.color.bottom_text_color_selected') : $r('app.color.bottom_text_color_normal'))
     }
     .width('100%')
-    .height(this.currentBreakPoint === BreakPointTypeEnum.LG ?'15%': '100%')
+    .height(this.currentBreakPoint === BreakPointTypeEnum.LG ? '15%' : '100%')
     .border({
       width: this.currentBreakPoint === BreakPointTypeEnum.LG ? { top: 0, right: 0 } : { top: 0.5, right: 0 },
       color: "#FF182431"
@@ -108,7 +111,8 @@ struct Index {
         .barHeight(this.currentBreakPoint === BreakPointTypeEnum.LG ? '100%' : '10%')
         .barWidth(this.currentBreakPoint === BreakPointTypeEnum.LG ? '5%' : '100%')
         .scrollable(false)
-        .barMode(this.currentBreakPoint === BreakPointTypeEnum.LG ? BarMode.Scrollable : BarMode.Fixed, {nonScrollableLayoutStyle: LayoutStyle.ALWAYS_CENTER})
+        .barMode(this.currentBreakPoint === BreakPointTypeEnum.LG ? BarMode.Scrollable : BarMode.Fixed,
+          { nonScrollableLayoutStyle: LayoutStyle.ALWAYS_CENTER })
         .onChange((index: number) => {
           this.bottomTabIndex = index;
         })

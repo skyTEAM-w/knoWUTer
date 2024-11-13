@@ -47,6 +47,10 @@
     {
       "name": "interact_button_background",
       "value": "#0D000000"
+    },
+    {
+      "name": "delete_button_background",
+      "value": "#9AFF8A8A"
     }
   ]
 }

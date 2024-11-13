@@ -1,4 +1,4 @@
-import { PreferencesUtil } from "@ohos/datastore";
+import { PreferencesUtil } from '@ohos/datastore';
 
 const CWSF_COOKIE = 'cwsf_cookie';
 
@@ -47,5 +47,4 @@ export class CookieUtil {
     this.checkCWSFCookie();
     this.checkJWXTCookie();
   }
-
 }

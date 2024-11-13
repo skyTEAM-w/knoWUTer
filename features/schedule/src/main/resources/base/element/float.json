@@ -43,6 +43,10 @@
     {
       "name": "course_schedule_height",
       "value": "60"
+    },
+    {
+      "name": "schedule_item_height",
+      "value": "33"
     }
   ]
 }

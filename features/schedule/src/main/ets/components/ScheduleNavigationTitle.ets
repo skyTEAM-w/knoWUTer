@@ -1,25 +1,24 @@
-import { BreakPointTypeEnum, CookieUtil, DateUtil } from '@ohos/utils';
+import { BreakPointTypeEnum, CookieUtil, DateUtil, LazyDataSource } from '@ohos/utils';
 import { Schedule } from '../model/Schedule';
 import { webview } from '@kit.ArkWeb';
 import { ScheduleNetFunc } from '../service/ScheduleNetFunc';
-import {
-    promptAction,
-    SegmentButton,
-    SegmentButtonOptions, SymbolGlyphModifier
-} from '@kit.ArkUI';
+import { promptAction, SegmentButton, SegmentButtonOptions, SymbolGlyphModifier } from '@kit.ArkUI';
+import { ScheduleCard } from './ScheduleCard';
 
 @Component
 export struct ScheduleNavigation {
+  @Link selectedScheduleTableIndex: number | undefined;
   @Link selectedDate: Date;
   @Link isCookieShow: boolean;
   @Link isSettingShow: boolean;
   @Link loginStatus: boolean | undefined;
   @Link selectWeek: number;
+  @Link scheduleTableList: LazyDataSource<Schedule>;
   @ObjectLink tabOptions: SegmentButtonOptions;
   @Link tabSelectedIndexes: number[];
   @Consume('schedulePathStack') schedulePathStack: NavPathStack;
   @Consume('appPathStack') appPathStack: NavPathStack;
-  @StorageLink('currentBreakPoint') currenBreakPoint: BreakPointTypeEnum = BreakPointTypeEnum.MD;
+  @StorageLink('currentBreakPoint') currentBreakPoint: BreakPointTypeEnum = BreakPointTypeEnum.MD;
   @Prop cookie: string = '';
   @ObjectLink schedule: Schedule | undefined;
   @Prop currentWeek: number = 1;
@@ -28,7 +27,7 @@ export struct ScheduleNavigation {
   private scheduleNetFunc = new ScheduleNetFunc();
 
   jumpCreateNewSchedule() {
-    if (this.currenBreakPoint === BreakPointTypeEnum.LG) {
+    if (this.currentBreakPoint === BreakPointTypeEnum.LG) {
       this.schedulePathStack.pushPathByName('CreateNewSchedule', new Object(
         {
           onDestinationBack: () => {
@@ -45,6 +44,33 @@ export struct ScheduleNavigation {
         }
       ))
     }
+  }
+
+  jumpManageSchedule() {
+    if (this.currentBreakPoint === BreakPointTypeEnum.LG) {
+      this.schedulePathStack.pushPathByName('ManageSchedule', new Object(
+        {
+          onDestinationBack: () => {
+            this.schedulePathStack.pop();
+          }
+        }
+      ))
+    } else {
+      this.appPathStack.pushPathByName('ManageSchedule', new Object(
+        {
+          onDestinationBack: () => {
+            this.appPathStack.pop();
+          }
+        }
+      ))
+    }
+  }
+
+  @Styles
+  marginStyle() {
+    .margin(this.currentBreakPoint === BreakPointTypeEnum.LG ?
+      { left: $r('app.float.xxl_padding_margin'), right: $r('app.float.xxl_padding_margin') } :
+      { left: $r('app.float.md_padding_margin'), right: $r('app.float.md_padding_margin') })
   }
 
   @Styles
@@ -71,10 +97,107 @@ export struct ScheduleNavigation {
   }
 
   @Builder
+  settingBindSheet() {
+    Column({ space: 10 }) {
+
+      if (this.currentBreakPoint === BreakPointTypeEnum.SM) {
+        Column() {
+          SegmentButton({
+            options: this.tabOptions,
+            selectedIndexes: $tabSelectedIndexes
+          })
+            .margin(this.currentBreakPoint !== BreakPointTypeEnum.SM ?
+              { left: $r('app.float.md_padding_margin'), right: $r('app.float.md_padding_margin'), top: 5 } :
+              { left: $r('app.float.xxl_padding_margin'), right: $r('app.float.xxl_padding_margin'), top: 5 })
+        }
+        .width('100%')
+        .alignItems(HorizontalAlign.Start)
+      }
+
+      Column() {
+        Row() {
+          Text('课程表')
+            .fontWeight(FontWeight.Medium)
+            .textAlign(TextAlign.Start)
+            .width("50%")
+          Text('管理')
+            .fontSize(12)
+            .fontWeight(FontWeight.Medium)
+            .textAlign(TextAlign.End)
+            .fontColor(Color.Blue)
+            .width("20%")
+            .margin({ right: $r('app.float.xxl_padding_margin') })
+            .onClick(() => {
+              this.jumpManageSchedule();
+              this.isSettingShow = false;
+            })
+        }
+        .justifyContent(FlexAlign.SpaceBetween)
+        .marginStyle()
+        .width('100%')
+
+        Scroll() {
+          Row({ space: 5 }) {
+            LazyForEach(this.scheduleTableList, (item: Schedule, index: number) => {
+              ScheduleCard({ schedule: item, selectedScheduleIndex: this.selectedScheduleTableIndex, index: index })
+            })
+            Row()
+              .width('90%')
+          }
+          .marginStyle()
+        }
+        .width('100%')
+        .margin({ top: 5 })
+        .scrollBar(BarState.Off)
+        .scrollable(ScrollDirection.Horizontal)
+        .edgeEffect(EdgeEffect.Spring)
+      }
+      .width('100%')
+      .alignItems(HorizontalAlign.Start)
+      .justifyContent(FlexAlign.Start)
+
+      Column() {
+        Text('周数')
+          .fontWeight(FontWeight.Medium)
+          .textAlign(TextAlign.Start)
+          .marginStyle()
+          .width('100%')
+        Slider({
+          value: $$this.selectWeek,
+          min: 1,
+          max: 21,
+          step: 1,
+          style: SliderStyle.InSet
+        })
+          .selectedColor($r('app.color.whut_blue'))
+          .showTips(true, this.selectWeek.toString())
+          .showSteps(true)
+          .onChange((value: number, mode: SliderChangeMode) => {
+            this.selectWeek = value;
+            console.info('value:' + value + 'mode:' + mode.toString())
+          })
+          .marginStyle()
+      }
+      .width('100%')
+      .alignItems(HorizontalAlign.Start)
+
+      Row() {
+        Column() {
+
+        }
+      }
+      .width("100%")
+    }
+    .width("100%")
+    .margin(this.currentBreakPoint === BreakPointTypeEnum.LG ? { top: AppStorage.get<number>('statusBarHeight') } :
+      { top: 20 })
+  }
+
+  @Builder
   titleBindMenu() {
     Menu() {
       MenuItem({
-        symbolStartIcon: new SymbolGlyphModifier($r('sys.symbol.arrow_counterclockwise')).fontSize(24),
+        symbolStartIcon: new SymbolGlyphModifier($r(`sys.symbol.calendar_${new Date().getDate().toString().padStart(2, '0')}`)).fontSize(24),
         content: '回到当前周'
       })
         .onClick(() => {
@@ -125,19 +248,19 @@ export struct ScheduleNavigation {
           .justifyContent(FlexAlign.SpaceBetween)
           .bindMenu([{
             value: '回到本周',
-            symbolIcon: new SymbolGlyphModifier($r('sys.symbol.arrow_counterclockwise')).fontSize(24),
+            symbolIcon: new SymbolGlyphModifier($r(`sys.symbol.calendar_${new Date().getDate().toString().padStart(2, '0')}`)).fontSize(24),
             action: () => {
               this.selectWeek = this.currentWeek;
             }
-          }], {placement: Placement.BottomLeft, offset:{x: 12, y: 0}})
+          }], { placement: Placement.BottomLeft, offset: { x: 15, y: 0 } })
         }
         .alignSelf(ItemAlign.Start)
 
 
-        GridCol({span: {sm: 0, md: 0, lg: 1}})
+        GridCol({ span: { sm: 0, md: 0, lg: 1 } })
 
         GridCol({ span: { sm: 1, md: 4, lg: 4 } }) {
-          if (this.currenBreakPoint !== BreakPointTypeEnum.SM) {
+          if (this.currentBreakPoint !== BreakPointTypeEnum.SM) {
             SegmentButton({
               options: this.tabOptions,
               selectedIndexes: this.tabSelectedIndexes
@@ -145,7 +268,7 @@ export struct ScheduleNavigation {
           }
         }
 
-        GridCol({span: {sm: 0, md: 0, lg: 1}})
+        GridCol({ span: { sm: 0, md: 0, lg: 1 } })
 
         GridCol({ span: { sm: 2, md: 3, lg: 3 } }) {
           Row() {
@@ -164,13 +287,17 @@ export struct ScheduleNavigation {
             }
             .barButtonStyle()
             .onClick(() => {
-              this.isCookieShow = true;
+              this.isCookieShow = !this.isCookieShow;
             })
             .bindPopup(!this.loginStatus && !this.isCookieShow, {
               message: '教务系统未登录'
             })
             .bindSheet($$this.isCookieShow, this.cookieBindSheet(), {
-              preferType: SheetType.POPUP
+              preferType: SheetType.POPUP,
+              showClose: this.currentBreakPoint === BreakPointTypeEnum.LG,
+              onWillAppear: () => {
+                this.isSettingShow = false
+              }
             })
 
             Button({ type: ButtonType.Circle }) {
@@ -178,9 +305,20 @@ export struct ScheduleNavigation {
                 .fontSize(22)
                 .fontWeight(FontWeight.Medium)
             }
+            .bindSheet($$this.isSettingShow, this.settingBindSheet, {
+              preferType: this.currentBreakPoint === BreakPointTypeEnum.LG ? SheetType.CENTER : SheetType.BOTTOM,
+              detents: [400],
+              showClose: this.currentBreakPoint === BreakPointTypeEnum.LG,
+              blurStyle: BlurStyle.Thin,
+              backgroundColor: Color.Transparent,
+              maskColor: Color.Transparent,
+              onWillAppear: () => {
+                this.isCookieShow = false;
+              }
+            })
             .barButtonStyle()
             .onClick(() => {
-              this.isSettingShow = true;
+              this.isSettingShow = !this.isSettingShow;
             })
           }
           .width('100%')

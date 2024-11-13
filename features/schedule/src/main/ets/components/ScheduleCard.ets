@@ -16,6 +16,7 @@ export struct ScheduleCard {
           SymbolGlyph($r('sys.symbol.checkmark_circle'))
         }
       }
+
       Text(this.schedule.scheduleName)
         .fontSize(10)
         .textOverflow({ overflow: TextOverflow.Ellipsis })

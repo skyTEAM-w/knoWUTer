@@ -1,10 +1,10 @@
 import { DateUtil } from '@ohos/utils/src/main/ets/utils/DateUtil';
-import { Course, CourseSendable } from '../model/Course';
+import { Course } from '../model/Course';
 import { CourseSchedule } from '../model/CourseSchedule';
 import { Schedule } from '../model/Schedule';
-import { classDateAndPlaceToCourseSchedule,
-  getCourseWeekRangeList,
-  ScheduleBaseFunc } from '../service/ScheduleBaseFunc';
+import {
+    classDateAndPlaceToCourseSchedule
+} from '../service/ScheduleBaseFunc';
 import { JSON, taskpool } from '@kit.ArkTS';
 import { classDateAndPlaceToCourseScheduleTask } from '../service/ScheduleTookPoolFunc';
 import { LazyDataSource } from '@ohos/utils';
@@ -32,7 +32,8 @@ export struct ClassInformationCard {
   aboutToAppear(): void {
     if (this.courseInfomation && this.courseInfomation.classDateAndPlace) {
       console.debug(TAG, 'aboutToAppear', JSON.stringify(this.courseInfomation))
-      let courseScheduleList = classDateAndPlaceToCourseSchedule(this.courseInfomation, new Schedule('', '', ''), false);
+      let courseScheduleList =
+        classDateAndPlaceToCourseSchedule(this.courseInfomation, new Schedule('', '', ''), false);
       if (courseScheduleList) {
         this.courseSchedules.pushArrayData(courseScheduleList);
       }
@@ -60,52 +61,52 @@ export struct ClassInformationCard {
       .padding($r('app.float.course_card_padding'))
 
       Column({ space: 5 }) {
-          LazyForEach(this.courseSchedules, (item: CourseSchedule) => {
-            Column() {
-              Row() {
-                SymbolGlyph($r('sys.symbol.calendar_fill'))
-                  .fontSize(20)
-                  .fontColor([$r('app.color.whut_blue')])
-                Text('第' + item.weekRanges + '周')
-                  .fontSize(16)
-                  .padding({ left: 5 })
-              }
-              .justifyContent(FlexAlign.Start)
-              .scheduleCardStyle()
-
-              Divider()
-              Row() {
-                SymbolGlyph($r('sys.symbol.clock_fill'))
-                  .fontSize(20)
-                  .fontColor([$r('app.color.whut_yellow')])
-                Text('星期' + item.WeekDay + ' 第' + item.StartSession + '-' + item.EndSession + '节')
-                  .fontSize(16)
-                  .padding({ left: 5 })
-              }
-              .scheduleCardStyle()
-
-              Divider()
-              Row() {
-                SymbolGlyph($r('sys.symbol.location_north_up_right_circle_fill'))
-                  .fontSize(20)
-                  .fontColor([$r('app.color.whut_blue')])
-                Text(item.Place.search('undefined') === -1 ? item.Place : '暂无')
-                  .fontSize(16)
-                  .padding({ left: 5 })
-              }
-              .scheduleCardStyle()
+        LazyForEach(this.courseSchedules, (item: CourseSchedule) => {
+          Column() {
+            Row() {
+              SymbolGlyph($r('sys.symbol.calendar_fill'))
+                .fontSize(20)
+                .fontColor([$r('app.color.whut_blue')])
+              Text('第' + item.weekRangesStr + '周')
+                .fontSize(16)
+                .padding({ left: 5 })
             }
-            .width('100%')
-            .backgroundColor($r('sys.color.background_tertiary'))
-            .borderWidth(1)
-            .borderRadius($r('app.float.main_border_radius'))
-            .padding($r('app.float.course_card_padding'))
-          })
+            .justifyContent(FlexAlign.Start)
+            .scheduleCardStyle()
+
+            Divider()
+            Row() {
+              SymbolGlyph($r('sys.symbol.clock_fill'))
+                .fontSize(20)
+                .fontColor([$r('app.color.whut_yellow')])
+              Text('星期' + item.WeekDay + ' 第' + item.StartSession + '-' + item.EndSession + '节')
+                .fontSize(16)
+                .padding({ left: 5 })
+            }
+            .scheduleCardStyle()
+
+            Divider()
+            Row() {
+              SymbolGlyph($r('sys.symbol.location_north_up_right_circle_fill'))
+                .fontSize(20)
+                .fontColor([$r('app.color.whut_blue')])
+              Text(item.Place.search('undefined') === -1 ? item.Place : '暂无')
+                .fontSize(16)
+                .padding({ left: 5 })
+            }
+            .scheduleCardStyle()
+          }
+          .width('100%')
+          .backgroundColor($r('sys.color.background_tertiary'))
+          .borderWidth(1)
+          .borderRadius($r('app.float.main_border_radius'))
+          .padding($r('app.float.course_card_padding'))
+        })
 
       }
     }
     .backgroundColor($r('app.color.course_card_bg_default_color'))
-    .clickEffect({level: ClickEffectLevel.LIGHT, scale: 0.9})
+    .clickEffect({ level: ClickEffectLevel.LIGHT, scale: 0.9 })
     // .backgroundBlurStyle(BlurStyle.BACKGROUND_THICK)
     .borderRadius($r('app.float.main_border_radius'))
     .padding($r('app.float.course_card_padding'))

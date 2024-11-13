@@ -1,8 +1,10 @@
 import { relationalStore, ValuesBucket } from '@kit.ArkData';
-import { DBUtil, LazyDataSource } from '@ohos/utils';
+import { LazyDataSource } from '@ohos/utils';
+import { DBUtil } from '@ohos/datastore';
 import { ColorArray, Course } from '../model/Course';
 import { CourseSchedule, WEEKS } from '../model/CourseSchedule';
 import { Schedule } from '../model/Schedule';
+import { JSON } from '@kit.ArkTS';
 
 
 const ScheduleInfoTable = 'ScheduleTableInformation';
@@ -27,7 +29,7 @@ export class ScheduleDatabaseFunc {
 
   public insertCourseInformation(courseList: Course[], schedule: Schedule) {
     if (courseList.length > 0) {
-      courseList.forEach((course: Course, index:number) => {
+      courseList.forEach((course: Course, index: number) => {
         let valuesBucket: ValuesBucket = {
           TableId: Number(schedule.scheduleId),
           ClassId: course.classId,
@@ -58,6 +60,7 @@ export class ScheduleDatabaseFunc {
           TableId: value.TableId,
           ClassId: value.ClassId,
           WeekRanges: value.weekRanges,
+          WeekRangesStr: value.weekRangesStr,
           WeekDay: value.WeekDay,
           StartSession: value.StartSession,
           EndSession: value.EndSession,
@@ -138,6 +141,28 @@ export class ScheduleDatabaseFunc {
     return undefined;
   }
 
+  public queryCourseInformation(tableId: string, courseId: string) {
+    let predicates: relationalStore.RdbPredicates = new relationalStore.RdbPredicates(CourseInfoTable);
+    predicates.equalTo('TableId', tableId).and().equalTo('ClassID', courseId);
+    let resultSet = this.dbUtil.queryMyPredicates(predicates);
+    if (resultSet) {
+      while (resultSet.goToNextRow()) {
+        let course: Course = new Course();
+        course.classId = resultSet.getString(resultSet.getColumnIndex('ClassId'));
+        course.courseName = resultSet.getString(resultSet.getColumnIndex('CourseName'));
+        course.credit = resultSet.getString(resultSet.getColumnIndex('Credit'));
+        course.creditHours = resultSet.getString(resultSet.getColumnIndex('CreditHours'));
+        course.examPlace = resultSet.getString(resultSet.getColumnIndex('ExamPlace'));
+        course.examDate = resultSet.getString(resultSet.getColumnIndex('ExamDate'));
+        course.teachingProcess = resultSet.getString(resultSet.getColumnIndex('TeachingProcess'));
+        course.courseNo = resultSet.getString(resultSet.getColumnIndex('CourseNo'));
+        course.courseSerialNum = resultSet.getString(resultSet.getColumnIndex('CourseSerialNum'));
+        course.classDateAndPlace = resultSet.getString(resultSet.getColumnIndex('ClassDateAndPlace'));
+        console.debug(TAG, 'queryCourseInformation', JSON.stringify(course));
+      }
+    }
+  }
+
   public queryCourseAllSchedule(course: Course, schedule: Schedule) {
     let predicates: relationalStore.RdbPredicates = new relationalStore.RdbPredicates(CourseScheduleTable);
     predicates.equalTo('ClassId', course.classId)
@@ -146,7 +171,7 @@ export class ScheduleDatabaseFunc {
       .and()
       .orderByAsc('ScheduleId');
     let resultSet = this.dbUtil.queryMyPredicates(predicates,
-      ['ScheduleId', 'WeekRanges', 'WeekDay', 'StartSession', 'EndSession', 'Place']);
+      ['ScheduleId', 'WeekRanges', 'WeekDay', 'StartSession', 'EndSession', 'Place', 'WeekRangesStr']);
     if (resultSet) {
       let courseScheduleList: LazyDataSource<CourseSchedule> = new LazyDataSource();
       while (resultSet.goToNextRow()) {
@@ -156,8 +181,10 @@ export class ScheduleDatabaseFunc {
         const startSession = resultSet.getLong(resultSet.getColumnIndex('StartSession'));
         const endSession = resultSet.getLong(resultSet.getColumnIndex('EndSession'));
         const place = resultSet.getString(resultSet.getColumnIndex('Place'));
-        courseScheduleList.pushData(new CourseSchedule(weekRanges, schedule.scheduleId, course.classId, course.courseName,scheduleId,
-          weekDay, startSession, endSession, place));
+        const weekRangesStr = resultSet.getString(resultSet.getColumnIndex('WeekRangesStr'));
+        courseScheduleList.pushData(new CourseSchedule(weekRanges, schedule.scheduleId, course.classId,
+          course.courseName, scheduleId,
+          weekDay, startSession, endSession, place, weekRangesStr));
       }
       return courseScheduleList;
     }
@@ -178,11 +205,12 @@ export class ScheduleDatabaseFunc {
         const endSession = resultSet.getLong(resultSet.getColumnIndex('EndSession'));
         const place = resultSet.getString(resultSet.getColumnIndex('Place'));
         const courseId = resultSet.getString(resultSet.getColumnIndex('ClassId'));
-        const courseName =resultSet.getString(resultSet.getColumnIndex('CourseName'));
+        const courseName = resultSet.getString(resultSet.getColumnIndex('CourseName'));
+        const weekRangesStr = resultSet.getString(resultSet.getColumnIndex('WeekRangesStr'));
         dayScheduleList.push(new CourseSchedule(weekRanges, schedule.scheduleId, courseId, courseName, scheduleId,
-          weekDay, startSession, endSession, place));
+          weekDay, startSession, endSession, place, weekRangesStr));
       }
-      console.debug(TAG, 'queryCourseScheduleByWeek', JSON.stringify(dayScheduleList))
+      // console.debug(TAG, 'queryCourseScheduleByWeek', JSON.stringify(dayScheduleList))
       return dayScheduleList;
     }
     return undefined;
@@ -219,9 +247,16 @@ export class ScheduleDatabaseFunc {
 
   weekPredicatesBuilder(week: number) {
     const field: string = 'WeekRanges'
-   let predicates: relationalStore.RdbPredicates = new relationalStore.RdbPredicates(CourseScheduleTable);
-   predicates.beginWrap().like(field, `${week},%`).or().like(field, `%,${week}`).or().like(field, `%,${week},%`)
-     .or().equalTo(field, `${week}`).endWrap()
+    let predicates: relationalStore.RdbPredicates = new relationalStore.RdbPredicates(CourseScheduleTable);
+    predicates.beginWrap()
+      .like(field, `${week},%`)
+      .or()
+      .like(field, `%,${week}`)
+      .or()
+      .like(field, `%,${week},%`)
+      .or()
+      .equalTo(field, `${week}`)
+      .endWrap()
     return predicates;
   }
 }

@@ -7,8 +7,8 @@ export const BottomTabsList: Array<BottomTabsItem> = [
     text: $r('app.string.bottom_text_course')
   },
   {
-    icon: $r('sys.symbol.square_grid_2x2'),
-    iconSelected: $r('sys.symbol.square_fill_grid_2x2'),
+    icon: $r('sys.symbol.more'),
+    iconSelected: $r('sys.symbol.more_fill'),
     text: $r('app.string.bottom_text_service')
   },
   {

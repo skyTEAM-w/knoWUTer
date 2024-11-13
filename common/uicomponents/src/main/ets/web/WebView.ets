@@ -3,14 +3,12 @@ import { webview } from '@kit.ArkWeb';
 import { BusinessError, pasteboard } from '@kit.BasicServicesKit';
 import { common, Want } from '@kit.AbilityKit';
 import { ServiceUrl, WebUrl } from '@ohos/utils';
-import { DormitoryLocation } from '@ohos/datastore';
 
 @Component
 export struct WebViewPage {
   @State webUrl: WebUrl | undefined = undefined;
   @State webTitle: string = '';
   @State webProgress: number = 0;
-  dormitoryLocation: DormitoryLocation = new DormitoryLocation();
   isImport: Boolean = false;
   isRefresh: Boolean = false;
   private webViewController: webview.WebviewController = new webview.WebviewController();

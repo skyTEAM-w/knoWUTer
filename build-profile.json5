@@ -21,13 +21,13 @@
         "name": "default",
         "type": "HarmonyOS",
         "material": {
-          "certpath": "C:\\Users\\Lenovo\\.ohos\\config\\default_WHUTHelper_vMvF5ss3QK3gBXpPcOPQr4H01_HNBegYDLgB4gArjZs=.cer",
-          "storePassword": "0000001BFD6192772563ACEB50EAF9D0941A2E8DF0CADA9F8C25B2627A41FFE247F309D6106A3FD4F71A0F",
+          "certpath": "C:\\Users\\Administrator\\.ohos\\config\\default_WHUTHelper_cp8-8MMRKniAzlzI6QW88MSuSrliDt6GEcPahalEzdI=.cer",
+          "storePassword": "0000001BB28D4100C084282E75467807119346A2EDAAADC7B1A1000EDC7B7EE120ED089D40F866856A43B9",
           "keyAlias": "debugKey",
-          "keyPassword": "0000001BA69330059347979CB06D263119E789A4721C30D5843713A900D75219343882FCA41D1C2F4F05DB",
-          "profile": "C:\\Users\\Lenovo\\.ohos\\config\\default_WHUTHelper_vMvF5ss3QK3gBXpPcOPQr4H01_HNBegYDLgB4gArjZs=.p7b",
+          "keyPassword": "0000001BB34F591BD752DBAFDE6C49E5BACBA5D0C6FB7727A8AEEC5F0D2492377AB020803D95625DFB9ECB",
+          "profile": "C:\\Users\\Administrator\\.ohos\\config\\default_WHUTHelper_cp8-8MMRKniAzlzI6QW88MSuSrliDt6GEcPahalEzdI=.p7b",
           "signAlg": "SHA256withECDSA",
-          "storeFile": "C:\\Users\\Lenovo\\.ohos\\config\\default_WHUTHelper_vMvF5ss3QK3gBXpPcOPQr4H01_HNBegYDLgB4gArjZs=.p12"
+          "storeFile": "C:\\Users\\Administrator\\.ohos\\config\\default_WHUTHelper_cp8-8MMRKniAzlzI6QW88MSuSrliDt6GEcPahalEzdI=.p12"
         }
       }
     ]

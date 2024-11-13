@@ -1,7 +1,7 @@
-import { Course, CourseSendable } from "../model/Course";
-import { CourseSchedules, CourseScheduleSendable } from "../model/CourseSchedule";
-import { Schedule } from "../model/Schedule";
-import { getCourseWeekRange, getCourseWeekRangeList } from "./ScheduleBaseFunc";
+import { Course } from '../model/Course';
+import { CourseSchedules, CourseScheduleSendable } from '../model/CourseSchedule';
+import { Schedule } from '../model/Schedule';
+import { getCourseWeekRange, getCourseWeekRangeList } from './ScheduleBaseFunc';
 
 @Concurrent
 export function classDateAndPlaceToCourseScheduleTask(course: Course, schedule?: Schedule, isList?: boolean) {
@@ -17,7 +17,7 @@ export function classDateAndPlaceToCourseScheduleTask(course: Course, schedule?:
     let weekRanges: string = '';
     if (isList) {
       weekRanges = getCourseWeekRangeList(weekRange);
-    } else  {
+    } else {
       weekRanges = getCourseWeekRange(weekRange)
     }
     const match = regex.exec(schedule.replace(/\[(.*?)\]/, ''));
@@ -38,8 +38,9 @@ export function classDateAndPlaceToCourseScheduleTask(course: Course, schedule?:
   let courseSchedule: CourseScheduleSendable[] = [];
   parsedSchedules.forEach((value: CourseSchedules | null) => {
     if (value) {
-      courseSchedule.push(new CourseScheduleSendable(value.weekRanges, '', course.classId, course.courseName, count.toString(),
-        value.WeekDay, value.StartSession, value.EndSession, value.Place));
+      courseSchedule.push(new CourseScheduleSendable(value.weekRanges, '', course.classId, course.courseName,
+        count.toString(),
+        value.WeekDay, value.StartSession, value.EndSession, value.Place, value.weekRangesStr));
       count++;
     }
   })

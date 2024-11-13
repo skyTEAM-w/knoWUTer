@@ -1,24 +1,25 @@
 import { DateUtil, Day } from '@ohos/utils';
 import { JSON } from '@kit.ArkTS';
-import { CourseSchedule, COURSE_SCHEDULE_HEIGHT, TimeTable, TIME_TABLE, WEEKS } from '../model/CourseSchedule';
+import { CourseSchedule, TIME_TABLE, TimeTable, WEEKS } from '../model/CourseSchedule';
 import { ScheduleDatabaseFunc } from '../service/ScheduleDatabaseFunc';
 import { Schedule } from '../model/Schedule';
 import { paddingCourseSchedule } from '../service/ScheduleBaseFunc';
-import { it } from '@ohos/hypium';
 import { WeekScheduleCard } from '../components/WeekSheduleCard';
 
 @Component
 export struct ScheduleWeekViewItem {
   // @Prop selectedSchedule: Schedule;
   // @Prop currentSelectedWeek: number;
-
+  @Link isCookieShow: boolean;
+  @Link isSettingShow: boolean;
+  @Link isScheduleShow: boolean;
   @State weekDays: Day[][] = [];
   @State weekCourse: CourseSchedule[][] = [];
+  @Link selectedCourse: CourseSchedule | undefined;
   @Prop @Watch("updateWeekData") weekNum: number;
-  @Prop  selectedWeek: number;
+  @Prop selectedWeek: number;
   @Prop @Watch("updateWeekData") currentWeek: number;
   @Prop selectedSchedule: Schedule;
-
   private scheduleDBFunc: ScheduleDatabaseFunc = new ScheduleDatabaseFunc();
 
   aboutToAppear(): void {
@@ -40,12 +41,22 @@ export struct ScheduleWeekViewItem {
 
   getWeekCourseData() {
     for (let i = 0; i < 7; i++) {
-      const weekDayCourse = this.scheduleDBFunc.queryCourseScheduleByWeek(this.selectedSchedule, this.currentWeek + this.weekNum, i)
+      const weekDayCourse =
+        this.scheduleDBFunc.queryCourseScheduleByWeek(this.selectedSchedule, this.currentWeek + this.weekNum, i)
       if (weekDayCourse) {
         const CourseDataAfterPadding = paddingCourseSchedule(weekDayCourse)
         this.weekCourse[i] = CourseDataAfterPadding;
       }
     }
+  }
+
+  showBindSheet() {
+    if (!this.isScheduleShow) {
+      this.isScheduleShow = true;
+      this.isCookieShow = false;
+      this.isSettingShow = false;
+    }
+
   }
 
   @Builder
@@ -56,9 +67,11 @@ export struct ScheduleWeekViewItem {
     .margin(5)
   }
 
+
+
   build() {
     Column() {
-      GridRow({ columns: {sm: 8, md: 8, lg:15 } }) {
+      GridRow({ columns: { sm: 8, md: 8, lg: 15 } }) {
         GridCol({ span: 1 }) {
           Column() {
             Text(this.weekDays[0][0].dayInfo.year + '')
@@ -69,9 +82,10 @@ export struct ScheduleWeekViewItem {
               .fontWeight(FontWeight.Bold)
           }
         }
+
         ForEach(this.weekDays, (items: Day[]) => {
           ForEach(items, (item: Day, index: number) => {
-            WeekDayColumnHeader({day: item, weekDay: index})
+            WeekDayColumnHeader({ day: item, weekDay: index })
           }, (item: Day, index: number) => {
             return item.dayNum + '' + index;
           })
@@ -82,19 +96,31 @@ export struct ScheduleWeekViewItem {
           }, '') + index
         })
       }
+
       Scroll() {
-        GridRow({ columns: {sm: 8, md: 8, lg:15} }) {
+        GridRow({ columns: { sm: 8, md: 8, lg: 15 } }) {
           TimeTableColumn()
-          ForEach(this.weekCourse, (item: CourseSchedule[]) => {
-            WeekDayColumn({dayCourse: item, currentWeek: this.currentWeek})
+          ForEach(this.weekCourse, (item: CourseSchedule[], index: number) => {
+            WeekDayColumn({
+              dayCourse: item,
+              currentWeek: this.currentWeek,
+              isCookieShow: this.isCookieShow,
+              isSettingShow: this.isSettingShow,
+              isScheduleShow: this.isScheduleShow,
+              weekCourse: this.weekCourse,
+              selectedCourse: this.selectedCourse,
+              indexX: index
+            })
           })
         }
       }
       .edgeEffect(EdgeEffect.Spring)
       .scrollBar(BarState.Off)
       .height('100%')
-      .nestedScroll({scrollForward: NestedScrollMode.SELF_ONLY, scrollBackward: NestedScrollMode.SELF_ONLY})
-    }.width("100%")
+      .nestedScroll({ scrollForward: NestedScrollMode.SELF_ONLY, scrollBackward: NestedScrollMode.SELF_ONLY })
+    }
+
+    .width("100%")
   }
 }
 
@@ -104,13 +130,26 @@ struct WeekDayColumnHeader {
   @Prop weekDay: number
 
   build() {
-    GridCol({span: {sm: 1, md: 1, lg: 2}}) {
+    GridCol({ span: { sm: 1, md: 1, lg: 2 } }) {
       Column() {
         Column() {
-          Text(this.day.dayInfo.month + '/' + this.day.dayNum.toString())
-            .fontSize(12)
-          Text(WEEKS[this.weekDay])
-            .fontSize(12)
+          if (new DateUtil().getToday() ===
+          [this.day.dayInfo.year, this.day.dayInfo.month, this.day.dayInfo.date].join('/')) {
+            Text(this.day.dayInfo.month + '/' + this.day.dayNum.toString())
+              .fontSize(12)
+            Text(WEEKS[this.weekDay])
+              .fontSize(12)
+          } else {
+            Text(this.day.dayInfo.month + '/' + this.day.dayNum.toString())
+              .fontSize(12)
+              .fontColor(Color.Gray)
+              .opacity(0.8)
+            Text(WEEKS[this.weekDay])
+              .fontSize(12)
+              .fontColor(Color.Gray)
+              .opacity(0.8)
+          }
+
         }
       }
     }
@@ -120,7 +159,7 @@ struct WeekDayColumnHeader {
 @Component
 struct TimeTableColumn {
   build() {
-    GridCol({span: 1}) {
+    GridCol({ span: 1 }) {
       Column() {
         ForEach(TIME_TABLE, (item: TimeTable) => {
           Column() {
@@ -143,19 +182,36 @@ struct TimeTableColumn {
 
 @Component
 struct WeekDayColumn {
+  @Link isCookieShow: boolean;
+  @Link isSettingShow: boolean;
+  @Link isScheduleShow: boolean;
+  @Link weekCourse: CourseSchedule[][];
+  @Link selectedCourse: CourseSchedule
   @Prop dayCourse: CourseSchedule[];
   @Prop currentWeek: number;
+  @Prop indexX: number;
+
   build() {
-    GridCol({span: {sm: 1, md: 1, lg: 2}}) {
+    GridCol({ span: { sm: 1, md: 1, lg: 2 } }) {
       Column() {
-        ForEach(this.dayCourse, (item: CourseSchedule) => {
+        ForEach(this.dayCourse, (item: CourseSchedule, index: number) => {
           if (item.StartSession === -1) {
             Column()
               .height($r('app.float.course_schedule_height'))
           } else {
-            WeekScheduleCard({courseSchedule: item, currentWeek: this.currentWeek})
+            WeekScheduleCard({
+              courseSchedule: item,
+              indexX: this.indexX,
+              indexY: index,
+              currentWeek: this.currentWeek,
+              isCookieShow: this.isCookieShow,
+              isSettingShow: this.isSettingShow,
+              isScheduleShow: this.isScheduleShow,
+              weekCourse: this.weekCourse,
+              selectedCourse: this.selectedCourse
+            })
           }
-        })
+        }, (item: CourseSchedule, index: number) => index.toString())
       }
 
     }

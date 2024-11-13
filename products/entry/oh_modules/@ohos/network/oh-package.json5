@@ -6,8 +6,6 @@
   "author": "",
   "license": "",
   "dependencies": {
-    "@ohos/datastore": "file:../datastore",
-    "@ohos/utils": "file:../utils"
   }
 }
 

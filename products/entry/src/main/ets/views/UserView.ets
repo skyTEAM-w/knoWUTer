@@ -43,6 +43,7 @@ export struct User {
               this.userSettingUtil.saveCustomServiceListSetting(isOn ?
               SettingTwoStatus.ON : SettingTwoStatus.OFF)
             })
+            .enabled(false)
         }
         .width('100%')
 

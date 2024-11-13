@@ -16,7 +16,7 @@ const DURATION = 300;
 
 const TAG = '[CreateNewSchedule]'
 
-async function  getCourseListTask(cookie: string) {
+async function getCourseListTask(cookie: string) {
   let task: taskpool.Task = new taskpool.Task(getSchedule, cookie);
   return await taskpool.execute(task) as Course[];
 }
@@ -25,7 +25,7 @@ async function  getCourseListTask(cookie: string) {
 export struct CreateNewSchedule {
   @StorageLink('schedule_cookie') ScheduleCookie: string = AppStorage.get<string>('schedule_cookie') || '';
   @Consume('schedulePathStack') schedulePathStack: NavPathStack;
-  @State @Watch('triggerCourseCardAnimation') courseList: LazyDataSource<Course>  = new LazyDataSource();
+  @State @Watch('triggerCourseCardAnimation') courseList: LazyDataSource<Course> = new LazyDataSource();
   @StorageLink('currentBreakPoint') currentBreakPoint: BreakPointTypeEnum = BreakPointTypeEnum.MD;
   @State scheduleName: string = '未命名';
   @State inputName: string = '未命名';
@@ -64,12 +64,14 @@ export struct CreateNewSchedule {
   private dateUtil = new DateUtil();
   @State selectedDate: Date = new Date(this.dateUtil.getToday())
   private scheduleDBFunc = new ScheduleDatabaseFunc();
-
   onDestinationBack: () => void = () => {
   };
 
   aboutToAppear(): void {
     this.getCourseList();
+  }
+
+  onBackPress(): boolean | void {
 
   }
 
@@ -212,38 +214,39 @@ export struct CreateNewSchedule {
           }
 
           // if (!this.courseList.isEmpty()) {
-            WaterFlow() {
-              LazyForEach(this.courseList, (item: Course, index: number) => {
-                if (!this.courseList.isEmpty()) {
-                  FlowItem() {
-                    ClassInformationCard({ courseInfomation: item })
-                  }
-                  .padding({ left: $r('app.float.md_padding_margin'), right: $r('app.float.md_padding_margin') })
-                  .transition(TransitionEffect.OPACITY.combine(TransitionEffect.scale({ x: 0.8, y: 0.8 }))
-                    .animation({ duration: DURATION, curve: Curve.Friction, delay: INTERVAL * index }))
-
-                } else {
-                  FlowItem() {
-                    LoadingProgress()
-                  }
-
+          WaterFlow() {
+            LazyForEach(this.courseList, (item: Course, index: number) => {
+              if (!this.courseList.isEmpty()) {
+                FlowItem() {
+                  ClassInformationCard({ courseInfomation: item })
                 }
-              })
-              FlowItem() {
+                .padding({ left: $r('app.float.md_padding_margin'), right: $r('app.float.md_padding_margin') })
+                .transition(TransitionEffect.OPACITY.combine(TransitionEffect.scale({ x: 0.8, y: 0.8 }))
+                  .animation({ duration: DURATION, curve: Curve.Friction, delay: INTERVAL * index }))
+
+              } else {
+                FlowItem() {
+                  LoadingProgress()
+                }
 
               }
-              .height('90%')
+            })
+            FlowItem() {
+
             }
-            .cachedCount(3)
-            .columnsTemplate(new BreakPointType({
-              sm: '1fr',
-              md: '1fr 1fr',
-              lg: '1fr 1fr 1fr'
-            }).getValue(this.currentBreakPoint))
-            .columnsGap($r('app.float.course_card_padding'))
-            .rowsGap($r('app.float.course_card_padding'))
-            .scrollBar(BarState.Off)
-            .edgeEffect(EdgeEffect.Spring, { alwaysEnabled: true })
+            .height('90%')
+          }
+          .cachedCount(3)
+          .columnsTemplate(new BreakPointType({
+            sm: '1fr',
+            md: '1fr 1fr',
+            lg: '1fr 1fr 1fr'
+          }).getValue(this.currentBreakPoint))
+          .columnsGap($r('app.float.course_card_padding'))
+          .rowsGap($r('app.float.course_card_padding'))
+          .scrollBar(BarState.Off)
+          .edgeEffect(EdgeEffect.Spring, { alwaysEnabled: true })
+
           // }
         }
         .margin({ top: 10 })

@@ -1,9 +1,30 @@
-import { DBUtil, ElectricityFeeUrl, LazyDataSource, UserSettingUtil } from '@ohos/utils';
-import { Area, Building, DormitoryLocation, Floor, Room } from '@ohos/datastore';
+import { ElectricityFeeUrl, LazyDataSource, UserSettingUtil } from '@ohos/utils';
+import { Area, Building, DormitoryLocation, Floor, Room } from '../model/DormitoryLocation';
 import { DownloadFileButton, DownloadIconStyle, promptAction } from '@kit.ArkUI';
 import { webview } from '@kit.ArkWeb';
 import { ArrayList, JSON } from '@kit.ArkTS';
-import { HttpReserve, HttpUtil } from '@ohos/network';
+import { HttpReserve } from '../model/HttpPostResponse';
+import {
+  checkLoginStatusForCWSF,
+  getAreaListHttp,
+  getBuildingListHttp,
+  getElectricityFeeHttp,
+  getFloorListHttp,
+  getMeterIdHttp,
+  getRoomListHttp
+} from '../service/ToolsNetFunc';
+import {
+  deleteDormitory,
+  insertOrUpdateDormitory,
+  queryAreaListDataBase,
+  queryBuildingListDataBase,
+  queryDormitoryElectricityFeeAndRemainPower,
+  queryDormitoryHistory,
+  queryFloorListDataBase,
+  queryRoomListDataBase,
+  updateDormitoryStarStatus
+} from '../service/ToolsDatabaseFunc';
+
 const TAG = '[Elec Comp]'
 
 @Component
@@ -41,8 +62,6 @@ export struct ElectricityInquiryTool {
   private floorList: ArrayList<Floor> | undefined = undefined;
   private roomList: ArrayList<Room> | undefined = undefined;
   private httpReserve: HttpReserve | undefined = undefined;
-  private dbUtil: DBUtil = DBUtil.getInstance();
-  private httpUtil: HttpUtil = HttpUtil.getInstance();
   private webViewController: webview.WebviewController = new webview.WebviewController();
   private scroller: ListScroller = new ListScroller();
   private userUtil: UserSettingUtil = UserSettingUtil.getInstance();
@@ -67,7 +86,7 @@ export struct ElectricityInquiryTool {
 
   onBindSheetShow() {
     if (this.isShow) {
-      this.tableSet = DBUtil.getInstance().queryDormitoryHistory()
+      this.tableSet = queryDormitoryHistory()
     }
   }
 
@@ -78,7 +97,7 @@ export struct ElectricityInquiryTool {
   }
 
   async refreshLoginState() {
-    this.loginStatus = await this.httpUtil.checkLoginStatusForCWSF(this.FeeCookie);
+    this.loginStatus = await checkLoginStatusForCWSF(this.FeeCookie);
     console.debug(TAG, 'login status: ', JSON.stringify(this.loginStatus))
     if (this.loginStatus) {
       this.isShow = false;
@@ -98,17 +117,17 @@ export struct ElectricityInquiryTool {
     if (!await this.getElectricityFeeAndPower(new Room(this.selectedDormitory.Room, this.selectedDormitory.RoomId),
       true)) {
       this.electricityFeeHistory =
-        (this.dbUtil.queryDormitoryElectricityFeeAndRemainPower(this.selectedDormitory) as string[])[0];
+        (queryDormitoryElectricityFeeAndRemainPower(this.selectedDormitory) as string[])[0];
       this.remainPowerHistory =
-        (this.dbUtil.queryDormitoryElectricityFeeAndRemainPower(this.selectedDormitory) as string[])[1]
+        (queryDormitoryElectricityFeeAndRemainPower(this.selectedDormitory) as string[])[1]
     }
   }
 
   async getAreaList() {
-    if (this.areaList = this.dbUtil.queryAreaListDataBase()) {
+    if (this.areaList = queryAreaListDataBase()) {
       this.parseAreaListToPickerList(this.areaList);
     } else {
-      this.areaList = await this.httpUtil.getAreaListHttp(AppStorage.get<string>('fee_cookie') as string)
+      this.areaList = await getAreaListHttp(AppStorage.get<string>('fee_cookie') as string)
       if (this.areaList) {
         this.parseAreaListToPickerList(this.areaList);
       }
@@ -122,10 +141,10 @@ export struct ElectricityInquiryTool {
   }
 
   async getBuildingList(area: Area) {
-    if (this.buildList = this.dbUtil.queryBuildingListDataBase(area)) {
+    if (this.buildList = queryBuildingListDataBase(area)) {
       this.parseBuildingListToPickerList(this.buildList);
     } else {
-      this.buildList = await this.httpUtil.getBuildingListHttp(AppStorage.get<string>('fee_cookie') as string, area);
+      this.buildList = await getBuildingListHttp(AppStorage.get<string>('fee_cookie') as string, area);
       if (this.buildList) {
         this.parseBuildingListToPickerList(this.buildList);
       }
@@ -138,11 +157,11 @@ export struct ElectricityInquiryTool {
   }
 
   async getFloorList(area: Area, building: Building) {
-    if (this.floorList = this.dbUtil.queryFloorListDataBase(building)) {
+    if (this.floorList = queryFloorListDataBase(building)) {
       this.parseFloorListToPickerList(this.floorList);
     } else {
       this.floorList =
-        await this.httpUtil.getFloorListHttp(AppStorage.get<string>('fee_cookie') as string, area, building);
+        await getFloorListHttp(AppStorage.get<string>('fee_cookie') as string, area, building);
       if (this.floorList) {
         this.parseFloorListToPickerList(this.floorList);
       }
@@ -155,11 +174,11 @@ export struct ElectricityInquiryTool {
   }
 
   async getRoomList(building: Building, floor: Floor) {
-    if (this.roomList = this.dbUtil.queryRoomListDataBase(building, floor)) {
+    if (this.roomList = queryRoomListDataBase(building, floor)) {
       this.parseRoomListToPickerList(this.roomList)
     } else {
       this.roomList =
-        await this.httpUtil.getRoomListHttp(AppStorage.get<string>('fee_cookie') as string, building, floor);
+        await getRoomListHttp(AppStorage.get<string>('fee_cookie') as string, building, floor);
       if (this.roomList) {
         this.parseRoomListToPickerList(this.roomList);
       }
@@ -170,9 +189,9 @@ export struct ElectricityInquiryTool {
   }
 
   async getElectricityFee(cookie: string, room: Room) {
-    let meter = await this.httpUtil.getMeterIdHttp(cookie, room);
+    let meter = await getMeterIdHttp(cookie, room);
     if (meter) {
-      let httpReserve = await this.httpUtil.getElectricityFeeHttp(cookie, meter);
+      let httpReserve = await getElectricityFeeHttp(cookie, meter);
       if (httpReserve) {
         console.debug(JSON.stringify(httpReserve));
         return httpReserve;
@@ -215,7 +234,7 @@ export struct ElectricityInquiryTool {
 
       console.debug(TAG, 'http reserve', JSON.stringify(this.httpReserve))
 
-      this.dbUtil.insertOrUpdateDormitory(dormitoryLocation, this.httpReserve.meterOverdue,
+      insertOrUpdateDormitory(dormitoryLocation, this.httpReserve.meterOverdue,
         this.httpReserve.remainPower);
     }
   }
@@ -688,12 +707,12 @@ struct DormitoryItem {
     this.dormitoryItem.isStar = !this.dormitoryItem.isStar;
     this.tableSet.changeData(this.mIndex, this.dormitoryItem);
     console.info(JSON.stringify(this.dormitoryItem))
-    DBUtil.getInstance().updateDormitoryStarStatus(this.dormitoryItem);
+    updateDormitoryStarStatus(this.dormitoryItem);
   }
 
   deleteDormitory() {
     this.selectedDormitoryIndex = -1;
-    DBUtil.getInstance().deleteDormitory(this.dormitoryItem);
+    deleteDormitory(this.dormitoryItem);
     this.tableSet.deleteData(this.mIndex);
   }
 

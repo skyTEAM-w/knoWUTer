@@ -17,6 +17,7 @@ export class Course {
   courseNo: string = '';
   courseSerialNum: string = '';
 }
+
 @Sendable
 export class CourseSendable {
   classId: string = '';

@@ -64,7 +64,7 @@ export async function getSchedule(cookie: string, termCode?: string) {
   console.debug(TAG, response?.result)
   if (response) {
     let httpCourse: HttpResponseBody = JSON.parse(response.result) as HttpResponseBody;
-    let courseList: CourseSendable[]= []
+    let courseList: CourseSendable[] = []
     httpCourse.datas.forEach((value: object) => {
       courseList.push(value as CourseSendable);
     })

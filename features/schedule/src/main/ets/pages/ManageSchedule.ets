@@ -4,8 +4,6 @@ import { Schedule } from '../model/Schedule';
 import { ScheduleDatabaseFunc } from '../service/ScheduleDatabaseFunc';
 import { promptAction, SymbolGlyphModifier } from '@kit.ArkUI';
 import { JSON } from '@kit.ArkTS';
-import { it } from '@ohos/hypium';
-import { paddingCourseSchedule } from '../service/ScheduleBaseFunc';
 
 const TAG = 'ManageSchedule'
 
