@@ -13,12 +13,13 @@ export struct TextInputDialog {
   build() {
     Column() {
       Text(this.changeText).fontSize(18).margin({ top: 10, bottom: 10 })
-      TextInput({ placeholder: this.textValue, text: this.textValue }).height(60).width('90%')
+      TextInput({ placeholder: this.textValue, text: this.textValue }).height(55).width('90%')
         .onChange((value: string) => {
           this.textValue = value
         })
       Flex({ justifyContent: FlexAlign.SpaceAround }) {
         Button($r('app.string.cancel'))
+          .width('40%')
           .onClick(() => {
             if (this.controller != undefined) {
               this.controller.close()
@@ -26,6 +27,7 @@ export struct TextInputDialog {
             }
           }).backgroundColor(Color.Transparent).fontColor(Color.Red)
         Button($r('app.string.confirm'))
+          .width('40%')
           .onClick(() => {
             if (this.controller != undefined) {
               this.inputValue = this.textValue
@@ -33,7 +35,7 @@ export struct TextInputDialog {
               this.confirm()
             }
           }).backgroundColor(Color.Transparent).fontColor(Color.Blue)
-      }.margin({ bottom: 10 })
+      }.margin({ top: 5, bottom: 10 })
     }
   }
 }

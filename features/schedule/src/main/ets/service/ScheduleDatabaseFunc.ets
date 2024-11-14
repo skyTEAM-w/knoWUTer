@@ -146,8 +146,8 @@ export class ScheduleDatabaseFunc {
     predicates.equalTo('TableId', tableId).and().equalTo('ClassID', courseId);
     let resultSet = this.dbUtil.queryMyPredicates(predicates);
     if (resultSet) {
+      let course: Course = new Course();
       while (resultSet.goToNextRow()) {
-        let course: Course = new Course();
         course.classId = resultSet.getString(resultSet.getColumnIndex('ClassId'));
         course.courseName = resultSet.getString(resultSet.getColumnIndex('CourseName'));
         course.credit = resultSet.getString(resultSet.getColumnIndex('Credit'));
@@ -160,7 +160,9 @@ export class ScheduleDatabaseFunc {
         course.classDateAndPlace = resultSet.getString(resultSet.getColumnIndex('ClassDateAndPlace'));
         console.debug(TAG, 'queryCourseInformation', JSON.stringify(course));
       }
+      return course;
     }
+    return undefined;
   }
 
   public queryCourseAllSchedule(course: Course, schedule: Schedule) {
@@ -225,6 +227,28 @@ export class ScheduleDatabaseFunc {
       return resultSet.getString(resultSet.getColumnIndex('Color'));
     }
     return '#800000F0';
+  }
+
+  public queryCourseColorByString(tableId: string, courseId: string) {
+    let predicates: relationalStore.RdbPredicates = new relationalStore.RdbPredicates(CourseInfoTable);
+    predicates.equalTo('ClassId', courseId).and().equalTo('TableId', tableId);
+    let resultSet = this.dbUtil.queryMyPredicates(predicates, ['Color']);
+    if (resultSet) {
+      resultSet.goToFirstRow()
+      return resultSet.getString(resultSet.getColumnIndex('Color'));
+    }
+    return '#800000F0';
+  }
+
+
+  public updateCourseInfomation(course: Course, tableId: string, color: string) {
+    let predicates: relationalStore.RdbPredicates = new relationalStore.RdbPredicates(CourseInfoTable);
+    predicates.equalTo('TableId', tableId).and().equalTo('ClassId', course.classId);
+    let valueBucket: ValuesBucket = {
+      CourseName: course.courseName,
+      Credit: course.credit,
+      Color: color
+    }
   }
 
   public deleteSchedule(schedule: Schedule) {

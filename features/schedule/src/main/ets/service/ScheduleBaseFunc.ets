@@ -101,6 +101,46 @@ export function paddingCourseSchedule(courseSchedule: CourseSchedule[]) {
   return result;
 }
 
+export function courseScheduleToClassDateAndPlace(courseScheduleList: CourseSchedule[]) {
+  let resultList: string[] = []
+  courseScheduleList.forEach((courseSchedule: CourseSchedule) => {
+    const weekRangeStr = courseSchedule.weekRangesStr;
+    const classDateWeek = `[${weekRangeToNormalWeek(weekRangeStr)}]`;
+    const weekDay = `星期${courseSchedule.WeekDay}`;
+    const place = courseSchedule.Place;
+    resultList.push([classDateWeek, weekDay, place].join(' '))
+  })
+  return resultList.join(';');
+}
+
+export function compressRange(weekRangeList: string) {
+  const weekRangeNumbers = weekRangeList.split(',').map(Number).sort((a, b) => (a - b));
+
+  let result: string[] = [];
+  let rangeStart: number = weekRangeNumbers[0];
+  let rangeEnd: number = weekRangeNumbers[0];
+
+  for (let index = 1; index < weekRangeNumbers.length; index++) {
+    if (weekRangeNumbers[index] === rangeEnd + 1) {
+      rangeEnd = weekRangeNumbers[index];
+    } else {
+      result.push(rangeStart === rangeEnd ? `${rangeStart}` : `${rangeStart}-${rangeEnd}`);
+      rangeStart = weekRangeNumbers[index];
+      rangeEnd = weekRangeNumbers[index];
+    }
+  }
+  result.push(rangeStart === rangeEnd ? `${rangeStart}` : `${rangeStart}-${rangeEnd}`);
+  return result.join(',')
+}
+
+function weekRangeToNormalWeek(weekRangeStr: string) {
+  let weekRangeList = weekRangeStr.split(',') || [weekRangeStr]
+  for (let index = 0; index < weekRangeList.length; index++) {
+    weekRangeList[index] += '周';
+  }
+  return weekRangeList.join(',')
+}
+
 export class ScheduleBaseFunc {
   public classDateAndPlaceToCourseSchedule(course: Course, schedule: Schedule, isList?: boolean) {
     let count = 0;
@@ -146,7 +186,7 @@ export class ScheduleBaseFunc {
     return courseSchedule;
   }
 
-  getCourseWeekRange(weekRangeResult: RegExpExecArray | null) {
+  public getCourseWeekRange(weekRangeResult: RegExpExecArray | null) {
     if (weekRangeResult) {
       console.debug(TAG, 'getCourseWeekRange', weekRangeResult[1])
       let weekRange = weekRangeResult[1].replaceAll('周', '')
@@ -156,7 +196,7 @@ export class ScheduleBaseFunc {
 
   }
 
-  getCourseWeekRangeList(weekRangeResult: RegExpExecArray | null) {
+  public getCourseWeekRangeList(weekRangeResult: RegExpExecArray | null) {
     if (weekRangeResult) {
       let weekRange = weekRangeResult[1].replace('周', '')
       let weekRanges: string[] = weekRange.split(',') || [weekRange]
@@ -176,4 +216,45 @@ export class ScheduleBaseFunc {
     }
     return '';
   }
+
+  public courseScheduleToClassDateAndPlace(courseScheduleList: CourseSchedule[]) {
+    let resultList: string[] = []
+    courseScheduleList.forEach((courseSchedule: CourseSchedule) => {
+      const weekRangeStr = courseSchedule.weekRangesStr;
+      const classDateWeek = `[${this.weekRangeToNormalWeek(weekRangeStr)}]`;
+      const weekDay = `星期${courseSchedule.WeekDay}`;
+      const place = courseSchedule.Place;
+      resultList.push([classDateWeek, weekDay, place].join(' '))
+    })
+    return resultList.join(';');
+  }
+
+  public compressRange(weekRangeList: string) {
+    const weekRangeNumbers = weekRangeList.split(',').map(Number).sort((a, b) => (a - b));
+
+    let result: string[] = [];
+    let rangeStart: number = weekRangeNumbers[0];
+    let rangeEnd: number = weekRangeNumbers[0];
+
+    for (let index = 0; index < weekRangeNumbers.length; index++) {
+      if (weekRangeNumbers[index] === rangeEnd + 1) {
+        rangeEnd = weekRangeNumbers[index];
+      } else {
+        result.push(rangeStart === rangeEnd ? `${rangeStart}` : `${rangeStart}-${rangeEnd}`);
+        rangeStart = weekRangeNumbers[index];
+        rangeEnd = weekRangeNumbers[index];
+      }
+    }
+    result.push(rangeStart === rangeEnd ? `${rangeStart}` : `${rangeStart}-${rangeEnd}`);
+    return result.join(',')
+  }
+
+  private weekRangeToNormalWeek(weekRangeStr: string) {
+    let weekRangeList = weekRangeStr.split(',') || [weekRangeStr]
+    for (let index = 0; index < weekRangeList.length; index++) {
+      weekRangeList[index] += '周';
+    }
+    return weekRangeList.join(',')
+  }
+
 }

@@ -22,6 +22,8 @@ export struct ScheduleWeekViewItem {
   @Prop selectedSchedule: Schedule;
   private scheduleDBFunc: ScheduleDatabaseFunc = new ScheduleDatabaseFunc();
 
+  private scrollController = new Scroller();
+
   aboutToAppear(): void {
     this.getWeekViewData(this.weekNum);
     this.getWeekCourseData()
@@ -36,6 +38,7 @@ export struct ScheduleWeekViewItem {
     console.debug('weekNum: ' + this.weekNum)
     this.getWeekViewData(this.weekNum);
     this.getWeekCourseData()
+    this.scrollController.scrollEdge(Edge.Top)
     console.debug(JSON.stringify(this.weekDays))
   }
 
@@ -97,7 +100,7 @@ export struct ScheduleWeekViewItem {
         })
       }
 
-      Scroll() {
+      Scroll(this.scrollController) {
         GridRow({ columns: { sm: 8, md: 8, lg: 15 } }) {
           TimeTableColumn()
           ForEach(this.weekCourse, (item: CourseSchedule[], index: number) => {
@@ -137,8 +140,10 @@ struct WeekDayColumnHeader {
           [this.day.dayInfo.year, this.day.dayInfo.month, this.day.dayInfo.date].join('/')) {
             Text(this.day.dayInfo.month + '/' + this.day.dayNum.toString())
               .fontSize(12)
+              .fontWeight(FontWeight.Medium)
             Text(WEEKS[this.weekDay])
               .fontSize(12)
+              .fontWeight(FontWeight.Medium)
           } else {
             Text(this.day.dayInfo.month + '/' + this.day.dayNum.toString())
               .fontSize(12)

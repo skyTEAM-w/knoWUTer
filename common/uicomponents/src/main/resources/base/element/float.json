@@ -27,6 +27,10 @@
     {
       "name": "navigation_title_bar_half_height",
       "value": "88"
+    },
+    {
+      "name": "list_row_button_height",
+      "value": "44"
     }
   ]
 }

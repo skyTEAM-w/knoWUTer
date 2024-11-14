@@ -330,9 +330,15 @@ export struct ScheduleWeekView {
       detents: [300, SheetSize.MEDIUM],
       blurStyle: BlurStyle.Thin,
       backgroundColor: $r('app.color.whut_blue_background'),
-      onWillDismiss: () => {
+      onWillDismiss: ((DismissSheetAction: DismissSheetAction) => {
+        if (DismissSheetAction.reason == DismissReason.SLIDE_DOWN) {
+          DismissSheetAction.dismiss()
+        }
         this.isScheduleShow = false;
-      }
+      }),
+      onWillSpringBackWhenDismiss: ((SpringBackAction: SpringBackAction) => {
+
+      }),
     })
     .margin({ top: 5 })
     .height('100%')
