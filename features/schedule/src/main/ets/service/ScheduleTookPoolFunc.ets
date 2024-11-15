@@ -1,7 +1,8 @@
-import { Course } from '../model/Course';
-import { CourseSchedules, CourseScheduleSendable } from '../model/CourseSchedule';
+import { Course, CourseSendable } from '../model/Course';
+import { CourseSchedule, CourseSchedules, CourseScheduleSendable } from '../model/CourseSchedule';
 import { Schedule } from '../model/Schedule';
 import { getCourseWeekRange, getCourseWeekRangeList } from './ScheduleBaseFunc';
+import { ScheduleDatabaseFunc } from './ScheduleDatabaseFunc';
 
 @Concurrent
 export function classDateAndPlaceToCourseScheduleTask(course: Course, schedule?: Schedule, isList?: boolean) {
@@ -46,4 +47,13 @@ export function classDateAndPlaceToCourseScheduleTask(course: Course, schedule?:
   })
   // console.debug(TAG, 'classDateAndPlaceToCourseSchedule', JSON.stringify(courseSchedule));
   return courseSchedule;
+}
+
+@Concurrent
+export function saveCourseInfomation(course: CourseSendable, courseSchedule: CourseScheduleSendable[], deleteSchedule: CourseScheduleSendable[], tableId: string, color: string) {
+  new ScheduleDatabaseFunc().deleteCourseSchedule(deleteSchedule);
+  new ScheduleDatabaseFunc().updateCourseInfomation(course as Course, tableId, color);
+  new ScheduleDatabaseFunc().updateCourseSchedule(courseSchedule, course as Course);
+  console.debug('saveCourseInfomation')
+  new LocalStorage().setOrCreate('updateCourse', true);
 }

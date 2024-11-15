@@ -247,8 +247,34 @@ export class ScheduleDatabaseFunc {
     let valueBucket: ValuesBucket = {
       CourseName: course.courseName,
       Credit: course.credit,
-      Color: color
+      Color: color,
+      ClassDateAndPlace: course.classDateAndPlace
     }
+    this.dbUtil.updateMyValueBucket(valueBucket, predicates, relationalStore.ConflictResolution.ON_CONFLICT_ROLLBACK);
+  }
+
+  public updateCourseSchedule(courseSchedules: CourseSchedule[], course: Course) {
+    courseSchedules.forEach((value: CourseSchedule, index: number) => {
+      const predicates: relationalStore.RdbPredicates = new relationalStore.RdbPredicates(CourseScheduleTable);
+      predicates.equalTo('TableId', value.TableId).and().equalTo('ClassId', course.classId).equalTo('ScheduleId', value.ScheduleId);
+      const valueBucket: ValuesBucket = {
+        TableId: value.TableId,
+        ClassId: value.ClassId,
+        WeekRanges: value.weekRanges,
+        WeekRangesStr: value.weekRangesStr,
+        WeekDay: value.WeekDay,
+        StartSession: value.StartSession,
+        EndSession: value.EndSession,
+        Place: value.Place,
+        ScheduleId: index.toString(),
+        CourseName: course.courseName
+      }
+      const result = this.dbUtil.updateMyValueBucket(valueBucket, predicates, relationalStore.ConflictResolution.ON_CONFLICT_ROLLBACK);
+      console.debug(TAG, result)
+      if(!this.dbUtil.updateMyValueBucket(valueBucket, predicates, relationalStore.ConflictResolution.ON_CONFLICT_ROLLBACK)) {
+        this.dbUtil.insertMyValueBucket(valueBucket, CourseScheduleTable, relationalStore.ConflictResolution.ON_CONFLICT_ROLLBACK);
+      }
+    })
   }
 
   public deleteSchedule(schedule: Schedule) {
@@ -267,6 +293,15 @@ export class ScheduleDatabaseFunc {
       }
     }
     return false;
+  }
+
+  public deleteCourseSchedule(courseSchedules: CourseSchedule[]) {
+    courseSchedules.forEach((value: CourseSchedule) => {
+      // console.debug(TAG, 'deleteCourseSchedule', JSON.stringify(value))
+      let predicates: relationalStore.RdbPredicates = new relationalStore.RdbPredicates(CourseScheduleTable);
+      predicates.equalTo('TableId', value.TableId).and().equalTo('ClassId', value.ClassId).and().equalTo('ScheduleId', value.ScheduleId);
+      this.dbUtil.deleteMyPredicate(predicates);
+    })
   }
 
   weekPredicatesBuilder(week: number) {

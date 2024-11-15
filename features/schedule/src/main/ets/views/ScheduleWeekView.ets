@@ -31,7 +31,6 @@ export struct ScheduleWeekView {
   private oldWeekViewIndex: number = 1;
   private oldSelectWeek: number = 1;
   private isSwiping: boolean = false;
-
   jumpEditCourseInformation: (courseId: string, tableId: string) => void = () => {
 
   };
@@ -140,7 +139,22 @@ export struct ScheduleWeekView {
   @Builder
   courseScheduleBindSheet() {
     Column() {
-      Row({space: 10}) {
+      Row({ space: 10 }) {
+        Button({ type: ButtonType.Capsule, role: ButtonRole.ERROR }) {
+          Row() {
+            SymbolGlyph($r('sys.symbol.trash'))
+              .fontSize(18)
+              .fontColor([Color.Red])
+            Text('删除')
+              .fontSize(14)
+              .fontColor(Color.Red)
+          }
+        }
+        .clickEffect({ level: ClickEffectLevel.LIGHT, scale: 0.95 })
+        .backgroundColor($r('app.color.delete_button_background'))
+        .width(66)
+        .height('80%')
+
         Button({ type: ButtonType.Capsule }) {
           Row() {
             SymbolGlyph($r('sys.symbol.pencil_and_card'))
@@ -155,29 +169,15 @@ export struct ScheduleWeekView {
           this.isScheduleShow = false;
           this.jumpEditCourseInformation(this.selectedCourse?.ClassId as string, this.selectedCourse?.TableId as string)
         })
-        .clickEffect({level: ClickEffectLevel.LIGHT, scale: 0.95})
+        .clickEffect({ level: ClickEffectLevel.LIGHT, scale: 0.95 })
         .backgroundColor($r('app.color.whut_blue_background_selected'))
         .width(66)
         .height('80%')
 
-        Button({ type: ButtonType.Capsule, role: ButtonRole.ERROR}) {
-          Row() {
-            SymbolGlyph($r('sys.symbol.trash'))
-              .fontSize(18)
-              .fontColor([Color.Red])
-            Text('删除')
-              .fontSize(14)
-              .fontColor(Color.Red)
-          }
-        }
-        .clickEffect({level: ClickEffectLevel.LIGHT, scale: 0.95})
-        .backgroundColor($r('app.color.delete_button_background'))
-        .width(66)
-        .height('80%')
       }
       .height(33)
       .width('90%')
-      .justifyContent(FlexAlign.Start)
+      .justifyContent(FlexAlign.SpaceBetween)
       .margin($r('app.float.course_card_padding'))
 
       Column() {

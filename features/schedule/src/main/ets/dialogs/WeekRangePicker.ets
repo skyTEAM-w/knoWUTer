@@ -1,8 +1,11 @@
+import { BreakPointType, BreakPointTypeEnum } from "@ohos/utils/src/main/ets/utils/BreakPoint";
 import { CourseSchedule } from "../model/CourseSchedule";
 
 @CustomDialog
 @Component
 export struct WeekRangePicker {
+
+  @StorageLink('currentBreakPoint') currentBreakPoint: string = BreakPointTypeEnum.MD;
 
   @Link weekRanges: string;
 
@@ -38,9 +41,10 @@ export struct WeekRangePicker {
       Text((index + 1).toString())
         .fontSize(12)
         .margin(5)
+        .fontWeight(FontWeight.Medium)
     }
-    .height(30)
-    .width(30)
+    .height($r('app.float.interactive_button_height'))
+    .width($r('app.float.interactive_button_height'))
     .backgroundColor(this.weekRangeSelectedStatus[index] ? $r('app.color.whut_yellow') : $r('app.color.whut_yellow_background_selected'))
     .margin(5)
     .clickEffect({level: ClickEffectLevel.LIGHT, scale: 0.8})
@@ -61,7 +65,7 @@ export struct WeekRangePicker {
           }
         })
       }
-      .lanes(7)
+      .lanes(new BreakPointType({sm: 6, md: 7, lg: 8}).getValue(this.currentBreakPoint))
       .margin({left: $r('app.float.lg_padding_margin'), right: $r('app.float.lg_padding_margin')})
 
       Row() {
@@ -80,6 +84,5 @@ export struct WeekRangePicker {
       .margin({bottom: 10, top: 10})
       .justifyContent(FlexAlign.SpaceAround)
     }
-
   }
 }

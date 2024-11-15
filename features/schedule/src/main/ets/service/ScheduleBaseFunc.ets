@@ -107,8 +107,9 @@ export function courseScheduleToClassDateAndPlace(courseScheduleList: CourseSche
     const weekRangeStr = courseSchedule.weekRangesStr;
     const classDateWeek = `[${weekRangeToNormalWeek(weekRangeStr)}]`;
     const weekDay = `星期${courseSchedule.WeekDay}`;
-    const place = courseSchedule.Place;
-    resultList.push([classDateWeek, weekDay, place].join(' '))
+    const sessions = `第${courseSchedule.StartSession}-${courseSchedule.EndSession}节`;
+    const place = courseSchedule.Place.includes('undefined') ? '' : courseSchedule.Place;
+    resultList.push([classDateWeek, weekDay, sessions, place].join(' '))
   })
   return resultList.join(';');
 }

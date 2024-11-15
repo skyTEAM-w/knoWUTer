@@ -10,6 +10,7 @@ import { WeekScheduleCard } from '../components/WeekSheduleCard';
 export struct ScheduleWeekViewItem {
   // @Prop selectedSchedule: Schedule;
   // @Prop currentSelectedWeek: number;
+  @LocalStorageLink('updateCourse') @Watch("updateWeekData") updateCourse: boolean = false;
   @Link isCookieShow: boolean;
   @Link isSettingShow: boolean;
   @Link isScheduleShow: boolean;
@@ -19,7 +20,7 @@ export struct ScheduleWeekViewItem {
   @Prop @Watch("updateWeekData") weekNum: number;
   @Prop selectedWeek: number;
   @Prop @Watch("updateWeekData") currentWeek: number;
-  @Prop selectedSchedule: Schedule;
+  @Prop @Watch("updateWeekData") selectedSchedule: Schedule;
   private scheduleDBFunc: ScheduleDatabaseFunc = new ScheduleDatabaseFunc();
 
   private scrollController = new Scroller();
@@ -43,12 +44,14 @@ export struct ScheduleWeekViewItem {
   }
 
   getWeekCourseData() {
-    for (let i = 0; i < 7; i++) {
-      const weekDayCourse =
-        this.scheduleDBFunc.queryCourseScheduleByWeek(this.selectedSchedule, this.currentWeek + this.weekNum, i)
-      if (weekDayCourse) {
-        const CourseDataAfterPadding = paddingCourseSchedule(weekDayCourse)
-        this.weekCourse[i] = CourseDataAfterPadding;
+    if (this.selectedSchedule) {
+      for (let i = 0; i < 7; i++) {
+        const weekDayCourse =
+          this.scheduleDBFunc.queryCourseScheduleByWeek(this.selectedSchedule, this.currentWeek + this.weekNum, i)
+        if (weekDayCourse) {
+          const CourseDataAfterPadding = paddingCourseSchedule(weekDayCourse)
+          this.weekCourse[i] = CourseDataAfterPadding;
+        }
       }
     }
   }

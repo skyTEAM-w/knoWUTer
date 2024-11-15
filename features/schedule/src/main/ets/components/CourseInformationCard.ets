@@ -8,6 +8,8 @@ import {
 import { JSON, taskpool } from '@kit.ArkTS';
 import { classDateAndPlaceToCourseScheduleTask } from '../service/ScheduleTookPoolFunc';
 import { LazyDataSource } from '@ohos/utils';
+import { SymbolGlyphModifier } from '@kit.ArkUI';
+import { ScheduleDatabaseFunc } from '../service/ScheduleDatabaseFunc';
 
 const TAG = '[ClassInformationCard]';
 
@@ -18,9 +20,18 @@ async function getCourseScheduleTask(course: Course, isList: boolean) {
 
 @Component
 export struct ClassInformationCard {
-  @ObjectLink courseInfomation: Course;
+  @Consume('schedulePathStack') schedulePathStack: NavPathStack;
+  @Consume('appPathStack') appPathStack: NavPathStack;
+  // @LocalStorageLink('updateCourse') @Watch('updateCourseInformation') updateCourse: boolean = false;
+  @ObjectLink @Watch('updateCourseInformation') courseInfomation: Course;
+  @Prop selectedSchedule: Schedule;
   @State courseSchedules: LazyDataSource<CourseSchedule> = new LazyDataSource();
+  @State isShow: boolean = false;
+  longPressEnable?: boolean;
   private mDate = new DateUtil();
+  jumpEditCourseInformation: (courseId: string, tableId: string) => void = () => {
+
+  };
 
   @Styles
   scheduleCardStyle() {
@@ -41,12 +52,35 @@ export struct ClassInformationCard {
     }
   }
 
+  updateCourseInformation() {
+    let courseScheduleList =
+      classDateAndPlaceToCourseSchedule(this.courseInfomation, new Schedule('', '', ''), false);
+    if (courseScheduleList) {
+      this.courseSchedules.pushArrayData(courseScheduleList);
+    }
+    console.debug(TAG, 'aboutToAppear', JSON.stringify(this.courseSchedules))
+  }
+
   getCourseSchedule() {
     getCourseScheduleTask(this.courseInfomation, false).then((courseScheduleList) => {
       this.courseSchedules.pushArrayData(courseScheduleList);
       console.debug(TAG, 'aboutToAppear', JSON.stringify(this.courseSchedules))
     })
   }
+
+  @Builder
+  longPressMenu() {
+    Menu() {
+      MenuItem({
+        symbolStartIcon: new SymbolGlyphModifier($r('sys.symbol.pencil_rectangle_portrait_on_text')).fontSize(24),
+        content: '编辑'
+      })
+        .onClick(() => {
+          this.jumpEditCourseInformation(this.courseInfomation.classId, this.selectedSchedule.scheduleId);
+        })
+    }
+  }
+
 
   build() {
     Column() {
@@ -111,6 +145,19 @@ export struct ClassInformationCard {
     .borderRadius($r('app.float.main_border_radius'))
     .padding($r('app.float.course_card_padding'))
     .renderFit(RenderFit.RESIZE_CONTAIN)
+    .bindMenu(this.isShow, this.longPressMenu(), {
+      onDisappear: () => {
+        this.isShow = false;
+      }
+    })
     .width('100%')
+    .gesture(
+      LongPressGesture()
+        .onAction(() => {
+          if(this.longPressEnable) {
+            this.isShow = true
+          }
+        })
+    )
   }
 }

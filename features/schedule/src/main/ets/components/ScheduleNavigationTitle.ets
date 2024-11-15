@@ -126,7 +126,6 @@ export struct ScheduleNavigation {
             .textAlign(TextAlign.End)
             .fontColor(Color.Blue)
             .width("20%")
-            .margin({ right: $r('app.float.xxl_padding_margin') })
             .onClick(() => {
               this.jumpManageSchedule();
               this.isSettingShow = false;
@@ -134,7 +133,7 @@ export struct ScheduleNavigation {
         }
         .justifyContent(FlexAlign.SpaceBetween)
         .marginStyle()
-        .width('100%')
+        .width('90%')
 
         Scroll() {
           Row({ space: 5 }) {
@@ -307,7 +306,7 @@ export struct ScheduleNavigation {
             }
             .bindSheet($$this.isSettingShow, this.settingBindSheet, {
               preferType: this.currentBreakPoint === BreakPointTypeEnum.LG ? SheetType.CENTER : SheetType.BOTTOM,
-              detents: [400],
+              detents: [300],
               showClose: this.currentBreakPoint === BreakPointTypeEnum.LG,
               blurStyle: BlurStyle.Thin,
               backgroundColor: Color.Transparent,
