@@ -9,7 +9,6 @@ import { Schedule } from '../model/Schedule';
 import { ScheduleDatabaseFunc } from '../service/ScheduleDatabaseFunc';
 import { classDateAndPlaceToCourseSchedule } from '../service/ScheduleBaseFunc';
 import { JSON, taskpool } from '@kit.ArkTS';
-import json from '@ohos.util.json';
 
 const INTERVAL = 30;
 const DURATION = 300;

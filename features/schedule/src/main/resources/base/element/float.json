@@ -47,6 +47,10 @@
     {
       "name": "schedule_item_height",
       "value": "33"
+    },
+    {
+      "name": "today_schedule_card_height",
+      "value": "112"
     }
   ]
 }

@@ -257,5 +257,4 @@ export class ScheduleBaseFunc {
     }
     return weekRangeList.join(',')
   }
-
 }

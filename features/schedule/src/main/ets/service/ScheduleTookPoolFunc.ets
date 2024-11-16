@@ -1,5 +1,5 @@
 import { Course, CourseSendable } from '../model/Course';
-import { CourseSchedule, CourseSchedules, CourseScheduleSendable } from '../model/CourseSchedule';
+import { CourseSchedules, CourseScheduleSendable } from '../model/CourseSchedule';
 import { Schedule } from '../model/Schedule';
 import { getCourseWeekRange, getCourseWeekRangeList } from './ScheduleBaseFunc';
 import { ScheduleDatabaseFunc } from './ScheduleDatabaseFunc';
@@ -50,7 +50,8 @@ export function classDateAndPlaceToCourseScheduleTask(course: Course, schedule?:
 }
 
 @Concurrent
-export function saveCourseInfomation(course: CourseSendable, courseSchedule: CourseScheduleSendable[], deleteSchedule: CourseScheduleSendable[], tableId: string, color: string) {
+export function saveCourseInfomation(course: CourseSendable, courseSchedule: CourseScheduleSendable[],
+  deleteSchedule: CourseScheduleSendable[], tableId: string, color: string) {
   new ScheduleDatabaseFunc().deleteCourseSchedule(deleteSchedule);
   new ScheduleDatabaseFunc().updateCourseInfomation(course as Course, tableId, color);
   new ScheduleDatabaseFunc().updateCourseSchedule(courseSchedule, course as Course);

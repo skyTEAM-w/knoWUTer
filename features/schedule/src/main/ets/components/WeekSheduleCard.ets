@@ -1,9 +1,9 @@
 import { COURSE_SCHEDULE_HEIGHT, CourseSchedule } from '../model/CourseSchedule';
 import { ScheduleDatabaseFunc } from '../service/ScheduleDatabaseFunc';
-import { JSON } from '@kit.ArkTS';
 
 @Component
 export struct WeekScheduleCard {
+  @LocalStorageLink('updateCourse') @Watch("updateCard") updateCourse: boolean = false;
   @Link isCookieShow: boolean;
   @Link isSettingShow: boolean;
   @Link isScheduleShow: boolean;
@@ -16,15 +16,13 @@ export struct WeekScheduleCard {
   indexX: number = 0;
 
   aboutToAppear(): void {
-    this.cardColor = new ScheduleDatabaseFunc().queryCourseColor(this.courseSchedule);
+    this.updateCard()
     console.debug('COLOR', this.cardColor)
   }
 
   updateCard() {
     this.cardColor = new ScheduleDatabaseFunc().queryCourseColor(this.courseSchedule);
   }
-
-
 
   build() {
     Column({ space: 2 }) {
@@ -59,7 +57,7 @@ export struct WeekScheduleCard {
     .height(COURSE_SCHEDULE_HEIGHT * (this.courseSchedule.EndSession - this.courseSchedule.StartSession + 1))
     .onClick(() => {
       console.debug(this.indexX.toString(), this.indexY.toString())
-        this.selectedCourse = this.weekCourse[this.indexX][this.indexY]
+      this.selectedCourse = this.weekCourse[this.indexX][this.indexY]
       this.isScheduleShow = true;
     })
   }

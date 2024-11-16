@@ -1,4 +1,4 @@
-import { TopNavigationView } from '@ohos/uicomponents';
+import { ColorSelectDialog, TopNavigationView } from '@ohos/uicomponents';
 import { BreakPointTypeEnum, LazyDataSource } from '@ohos/utils';
 import { WeekRangePicker } from '../dialogs/WeekRangePicker';
 import { Course } from '../model/Course';
@@ -6,10 +6,9 @@ import { CourseSchedule, TIME_TABLE, TimeTable, WEEKS } from '../model/CourseSch
 import { Schedule } from '../model/Schedule';
 import { compressRange, courseScheduleToClassDateAndPlace } from '../service/ScheduleBaseFunc';
 import { ScheduleDatabaseFunc } from '../service/ScheduleDatabaseFunc';
-import { JSON, taskpool } from '@kit.ArkTS';
+import { JSON } from '@kit.ArkTS';
 import { PlaceInputDialog } from '../dialogs/PlaceInputDialog';
-import { promptAction, TipsDialog } from '@kit.ArkUI';
-import { saveCourseInfomation } from '../service/ScheduleTookPoolFunc';
+import { TipsDialog } from '@kit.ArkUI';
 
 const TAG = '[EditCourseInformation]'
 
@@ -39,12 +38,16 @@ export struct EditCourseInformation {
       }
     })
   })
+  colorSelectDialogController: CustomDialogController = new CustomDialogController({
+     builder: ColorSelectDialog({
+       color: this.courseColor
+     })
+  })
   courseId: String = '';
   tableId: String = '';
   private deletedCourseSchedule: CourseSchedule[] = [];
   private scheduleCount: number = 0;
   private scheduleDbFunc = new ScheduleDatabaseFunc();
-
   onDestinationBack: () => void = () => {
   };
 
@@ -74,14 +77,16 @@ export struct EditCourseInformation {
     if (this.courseSchedule) {
       if (!this.courseSchedule.isEmpty()) {
         let newSchedule = this.courseSchedule.getData(this.courseSchedule.totalCount() - 1);
-        this.courseSchedule.pushData(new CourseSchedule(newSchedule.weekRanges, newSchedule.TableId, newSchedule.ClassId,
+        this.courseSchedule.pushData(new CourseSchedule(newSchedule.weekRanges, newSchedule.TableId,
+          newSchedule.ClassId,
           newSchedule.CourseName,
           (this.scheduleCount++).toString(), newSchedule.WeekDay, newSchedule.StartSession,
           newSchedule.EndSession, newSchedule.Place, newSchedule.weekRangesStr));
         this.courseSchedule.reloadData();
       } else {
         if (this.courseInformation) {
-          this.courseSchedule.pushData(new CourseSchedule('1', this.tableId.toString(), this.courseId.toString(), this.courseInformation.courseName,
+          this.courseSchedule.pushData(new CourseSchedule('1', this.tableId.toString(), this.courseId.toString(),
+            this.courseInformation.courseName,
             (this.scheduleCount++).toString(), '一', 1, 2, 'undefined', '1'));
         }
 
@@ -106,7 +111,7 @@ export struct EditCourseInformation {
     .backgroundColor(Color.Gray)
     .barButtonStyle()
     .onClick(() => {
-        this.confirmDialogController?.open();
+      this.confirmDialogController?.open();
     })
   }
 
@@ -151,8 +156,8 @@ export struct EditCourseInformation {
           menuView: () => this.checkCreateMenu()
         })
         GridRow({ columns: { sm: 6, md: 6, lg: 10 } }) {
-          GridCol({ span: { lg: 2 }, offset: 0 })
-          GridCol({ span: { sm: 6, md: 6, lg: 6 } }) {
+          GridCol({ span: { lg: 1 }, offset: 0 })
+          GridCol({ span: { sm: 6, md: 6, lg: 8 } }) {
             List() {
               ListItem() {
                 Column() {
@@ -190,8 +195,10 @@ export struct EditCourseInformation {
                   }
                   .width('100%')
                   .height($r('app.float.list_row_button_height'))
-                  .enabled(false)
                   .backgroundColor(Color.Transparent)
+                  .onClick(() => {
+                    this.colorSelectDialogController.open()
+                  })
                 }
                 .backgroundColor($r('sys.color.background_primary'))
               }
@@ -253,7 +260,7 @@ export struct EditCourseInformation {
             .scrollBar(BarState.Off)
           }
 
-          GridCol({ span: { lg: 2 }, offset: 0 })
+          GridCol({ span: { lg: 1 }, offset: 0 })
         }
       }
 
@@ -278,7 +285,7 @@ export struct EditCourseInformation {
 }
 
 @Component
-struct CourseScheduleEditCard {
+export struct CourseScheduleEditCard {
   @ObjectLink courseSchedule: CourseSchedule;
   @State @Watch('confirmWeekRangeChange') weekRangeList: string = ''
   @State courseWeek: string = '';

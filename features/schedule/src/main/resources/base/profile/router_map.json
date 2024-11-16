@@ -14,6 +14,11 @@
       "name": "EditCourseInformation",
       "pageSourceFile": "src/main/ets/pages/EditCourseInformation.ets",
       "buildFunction": "EditCourseInformationBuilder"
+    },
+    {
+      "name": "AddNewCourse",
+      "pageSourceFile": "src/main/ets/pages/AddNewCourse.ets",
+      "buildFunction": "AddNewCourseBuilder"
     }
   ]
 }

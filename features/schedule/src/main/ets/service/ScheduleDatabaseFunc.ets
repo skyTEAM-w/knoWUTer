@@ -2,7 +2,7 @@ import { relationalStore, ValuesBucket } from '@kit.ArkData';
 import { LazyDataSource } from '@ohos/utils';
 import { DBUtil } from '@ohos/datastore';
 import { ColorArray, Course } from '../model/Course';
-import { CourseSchedule, WEEKS } from '../model/CourseSchedule';
+import { CourseSchedule, CourseScheduleSendable, WEEKS } from '../model/CourseSchedule';
 import { Schedule } from '../model/Schedule';
 import { JSON } from '@kit.ArkTS';
 
@@ -27,7 +27,7 @@ export class ScheduleDatabaseFunc {
       relationalStore.ConflictResolution.ON_CONFLICT_ROLLBACK);
   }
 
-  public insertCourseInformation(courseList: Course[], schedule: Schedule) {
+  public insertCourseInformation(courseList: Course[], schedule: Schedule, color?: ResourceColor) {
     if (courseList.length > 0) {
       courseList.forEach((course: Course, index: number) => {
         let valuesBucket: ValuesBucket = {
@@ -42,7 +42,7 @@ export class ScheduleDatabaseFunc {
           ClassDateAndPlace: course.classDateAndPlace ? course.classDateAndPlace : null,
           CourseSerialNum: course.courseSerialNum,
           CourseNo: course.courseNo,
-          Color: ColorArray[index % 6]
+          Color: color ? color.toString() : ColorArray[index % 6]
         }
         console.debug(TAG, 'insertCourseInformation', JSON.stringify(valuesBucket))
         this.dbUtil.insertMyValueBucket(valuesBucket, CourseInfoTable,
@@ -218,6 +218,33 @@ export class ScheduleDatabaseFunc {
     return undefined;
   }
 
+  public async queryTodayScheduleByWeek(tableId: string, week: number, weekDay: number) {
+    console.debug(TAG, 'queryTodayScheduleByWeek')
+    let predicates = this.weekPredicatesBuilder(week);
+    predicates.and().equalTo('TableId', tableId).and().equalTo('WeekDay', `${WEEKS[weekDay]}`)
+
+    let resultSet = this.dbUtil.queryMyPredicates(predicates);
+    if (resultSet) {
+      let dayScheduleList: CourseScheduleSendable[] = [];
+      while (resultSet.goToNextRow()) {
+        const scheduleId = resultSet.getString(resultSet.getColumnIndex('ScheduleId'))
+        const weekRanges = resultSet.getString(resultSet.getColumnIndex('WeekRanges'));
+        const weekDay = resultSet.getString(resultSet.getColumnIndex('WeekDay'));
+        const startSession = resultSet.getLong(resultSet.getColumnIndex('StartSession'));
+        const endSession = resultSet.getLong(resultSet.getColumnIndex('EndSession'));
+        const place = resultSet.getString(resultSet.getColumnIndex('Place'));
+        const courseId = resultSet.getString(resultSet.getColumnIndex('ClassId'));
+        const courseName = resultSet.getString(resultSet.getColumnIndex('CourseName'));
+        const weekRangesStr = resultSet.getString(resultSet.getColumnIndex('WeekRangesStr'));
+        dayScheduleList.push(new CourseScheduleSendable(weekRanges, tableId, courseId, courseName, scheduleId,
+          weekDay, startSession, endSession, place, weekRangesStr));
+      }
+      // console.debug(TAG, 'queryCourseScheduleByWeek', JSON.stringify(dayScheduleList))
+      return dayScheduleList;
+    }
+    return undefined;
+  }
+
   public queryCourseColor(courseSchedule: CourseSchedule) {
     let predicates: relationalStore.RdbPredicates = new relationalStore.RdbPredicates(CourseInfoTable);
     predicates.equalTo('ClassId', courseSchedule.ClassId).and().equalTo('TableId', courseSchedule.TableId);
@@ -256,7 +283,10 @@ export class ScheduleDatabaseFunc {
   public updateCourseSchedule(courseSchedules: CourseSchedule[], course: Course) {
     courseSchedules.forEach((value: CourseSchedule, index: number) => {
       const predicates: relationalStore.RdbPredicates = new relationalStore.RdbPredicates(CourseScheduleTable);
-      predicates.equalTo('TableId', value.TableId).and().equalTo('ClassId', course.classId).equalTo('ScheduleId', value.ScheduleId);
+      predicates.equalTo('TableId', value.TableId)
+        .and()
+        .equalTo('ClassId', course.classId)
+        .equalTo('ScheduleId', value.ScheduleId);
       const valueBucket: ValuesBucket = {
         TableId: value.TableId,
         ClassId: value.ClassId,
@@ -269,10 +299,13 @@ export class ScheduleDatabaseFunc {
         ScheduleId: index.toString(),
         CourseName: course.courseName
       }
-      const result = this.dbUtil.updateMyValueBucket(valueBucket, predicates, relationalStore.ConflictResolution.ON_CONFLICT_ROLLBACK);
+      const result = this.dbUtil.updateMyValueBucket(valueBucket, predicates,
+        relationalStore.ConflictResolution.ON_CONFLICT_ROLLBACK);
       console.debug(TAG, result)
-      if(!this.dbUtil.updateMyValueBucket(valueBucket, predicates, relationalStore.ConflictResolution.ON_CONFLICT_ROLLBACK)) {
-        this.dbUtil.insertMyValueBucket(valueBucket, CourseScheduleTable, relationalStore.ConflictResolution.ON_CONFLICT_ROLLBACK);
+      if (!this.dbUtil.updateMyValueBucket(valueBucket, predicates,
+        relationalStore.ConflictResolution.ON_CONFLICT_ROLLBACK)) {
+        this.dbUtil.insertMyValueBucket(valueBucket, CourseScheduleTable,
+          relationalStore.ConflictResolution.ON_CONFLICT_ROLLBACK);
       }
     })
   }
@@ -299,7 +332,11 @@ export class ScheduleDatabaseFunc {
     courseSchedules.forEach((value: CourseSchedule) => {
       // console.debug(TAG, 'deleteCourseSchedule', JSON.stringify(value))
       let predicates: relationalStore.RdbPredicates = new relationalStore.RdbPredicates(CourseScheduleTable);
-      predicates.equalTo('TableId', value.TableId).and().equalTo('ClassId', value.ClassId).and().equalTo('ScheduleId', value.ScheduleId);
+      predicates.equalTo('TableId', value.TableId)
+        .and()
+        .equalTo('ClassId', value.ClassId)
+        .and()
+        .equalTo('ScheduleId', value.ScheduleId);
       this.dbUtil.deleteMyPredicate(predicates);
     })
   }
@@ -318,4 +355,61 @@ export class ScheduleDatabaseFunc {
       .endWrap()
     return predicates;
   }
+}
+
+@Concurrent
+export async function queryTodayScheduleByWeek(tableId: string, week: number, weekDay: number, context: Context) {
+  console.debug('queryTodayScheduleByWeek')
+  let weeks: string[] = ["一", "二", "三", "四", "五", "六", "日"];
+  let predicates: relationalStore.RdbPredicates = new relationalStore.RdbPredicates('CourseSchedule');
+  predicates.beginWrap()
+    .like('WeekRanges', `${week},%`)
+    .or()
+    .like('WeekRanges', `%,${week}`)
+    .or()
+    .like('WeekRanges', `%,${week},%`)
+    .or()
+    .equalTo('WeekRanges', `${week}`)
+    .endWrap()
+  predicates.and()
+    .equalTo('TableId', tableId)
+    .and()
+    .equalTo('WeekDay', `${weeks[weekDay]}`)
+    .and()
+    .orderByAsc('StartSession')
+
+  let STORE_CONFIG_LOCAL: relationalStore.StoreConfig = {
+    name: 'ApplicationDB.db',
+    securityLevel: relationalStore.SecurityLevel.S3
+  };
+
+  let store = await relationalStore.getRdbStore(context, STORE_CONFIG_LOCAL);
+
+  console.info('queryTodayScheduleByWeek', `Create Store.db successfully!`);
+
+  let resultSet = await store.query(predicates);
+  console.info(`Query data successfully! row count:${resultSet.rowCount}`);
+  if (resultSet) {
+    let dayScheduleList: Array<relationalStore.ValuesBucket> = new Array();
+    while (resultSet.goToNextRow()) {
+      dayScheduleList.push(resultSet.getRow());
+    }
+    return dayScheduleList;
+  }
+  return undefined;
+}
+
+function weekPredicatesBuilder(week: number) {
+  const field: string = 'WeekRanges'
+  let predicates: relationalStore.RdbPredicates = new relationalStore.RdbPredicates(CourseScheduleTable);
+  predicates.beginWrap()
+    .like(field, `${week},%`)
+    .or()
+    .like(field, `%,${week}`)
+    .or()
+    .like(field, `%,${week},%`)
+    .or()
+    .equalTo(field, `${week}`)
+    .endWrap()
+  return predicates;
 }

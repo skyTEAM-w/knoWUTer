@@ -117,23 +117,29 @@ export struct ManageSchedule {
           this.onDestinationBack();
         }
       })
-
-      List() {
-        LazyForEach(this.scheduleList, (item: Schedule, index: number) => {
-          ListItem() {
-            this.listItem(item);
+      GridRow({ columns: { sm: 6, md: 6, lg: 10 } }) {
+        GridCol({ span: { lg: 1 }, offset: 0, order: 0 })
+        GridCol({ span: { lg: 1 }, offset: 0, order: 2 })
+        GridCol({ span: { sm: 6, md: 6, lg: 8 }, order: 1 }) {
+          List() {
+            LazyForEach(this.scheduleList, (item: Schedule, index: number) => {
+              ListItem() {
+                this.listItem(item);
+              }
+              .transition({ type: TransitionType.Delete, opacity: 0 })
+              .bindMenu(this.listBindMenu(index))
+            }, (item: Schedule, index: number) => JSON.stringify(item) + index.toString())
           }
-          .transition({ type: TransitionType.Delete, opacity: 0 })
-          .bindMenu(this.listBindMenu(index))
-        }, (item: Schedule, index: number) => JSON.stringify(item) + index.toString())
-      }
-      .divider({ strokeWidth: 1, color: $r('sys.color.ohos_id_divider_color') })
-      .borderRadius($r('app.float.main_border_radius'))
-      .backgroundColor($r('sys.color.ohos_id_color_list_card_bg'))
-      .margin(this.currentBreakPoint === BreakPointTypeEnum.LG ?
-        { left: $r('app.float.xxl_padding_margin'), right: $r('app.float.xxl_padding_margin'), top: 10 } :
-        { left: $r('app.float.md_padding_margin'), right: $r('app.float.md_padding_margin'), top: 10 })
+          .divider({ strokeWidth: 1, color: $r('sys.color.ohos_id_divider_color') })
+          .borderRadius($r('app.float.main_border_radius'))
+          .backgroundColor($r('sys.color.ohos_id_color_list_card_bg'))
+          .margin(this.currentBreakPoint === BreakPointTypeEnum.LG ?
+            { left: $r('app.float.xxl_padding_margin'), right: $r('app.float.xxl_padding_margin'), top: 10 } :
+            { left: $r('app.float.md_padding_margin'), right: $r('app.float.md_padding_margin'), top: 10 })
 
+        }
+
+      }
     }
     .height('100%')
     .backgroundColor($r('sys.color.background_secondary'))
@@ -142,6 +148,7 @@ export struct ManageSchedule {
       let param = scheduleNavContext.pathInfo.param as Record<string, object>;
       this.onDestinationBack = param.onDestinationBack as () => void;
     })
+
   }
 }
 

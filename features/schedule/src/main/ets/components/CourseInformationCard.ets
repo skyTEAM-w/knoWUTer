@@ -2,14 +2,11 @@ import { DateUtil } from '@ohos/utils/src/main/ets/utils/DateUtil';
 import { Course } from '../model/Course';
 import { CourseSchedule } from '../model/CourseSchedule';
 import { Schedule } from '../model/Schedule';
-import {
-    classDateAndPlaceToCourseSchedule
-} from '../service/ScheduleBaseFunc';
+import { classDateAndPlaceToCourseSchedule } from '../service/ScheduleBaseFunc';
 import { JSON, taskpool } from '@kit.ArkTS';
 import { classDateAndPlaceToCourseScheduleTask } from '../service/ScheduleTookPoolFunc';
-import { LazyDataSource } from '@ohos/utils';
+import { LazyDataSource, VibrateUtil } from '@ohos/utils';
 import { SymbolGlyphModifier } from '@kit.ArkUI';
-import { ScheduleDatabaseFunc } from '../service/ScheduleDatabaseFunc';
 
 const TAG = '[ClassInformationCard]';
 
@@ -72,7 +69,7 @@ export struct ClassInformationCard {
   longPressMenu() {
     Menu() {
       MenuItem({
-        symbolStartIcon: new SymbolGlyphModifier($r('sys.symbol.pencil_rectangle_portrait_on_text')).fontSize(24),
+        symbolStartIcon: new SymbolGlyphModifier($r('sys.symbol.pencil_and_card')).fontSize(24),
         content: '编辑'
       })
         .onClick(() => {
@@ -80,7 +77,6 @@ export struct ClassInformationCard {
         })
     }
   }
-
 
   build() {
     Column() {
@@ -154,8 +150,9 @@ export struct ClassInformationCard {
     .gesture(
       LongPressGesture()
         .onAction(() => {
-          if(this.longPressEnable) {
-            this.isShow = true
+          if (this.longPressEnable) {
+            VibrateUtil.getInstance().longPressVibrate();
+            this.isShow = true;
           }
         })
     )

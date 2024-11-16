@@ -45,6 +45,14 @@
       "value": "#40FAC640"
     },
     {
+      "name": "whut_blue_background_thick",
+      "value": "#8000489A"
+    },
+    {
+      "name": "whut_yellow_background_thick",
+      "value": "#80FAC640"
+    },
+    {
       "name": "interact_button_background",
       "value": "#0D000000"
     },

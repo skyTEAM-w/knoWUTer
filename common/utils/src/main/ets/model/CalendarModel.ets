@@ -53,6 +53,7 @@ export enum CalendarViewType {
   MONTH, // 月视图
   WEEK, // 周视图
 }
+
 //
 // export const SystemCalendarSymbolArray: Array<Resource> = [
 //   $r('sys.symbol.calendar_01'),

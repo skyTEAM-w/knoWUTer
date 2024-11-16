@@ -1,17 +1,12 @@
-import { BreakPointType, BreakPointTypeEnum } from "@ohos/utils/src/main/ets/utils/BreakPoint";
-import { CourseSchedule } from "../model/CourseSchedule";
+import { BreakPointType, BreakPointTypeEnum } from '@ohos/utils/src/main/ets/utils/BreakPoint';
 
 @CustomDialog
 @Component
 export struct WeekRangePicker {
-
   @StorageLink('currentBreakPoint') currentBreakPoint: string = BreakPointTypeEnum.MD;
-
   @Link weekRanges: string;
-
   @State weekRangeNumbers: number[] = [];
   @State weekRangeSelectedStatus: boolean[] = new Array(21).fill(false);
-
   controller?: CustomDialogController;
   cancel: () => void = () => {
   }
@@ -37,7 +32,7 @@ export struct WeekRangePicker {
 
   @Builder
   weekPickerItem(index: number) {
-    Button({type: ButtonType.Circle}) {
+    Button({ type: ButtonType.Circle }) {
       Text((index + 1).toString())
         .fontSize(12)
         .margin(5)
@@ -45,9 +40,10 @@ export struct WeekRangePicker {
     }
     .height($r('app.float.interactive_button_height'))
     .width($r('app.float.interactive_button_height'))
-    .backgroundColor(this.weekRangeSelectedStatus[index] ? $r('app.color.whut_yellow') : $r('app.color.whut_yellow_background_selected'))
+    .backgroundColor(this.weekRangeSelectedStatus[index] ? $r('app.color.whut_yellow') :
+    $r('app.color.whut_yellow_background_selected'))
     .margin(5)
-    .clickEffect({level: ClickEffectLevel.LIGHT, scale: 0.8})
+    .clickEffect({ level: ClickEffectLevel.LIGHT, scale: 0.8 })
     .onClick(() => {
       this.weekRangeSelectedStatus[index] = !this.weekRangeSelectedStatus[index];
     })
@@ -65,8 +61,8 @@ export struct WeekRangePicker {
           }
         })
       }
-      .lanes(new BreakPointType({sm: 6, md: 7, lg: 8}).getValue(this.currentBreakPoint))
-      .margin({left: $r('app.float.lg_padding_margin'), right: $r('app.float.lg_padding_margin')})
+      .lanes(new BreakPointType({ sm: 6, md: 7, lg: 8 }).getValue(this.currentBreakPoint))
+      .margin({ left: $r('app.float.lg_padding_margin'), right: $r('app.float.lg_padding_margin') })
 
       Row() {
         Button($r('app.string.cancel'))
@@ -74,6 +70,9 @@ export struct WeekRangePicker {
           .onClick(() => {
             this.controller?.close()
           }).backgroundColor(Color.Transparent).fontColor($r('sys.color.brand_font'))
+        Divider()
+          .vertical(true)
+          .height(33)
         Button($r('app.string.confirm'))
           .width('40%')
           .onClick(() => {
@@ -81,8 +80,9 @@ export struct WeekRangePicker {
             this.controller?.close()
           }).backgroundColor(Color.Transparent).fontColor($r('sys.color.brand_font'))
       }
-      .margin({bottom: 10, top: 10})
-      .justifyContent(FlexAlign.SpaceAround)
+      .width("100%")
+      .margin({ bottom: 10, top: 10 })
+      .justifyContent(FlexAlign.SpaceEvenly)
     }
   }
 }

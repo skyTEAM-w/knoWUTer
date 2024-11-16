@@ -8,8 +8,6 @@ import { WeekScheduleCard } from '../components/WeekSheduleCard';
 
 @Component
 export struct ScheduleWeekViewItem {
-  // @Prop selectedSchedule: Schedule;
-  // @Prop currentSelectedWeek: number;
   @LocalStorageLink('updateCourse') @Watch("updateWeekData") updateCourse: boolean = false;
   @Link isCookieShow: boolean;
   @Link isSettingShow: boolean;
@@ -22,13 +20,11 @@ export struct ScheduleWeekViewItem {
   @Prop @Watch("updateWeekData") currentWeek: number;
   @Prop @Watch("updateWeekData") selectedSchedule: Schedule;
   private scheduleDBFunc: ScheduleDatabaseFunc = new ScheduleDatabaseFunc();
-
   private scrollController = new Scroller();
 
   aboutToAppear(): void {
     this.getWeekViewData(this.weekNum);
     this.getWeekCourseData()
-    console.debug(JSON.stringify(this.weekDays))
   }
 
   getWeekViewData(weekNum: number) {
@@ -40,7 +36,6 @@ export struct ScheduleWeekViewItem {
     this.getWeekViewData(this.weekNum);
     this.getWeekCourseData()
     this.scrollController.scrollEdge(Edge.Top)
-    console.debug(JSON.stringify(this.weekDays))
   }
 
   getWeekCourseData() {
@@ -72,8 +67,6 @@ export struct ScheduleWeekViewItem {
     }
     .margin(5)
   }
-
-
 
   build() {
     Column() {

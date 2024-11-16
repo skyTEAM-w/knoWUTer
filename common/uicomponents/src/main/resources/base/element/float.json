@@ -31,6 +31,18 @@
     {
       "name": "list_row_button_height",
       "value": "44"
+    },
+    {
+      "name": "normal_navigation_title_height",
+      "value": "88"
+    },
+    {
+      "name": "md_padding_margin",
+      "value": "12"
+    },
+    {
+      "name": "light_border_radius",
+      "value": "16"
     }
   ]
 }

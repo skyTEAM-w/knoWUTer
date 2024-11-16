@@ -1,11 +1,9 @@
-import { webview } from '@kit.ArkWeb';
 import { BreakPointTypeEnum, DateUtil, LazyDataSource } from '@ohos/utils';
 import { ScheduleNavigation } from '../components/ScheduleNavigationTitle';
 import { ScheduleNetFunc } from '../service/ScheduleNetFunc';
 import { Schedule } from '../model/Schedule';
 import { Course } from '../model/Course';
 import { ScheduleDatabaseFunc } from '../service/ScheduleDatabaseFunc';
-import { ScheduleBaseFunc } from '../service/ScheduleBaseFunc';
 import { JSON } from '@kit.ArkTS';
 import { ScheduleSettingFunc } from '../service/ScheduleSettingFunc';
 import { ItemRestriction, SegmentButtonOptions, SegmentButtonTextItem } from '@ohos.arkui.advanced.SegmentButton';
@@ -23,10 +21,11 @@ export struct ScheduleTable {
   @Consume('appPathStack') appPathStack: NavPathStack;
   @StorageLink('selectScheduleIndex') @Watch('onWeekNeedChange') selectedScheduleTableIndex: number =
     AppStorage.get<number>('selectScheduleIndex') || -1;
+  @StorageLink('selectedTableId') selectedTableId: string | undefined =
+    AppStorage.get<string>('selectedTableId') || '1';
   @State isCookieShow: boolean = false;
   @State @Watch('onWeekNeedChange') isSettingShow: boolean = false;
   @State isScheduleShow: boolean = false;
-  @State cookie: string = '';
   @State scheduleTableList: LazyDataSource<Schedule> = new LazyDataSource();
   @State selectedSchedule: Schedule | undefined = undefined;
   @State courseList: LazyDataSource<Course> = new LazyDataSource();
@@ -38,14 +37,12 @@ export struct ScheduleTable {
   @State tabSelectedIndexes: number[] = [0]
   @State sliderValue: number = 1;
   @State selectedWeek: number = 0;
-  private webViewController: webview.WebviewController = new webview.WebviewController();
+  @StorageLink('currentWeek') currentWeek: number = AppStorage.get<number>('currentWeek') || 1;
   private scheduleNetFunc = new ScheduleNetFunc();
   private scheduleDBFunc = new ScheduleDatabaseFunc();
-  private scheduleBaseFunc = new ScheduleBaseFunc();
   private scheduleSettingFunc = ScheduleSettingFunc.getInstance();
   private mDate = new DateUtil();
   @State mToday: Date = new Date(this.mDate.getToday());
-  private currentWeek: number = 0;
 
   aboutToAppear(): void {
     ScheduleSettingFunc.getInstance().checkSelectScheduleIndex();
@@ -58,12 +55,21 @@ export struct ScheduleTable {
 
   aboutToDisappear(): void {
     console.debug(TAG, 'aboutToDisappear', this.selectedScheduleTableIndex)
+    console.debug(TAG, 'aboutToDisappear', this.currentWeek)
     this.scheduleSettingFunc.saveSelectScheduleIndex(this.selectedScheduleTableIndex);
+    this.scheduleSettingFunc.saveCurrentWeek(this.currentWeek);
+    if (this.selectedSchedule) {
+      this.scheduleSettingFunc.saveSelectedTableId(this.selectedSchedule.scheduleId)
+    }
   }
 
   onWeekNeedChange(propName: string) {
     if (propName == 'selectedScheduleTableIndex') {
+      this.scheduleSettingFunc.saveSelectScheduleIndex(this.selectedScheduleTableIndex);
+      this.scheduleTableList.pushArrayData(this.scheduleDBFunc.queryAllScheduleTable() as Schedule[]);
       this.selectedSchedule = this.scheduleTableList.getData(this.selectedScheduleTableIndex);
+      this.selectedTableId = this.selectedSchedule.scheduleId;
+      console.debug(TAG, 'tableid', this.selectedTableId);
       this.currentWeek = DateUtil.getWeeksBetweenDates(this.selectedSchedule.StartDate, this.mDate.getToday());
       this.selectedWeek = this.currentWeek;
     } else {
@@ -72,7 +78,8 @@ export struct ScheduleTable {
   }
 
   updateCourseInformation() {
-    this.courseList = this.scheduleDBFunc.queryAllCourseInformation(this.selectedSchedule as Schedule) as LazyDataSource<Course>
+    this.courseList =
+      this.scheduleDBFunc.queryAllCourseInformation(this.selectedSchedule as Schedule) as LazyDataSource<Course>
   }
 
   getAllSchedule() {

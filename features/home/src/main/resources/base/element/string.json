@@ -1,0 +1,24 @@
+{
+  "string": [
+    {
+      "name": "module_desc",
+      "value": "module description"
+    },
+    {
+      "name": "HomeAbility_desc",
+      "value": "description"
+    },
+    {
+      "name": "HomeAbility_label",
+      "value": "label"
+    },
+    {
+      "name": "text_home",
+      "value": "Home"
+    },
+    {
+      "name": "today",
+      "value": "Today"
+    }
+  ]
+}

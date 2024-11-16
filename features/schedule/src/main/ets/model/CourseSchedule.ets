@@ -67,6 +67,8 @@ export class CourseScheduleSendable implements CourseSchedules {
 
 export const WEEKS: string[] = ["一", "二", "三", "四", "五", "六", "日"];
 
+export const WEEKS_START_SUNDAY: string[] = ["日", "一", "二", "三", "四", "五", "六"];
+
 export const COURSE_SCHEDULE_HEIGHT = 60;
 
 export interface TimeTable {

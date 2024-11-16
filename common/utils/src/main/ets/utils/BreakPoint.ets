@@ -1,4 +1,4 @@
-import { mediaquery, window } from '@kit.ArkUI';
+import { mediaquery } from '@kit.ArkUI';
 import { WindowUtil } from './WindowUtil';
 
 export enum BreakPointTypeEnum {
@@ -72,7 +72,6 @@ export class BreakPointSystem {
     WindowUtil.getDeviceSize(getContext(this));
     if (this.currenBreakPoint !== breakPoint) {
       this.currenBreakPoint = breakPoint;
-      console.debug(this.currenBreakPoint)
       AppStorage.setOrCreate<string>('currentBreakPoint', this.currenBreakPoint);
     }
   }

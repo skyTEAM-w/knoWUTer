@@ -3,7 +3,7 @@ import { common } from '@kit.AbilityKit';
 
 const TAG = '[DBUtil]'
 
-const STORE_CONFIG: relationalStore.StoreConfig = {
+export const STORE_CONFIG: relationalStore.StoreConfig = {
   name: 'ApplicationDB.db',
   securityLevel: relationalStore.SecurityLevel.S3
 };

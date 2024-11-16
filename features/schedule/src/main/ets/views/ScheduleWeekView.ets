@@ -265,12 +265,6 @@ export struct ScheduleWeekView {
         // 判断是否右滑切换周
         const IS_RIGHT_SLIDE: boolean = (index === 1 && targetIndex === 0) || (index === 0 && targetIndex === 2) ||
           (index === 2 && targetIndex === 1);
-        console.debug('onAnimationStart', IS_RIGHT_SLIDE)
-        // 记录子组件索引
-        this.oldWeekViewIndex = index;
-        console.debug('onAnimationStart', this.oldWeekViewIndex)
-        // 切换周时，刷新当前周视图第一天（周日）对应的年月信息
-
         // 右滑切换周
         if (IS_RIGHT_SLIDE) {
           if (targetIndex === 0) {
@@ -301,8 +295,6 @@ export struct ScheduleWeekView {
       })
       .onAnimationEnd((index: number) => {
         this.isSwiping = true;
-        console.debug('onChange old', this.oldWeekViewIndex)
-        console.debug('onChange index', index)
         const IS_RIGHT_SLIDE: boolean =
           (this.oldWeekViewIndex === 1 && index === 0) || (this.oldWeekViewIndex === 0 && index === 2) ||
             (this.oldWeekViewIndex === 2 && index === 1);
@@ -314,7 +306,6 @@ export struct ScheduleWeekView {
             this.selectedWeek = this.selectedWeek + 1;
           }
           this.oldSelectWeek = this.selectedWeek
-          console.debug(TAG, 'selectedWeekSlide', this.selectedWeek)
         }
         this.isSwiping = false;
       })

@@ -1,5 +1,5 @@
 import { BottomTabsList } from '../viewmodel/BottomTabsModel';
-import { Home } from '../views/HomeView';
+import { Home } from '@feature/home';
 import { Tools } from '@feature/tools';
 import { Service } from '@feature/service';
 import { Schedule, ScheduleSettingFunc } from '@feature/schedule';

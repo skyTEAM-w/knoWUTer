@@ -1,4 +1,4 @@
-import { BreakPointTypeEnum, CookieUtil, DateUtil, LazyDataSource } from '@ohos/utils';
+import { BreakPointTypeEnum, CookieUtil, DateUtil, LazyDataSource, VibrateUtil } from '@ohos/utils';
 import { Schedule } from '../model/Schedule';
 import { webview } from '@kit.ArkWeb';
 import { ScheduleNetFunc } from '../service/ScheduleNetFunc';
@@ -21,7 +21,7 @@ export struct ScheduleNavigation {
   @StorageLink('currentBreakPoint') currentBreakPoint: BreakPointTypeEnum = BreakPointTypeEnum.MD;
   @Prop cookie: string = '';
   @ObjectLink schedule: Schedule | undefined;
-  @Prop currentWeek: number = 1;
+  @Link currentWeek: number;
   private mDate = new DateUtil();
   private webViewController: webview.WebviewController = new webview.WebviewController();
   private scheduleNetFunc = new ScheduleNetFunc();
@@ -57,6 +57,26 @@ export struct ScheduleNavigation {
       ))
     } else {
       this.appPathStack.pushPathByName('ManageSchedule', new Object(
+        {
+          onDestinationBack: () => {
+            this.appPathStack.pop();
+          }
+        }
+      ))
+    }
+  }
+
+  jumpAddNewCourse() {
+    if (this.currentBreakPoint === BreakPointTypeEnum.LG) {
+      this.schedulePathStack.pushPathByName('AddNewCourse', new Object(
+        {
+          onDestinationBack: () => {
+            this.schedulePathStack.pop();
+          }
+        }
+      ))
+    } else {
+      this.appPathStack.pushPathByName('AddNewCourse', new Object(
         {
           onDestinationBack: () => {
             this.appPathStack.pop();
@@ -133,6 +153,7 @@ export struct ScheduleNavigation {
         }
         .justifyContent(FlexAlign.SpaceBetween)
         .marginStyle()
+        .padding(this.currentBreakPoint === BreakPointTypeEnum.LG ? { top: 20 } : 0)
         .width('90%')
 
         Scroll() {
@@ -173,7 +194,7 @@ export struct ScheduleNavigation {
           .showSteps(true)
           .onChange((value: number, mode: SliderChangeMode) => {
             this.selectWeek = value;
-            console.info('value:' + value + 'mode:' + mode.toString())
+            VibrateUtil.getInstance().sliderVibrate()
           })
           .marginStyle()
       }
@@ -196,7 +217,9 @@ export struct ScheduleNavigation {
   titleBindMenu() {
     Menu() {
       MenuItem({
-        symbolStartIcon: new SymbolGlyphModifier($r(`sys.symbol.calendar_${new Date().getDate().toString().padStart(2, '0')}`)).fontSize(24),
+        symbolStartIcon: new SymbolGlyphModifier($r(`sys.symbol.calendar_${new Date().getDate()
+          .toString()
+          .padStart(2, '0')}`)).fontSize(24),
         content: '回到当前周'
       })
         .onClick(() => {
@@ -206,7 +229,7 @@ export struct ScheduleNavigation {
   }
 
   @Builder
-  creatNewScheduleButtonMenu() {
+  plusButtonMenu() {
     Menu() {
       MenuItem({
         symbolStartIcon: new SymbolGlyphModifier($r('sys.symbol.download')).fontSize(24),
@@ -218,6 +241,13 @@ export struct ScheduleNavigation {
           } else {
             promptAction.showToast({ message: '教务系统未登录' })
           }
+        })
+      MenuItem({
+        symbolStartIcon: new SymbolGlyphModifier($r('sys.symbol.plus')).fontSize(24),
+        content: '添加新课程'
+      })
+        .onClick(() => {
+          this.jumpAddNewCourse();
         })
     }
   }
@@ -243,11 +273,14 @@ export struct ScheduleNavigation {
             }
           }
           .width('100%')
+          .height('100%')
           .alignItems(HorizontalAlign.Start)
           .justifyContent(FlexAlign.SpaceBetween)
           .bindMenu([{
             value: '回到本周',
-            symbolIcon: new SymbolGlyphModifier($r(`sys.symbol.calendar_${new Date().getDate().toString().padStart(2, '0')}`)).fontSize(24),
+            symbolIcon: new SymbolGlyphModifier($r(`sys.symbol.calendar_${new Date().getDate()
+              .toString()
+              .padStart(2, '0')}`)).fontSize(24),
             action: () => {
               this.selectWeek = this.currentWeek;
             }
@@ -277,7 +310,7 @@ export struct ScheduleNavigation {
                 .fontWeight(FontWeight.Medium)
             }
             .barButtonStyle()
-            .bindMenu(this.creatNewScheduleButtonMenu())
+            .bindMenu(this.plusButtonMenu())
 
             Button({ type: ButtonType.Circle }) {
               SymbolGlyph($r('sys.symbol.person'))
@@ -320,6 +353,7 @@ export struct ScheduleNavigation {
               this.isSettingShow = !this.isSettingShow;
             })
           }
+          .height('100%')
           .width('100%')
           .justifyContent(FlexAlign.SpaceEvenly)
         }
