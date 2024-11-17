@@ -1,4 +1,5 @@
 import { BreakPointTypeEnum } from '@ohos/utils';
+import { DeleteOptionDialog } from '../dialogs/DeleteOptionDialog';
 import { CourseSchedule, TIME_TABLE } from '../model/CourseSchedule';
 import { Schedule } from '../model/Schedule';
 import { ScheduleWeekViewItem } from './ScheduleWeekViewItem';
@@ -11,7 +12,9 @@ export struct ScheduleWeekView {
   @Consume('appPathStack') appPathStack: NavPathStack;
   @ObjectLink @Watch('onScheduleChange') selectedSchedule: Schedule;
   @StorageLink('currentBreakPoint') currentBreakPoint: BreakPointTypeEnum = BreakPointTypeEnum.MD;
+  @LocalStorageLink('deleteCourse') @Watch('onCourseDeleted') deleteCourse: boolean = false;
   @Link @Watch('refreshWeekNum') selectedWeek: number;
+  @State dialogSelectedWeek: number = 1;
   @Link isCookieShow: boolean;
   @Link isSettingShow: boolean;
   @Link isScheduleShow: boolean;
@@ -21,6 +24,12 @@ export struct ScheduleWeekView {
   @State weekNumTwo: number = 0;
   @State weekNumThree: number = 1;
   @State @Watch('showBindSheet') selectedCourse: CourseSchedule | undefined = undefined;
+  deleteOptionDialogController = new CustomDialogController({
+    builder: DeleteOptionDialog({
+      courseSchedule: this.selectedCourse,
+      selectedWeek: this.dialogSelectedWeek
+    })
+  })
   private weekYearOne: number = 0;
   private weekYearTwo: number = 0;
   private weekYearThree: number = 0;
@@ -31,12 +40,14 @@ export struct ScheduleWeekView {
   private oldWeekViewIndex: number = 1;
   private oldSelectWeek: number = 1;
   private isSwiping: boolean = false;
+
   jumpEditCourseInformation: (courseId: string, tableId: string) => void = () => {
 
   };
 
   aboutToAppear(): void {
     this.oldSelectWeek = this.selectedWeek
+    this.dialogSelectedWeek = this.selectedWeek;
     switch ((this.selectedWeek % 3)) {
       case 0: {
         this.weekNumOne = this.selectedWeek - this.currentWeek + 1;
@@ -63,6 +74,7 @@ export struct ScheduleWeekView {
   }
 
   refreshWeekNum() {
+    this.dialogSelectedWeek = this.selectedWeek;
     if (!this.isSwiping) {
       switch ((this.selectedWeek % 3)) {
         case 0: {
@@ -129,6 +141,11 @@ export struct ScheduleWeekView {
     // }
   }
 
+  onCourseDeleted() {
+    this.isScheduleShow = false;
+    this.selectedCourse = undefined;
+  }
+
   @Styles
   scheduleCardStyle() {
     .width('100%')
@@ -150,6 +167,10 @@ export struct ScheduleWeekView {
               .fontColor(Color.Red)
           }
         }
+        .onClick(() => {
+          this.deleteOptionDialogController.open()
+          this.isScheduleShow = false;
+        })
         .clickEffect({ level: ClickEffectLevel.LIGHT, scale: 0.95 })
         .backgroundColor($r('app.color.delete_button_background'))
         .width(66)
@@ -224,6 +245,7 @@ export struct ScheduleWeekView {
       .borderRadius($r('app.float.main_border_radius'))
     }
     .width('100%')
+
   }
 
   build() {
@@ -265,6 +287,7 @@ export struct ScheduleWeekView {
         // 判断是否右滑切换周
         const IS_RIGHT_SLIDE: boolean = (index === 1 && targetIndex === 0) || (index === 0 && targetIndex === 2) ||
           (index === 2 && targetIndex === 1);
+        this.oldWeekViewIndex = index;
         // 右滑切换周
         if (IS_RIGHT_SLIDE) {
           if (targetIndex === 0) {
@@ -301,12 +324,15 @@ export struct ScheduleWeekView {
         const IS_SWIPE: boolean = this.oldWeekViewIndex === index;
         if (!IS_SWIPE) {
           if (IS_RIGHT_SLIDE) {
+            console.debug('right')
             this.selectedWeek = this.selectedWeek - 1;
           } else {
+            console.debug('left')
             this.selectedWeek = this.selectedWeek + 1;
           }
           this.oldSelectWeek = this.selectedWeek
         }
+        console.debug(TAG, this.selectedWeek)
         this.isSwiping = false;
       })
       .indicator(false)

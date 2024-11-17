@@ -44,41 +44,22 @@ export class DateUtil extends Date {
     return CALENDAR;
   }
 
-  static getLastSunday(date: Date): Date {
-    // 获取当前日期是本周的周几（0-6，其中0代表周日，1代表周一，以此类推）
+  static getLastMonday(date: Date): Date {
     const DAY_OF_WEEK = date.getDay();
-    // 创建一个新的Date对象，其值与传入的date相同，用于后续计算而不改变原始date对象
-    const LAST_SUNDAY = new Date(date);
-    // 这里假设周日是一周的第一天，因此直接减去dayOfWeek就能得到本周的周日
-    LAST_SUNDAY.setDate(LAST_SUNDAY.getDate() - DAY_OF_WEEK);
-    // 返回计算后的日期，即本周的周日
-    return LAST_SUNDAY;
-  }
-
-  static weeksBetweenDates(selectDay: Date): number {
-    const TODAY = new Date();
-    const oneWeekInMs = 7 * 24 * 60 * 60 * 1000;
-    // 周视图中选中日期所属周的第一天（周日）
-    let selectLastSunday: Date = DateUtil.getLastSunday(selectDay);
-    // 周视图中今天所属周的第一天（周日）
-    let todayLastSunday: Date = DateUtil.getLastSunday(TODAY);
-    // 计算两个日期之间的毫秒差
-    const DIFF = todayLastSunday.getTime() - selectLastSunday.getTime();
-    // 将毫秒差转换为天数
-    const DIFF_DAYS = DIFF / oneWeekInMs;
-    // 将天数差转换为周数，向下取整得到完整的周数
-    const DIFF_WEEKS = Math.floor(DIFF_DAYS / 7);
-    return -DIFF_WEEKS;
+    const DAY_FROM_MONDAY = (DAY_OF_WEEK === 0 ? 7 : DAY_OF_WEEK) - 1;
+    const LAST_MONDAY = new Date(date);
+    LAST_MONDAY.setDate(LAST_MONDAY.getDate() - DAY_FROM_MONDAY);
+    return LAST_MONDAY;
   }
 
   static getWeeksBetweenDates(startDate: string, endDate: string): number {
     const endDay = new Date(endDate);
     const oneDayInMs = 86400000;
     // 周视图中选中日期所属周的第一天（周日）
-    let startLastSunday: Date = DateUtil.getLastSunday(new Date(startDate));
+    let startLastSunday: Date = DateUtil.getLastMonday(new Date(startDate));
     console.debug('start', JSON.stringify(startLastSunday))
     // 周视图中今天所属周的第一天（周日）
-    let endLastSunday: Date = DateUtil.getLastSunday(endDay);
+    let endLastSunday: Date = DateUtil.getLastMonday(endDay);
     console.debug('end', JSON.stringify(endLastSunday))
     // 计算两个日期之间的毫秒差
     const DIFF = endLastSunday.getTime() - startLastSunday.getTime();

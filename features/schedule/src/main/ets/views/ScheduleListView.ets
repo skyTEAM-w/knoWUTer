@@ -18,6 +18,7 @@ export struct ScheduleListView {
   @StorageLink('selectScheduleIndex') @Watch('updateCourseInformation') selectedScheduleTableIndex: number =
     AppStorage.get<number>('selectScheduleIndex') || -1;
   @LocalStorageLink('updateCourse') @Watch("updateCourseInformation") updateCourse: boolean = false;
+  @LocalStorageLink('deleteCourse') @Watch("updateCourseInformation") deleteCourse: boolean = false;
   @State courseList: LazyDataSource<Course> = new LazyDataSource();
   @StorageLink('currentBreakPoint') currentBreakPoint: string = BreakPointTypeEnum.MD;
   @ObjectLink @Watch("updateCourseInformation") selectedSchedule: Schedule;

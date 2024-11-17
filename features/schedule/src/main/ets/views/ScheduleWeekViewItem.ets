@@ -9,6 +9,7 @@ import { WeekScheduleCard } from '../components/WeekSheduleCard';
 @Component
 export struct ScheduleWeekViewItem {
   @LocalStorageLink('updateCourse') @Watch("updateWeekData") updateCourse: boolean = false;
+  @LocalStorageLink('deleteCourse') @Watch("updateWeekData") deleteCourse: boolean = false;
   @Link isCookieShow: boolean;
   @Link isSettingShow: boolean;
   @Link isScheduleShow: boolean;

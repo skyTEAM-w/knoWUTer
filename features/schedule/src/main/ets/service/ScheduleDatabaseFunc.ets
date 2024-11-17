@@ -299,15 +299,28 @@ export class ScheduleDatabaseFunc {
         ScheduleId: index.toString(),
         CourseName: course.courseName
       }
-      const result = this.dbUtil.updateMyValueBucket(valueBucket, predicates,
-        relationalStore.ConflictResolution.ON_CONFLICT_ROLLBACK);
-      console.debug(TAG, result)
+      // const result = this.dbUtil.updateMyValueBucket(valueBucket, predicates,
+      //   relationalStore.ConflictResolution.ON_CONFLICT_ROLLBACK);
+      // console.debug(TAG, result)
       if (!this.dbUtil.updateMyValueBucket(valueBucket, predicates,
         relationalStore.ConflictResolution.ON_CONFLICT_ROLLBACK)) {
         this.dbUtil.insertMyValueBucket(valueBucket, CourseScheduleTable,
           relationalStore.ConflictResolution.ON_CONFLICT_ROLLBACK);
       }
     })
+  }
+
+  public updateOneCourseSchedule(courseSchedule: CourseSchedule) {
+    let predicates = new relationalStore.RdbPredicates(CourseScheduleTable);
+    predicates.equalTo('TableId', courseSchedule.TableId)
+      .and()
+      .equalTo('ClassId', courseSchedule.ClassId).and()
+      .equalTo('ScheduleId', courseSchedule.ScheduleId);
+    const valueBucket: ValuesBucket = {
+      WeekRanges: courseSchedule.weekRanges,
+      WeekRangesStr: courseSchedule.weekRangesStr
+    }
+    this.dbUtil.updateMyValueBucket(valueBucket, predicates, relationalStore.ConflictResolution.ON_CONFLICT_ROLLBACK)
   }
 
   public deleteSchedule(schedule: Schedule) {
@@ -326,6 +339,15 @@ export class ScheduleDatabaseFunc {
       }
     }
     return false;
+  }
+
+  public deleteCourse(tableId: string, courseId: string) {
+    let predicates = new relationalStore.RdbPredicates(CourseScheduleTable);
+    predicates.equalTo('TableId', tableId).and().equalTo('ClassId', courseId);
+    this.dbUtil.deleteMyPredicate(predicates);
+    predicates = new relationalStore.RdbPredicates(CourseInfoTable);
+    predicates.equalTo('TableId', tableId).and().equalTo('ClassId', courseId);
+    this.dbUtil.deleteMyPredicate(predicates);
   }
 
   public deleteCourseSchedule(courseSchedules: CourseSchedule[]) {

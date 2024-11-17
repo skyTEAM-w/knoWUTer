@@ -6,7 +6,9 @@ import { classDateAndPlaceToCourseSchedule } from '../service/ScheduleBaseFunc';
 import { JSON, taskpool } from '@kit.ArkTS';
 import { classDateAndPlaceToCourseScheduleTask } from '../service/ScheduleTookPoolFunc';
 import { LazyDataSource, VibrateUtil } from '@ohos/utils';
-import { SymbolGlyphModifier } from '@kit.ArkUI';
+import { SymbolGlyphModifier, TipsDialog } from '@kit.ArkUI';
+import { DeleteOptionDialog } from '../dialogs/DeleteOptionDialog';
+import { ScheduleDatabaseFunc } from '../service/ScheduleDatabaseFunc';
 
 const TAG = '[ClassInformationCard]';
 
@@ -19,6 +21,7 @@ async function getCourseScheduleTask(course: Course, isList: boolean) {
 export struct ClassInformationCard {
   @Consume('schedulePathStack') schedulePathStack: NavPathStack;
   @Consume('appPathStack') appPathStack: NavPathStack;
+  @LocalStorageLink('deleteCourse') deleteCourse: boolean = false;
   // @LocalStorageLink('updateCourse') @Watch('updateCourseInformation') updateCourse: boolean = false;
   @ObjectLink @Watch('updateCourseInformation') courseInfomation: Course;
   @Prop selectedSchedule: Schedule;
@@ -29,6 +32,26 @@ export struct ClassInformationCard {
   jumpEditCourseInformation: (courseId: string, tableId: string) => void = () => {
 
   };
+  confirmDialogController: CustomDialogController | null = new CustomDialogController({
+    builder: TipsDialog({
+      title: '删除课程',
+      content: '操作无法撤回',
+      primaryButton: {
+        value: $r('app.string.cancel'),
+        action: () => {
+
+        }
+      },
+      secondaryButton: {
+        value: $r('app.string.confirm'),
+        action: () => {
+          new ScheduleDatabaseFunc().deleteCourse(this.selectedSchedule.scheduleId, this.courseInfomation.classId);
+          this.deleteCourse = !this.deleteCourse;
+        },
+        fontColor: $r('sys.color.warning')
+      }
+    })
+  })
 
   @Styles
   scheduleCardStyle() {
@@ -74,6 +97,14 @@ export struct ClassInformationCard {
       })
         .onClick(() => {
           this.jumpEditCourseInformation(this.courseInfomation.classId, this.selectedSchedule.scheduleId);
+        })
+      MenuItem({
+        symbolStartIcon: new SymbolGlyphModifier($r('sys.symbol.trash')).fontSize(24).fontColor([$r('sys.color.warning')]),
+        content: '删除'
+      })
+        .contentFontColor($r('sys.color.warning'))
+        .onClick(() => {
+          this.confirmDialogController?.open()
         })
     }
   }
