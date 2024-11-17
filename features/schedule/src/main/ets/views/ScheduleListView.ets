@@ -22,6 +22,7 @@ export struct ScheduleListView {
   @State courseList: LazyDataSource<Course> = new LazyDataSource();
   @StorageLink('currentBreakPoint') currentBreakPoint: string = BreakPointTypeEnum.MD;
   @ObjectLink @Watch("updateCourseInformation") selectedSchedule: Schedule;
+  @State deleteCourseIndex: number = 0;
   private scheduleNetFunc = new ScheduleNetFunc();
   private scheduleDBFunc = new ScheduleDatabaseFunc();
   jumpEditCourseInformation: (courseId: string, tableId: string) => void = () => {
@@ -32,8 +33,13 @@ export struct ScheduleListView {
     this.getCourseList()
   }
 
-  updateCourseInformation() {
-    this.courseList.pushArrayData((new ScheduleDatabaseFunc().queryAllCourseInformation(this.selectedSchedule as Schedule) as LazyDataSource<Course>).getDataList())
+  updateCourseInformation(propName: string) {
+    if (propName === 'updateCourse' || propName === 'selectedSchedule') {
+      this.courseList.pushArrayData((new ScheduleDatabaseFunc().queryAllCourseInformation(this.selectedSchedule as Schedule) as LazyDataSource<Course>).getDataList())
+    }
+    if (propName === 'deleteCourse') {
+      this.courseList.reloadData();
+    }
   }
 
   getCourseList() {
@@ -49,10 +55,12 @@ export struct ScheduleListView {
       LazyForEach(this.courseList, (item: Course, index: number) => {
         FlowItem() {
           ClassInformationCard({
-            courseInfomation: item,
+            courseInformation: item,
             longPressEnable: true,
             selectedSchedule: this.selectedSchedule,
-            jumpEditCourseInformation: this.jumpEditCourseInformation
+            jumpEditCourseInformation: this.jumpEditCourseInformation,
+            courseInformationList: this.courseList,
+            index: index
           })
         }
         .padding({ left: $r('app.float.md_padding_margin'), right: $r('app.float.md_padding_margin') })

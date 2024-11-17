@@ -4,6 +4,8 @@ const CWSF_COOKIE = 'cwsf_cookie';
 
 const JWXT_COOKIE = 'jwxt_cookie';
 
+const ZHLGD_COOKIE = 'zhlgd_cookie';
+
 export class CookieUtil {
   private static instance: CookieUtil;
   private preferenceUtil: PreferencesUtil = PreferencesUtil.getInstance();
@@ -25,6 +27,11 @@ export class CookieUtil {
     AppStorage.setOrCreate('schedule_cookie', cookie);
   }
 
+  public saveZHLGDCookie(cookie: string) {
+    this.preferenceUtil.setValue<string>(ZHLGD_COOKIE, cookie);
+    AppStorage.setOrCreate('zhlgd_cookie', cookie);
+  }
+
   public checkCWSFCookie(): void {
     this.preferenceUtil.getValue<string>(CWSF_COOKIE).then((config: string | null) => {
       if (!config) {
@@ -43,8 +50,18 @@ export class CookieUtil {
     })
   }
 
+  public checkZHLGDCookie(): void {
+    this.preferenceUtil.getValue<string>(ZHLGD_COOKIE).then((config: string | null) => {
+      if (!config) {
+        config = '';
+      }
+      AppStorage.setOrCreate('zhlgd_cookie', config);
+    })
+  }
+
   public checkAllCookies(): void {
     this.checkCWSFCookie();
     this.checkJWXTCookie();
+    this.checkZHLGDCookie();
   }
 }

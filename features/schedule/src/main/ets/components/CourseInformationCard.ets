@@ -17,17 +17,20 @@ async function getCourseScheduleTask(course: Course, isList: boolean) {
   return await taskpool.execute(task) as CourseSchedule[]
 }
 
+@Reusable
 @Component
 export struct ClassInformationCard {
   @Consume('schedulePathStack') schedulePathStack: NavPathStack;
   @Consume('appPathStack') appPathStack: NavPathStack;
   @LocalStorageLink('deleteCourse') deleteCourse: boolean = false;
-  // @LocalStorageLink('updateCourse') @Watch('updateCourseInformation') updateCourse: boolean = false;
-  @ObjectLink @Watch('updateCourseInformation') courseInfomation: Course;
+  @LocalStorageLink('updateCourse') @Watch('updateCourseInformation') updateCourse: boolean = false;
+  @State @Watch('updateCourseInformation') courseInformation: Course = new Course();
+  @ObjectLink courseInformationList: LazyDataSource<Course>;
   @Prop selectedSchedule: Schedule;
   @State courseSchedules: LazyDataSource<CourseSchedule> = new LazyDataSource();
   @State isShow: boolean = false;
   longPressEnable?: boolean;
+  index: number = -1;
   private mDate = new DateUtil();
   jumpEditCourseInformation: (courseId: string, tableId: string) => void = () => {
 
@@ -45,7 +48,8 @@ export struct ClassInformationCard {
       secondaryButton: {
         value: $r('app.string.confirm'),
         action: () => {
-          new ScheduleDatabaseFunc().deleteCourse(this.selectedSchedule.scheduleId, this.courseInfomation.classId);
+          new ScheduleDatabaseFunc().deleteCourse(this.selectedSchedule.scheduleId, this.courseInformation.classId);
+          this.courseInformationList.deleteData(this.index);
           this.deleteCourse = !this.deleteCourse;
         },
         fontColor: $r('sys.color.warning')
@@ -61,10 +65,23 @@ export struct ClassInformationCard {
   }
 
   aboutToAppear(): void {
-    if (this.courseInfomation && this.courseInfomation.classDateAndPlace) {
-      console.debug(TAG, 'aboutToAppear', JSON.stringify(this.courseInfomation))
+    if (this.courseInformation && this.courseInformation.classDateAndPlace) {
+      console.debug(TAG, 'aboutToAppear', JSON.stringify(this.courseInformation))
       let courseScheduleList =
-        classDateAndPlaceToCourseSchedule(this.courseInfomation, new Schedule('', '', ''), false);
+        classDateAndPlaceToCourseSchedule(this.courseInformation, new Schedule('', '', ''), false);
+      if (courseScheduleList) {
+        this.courseSchedules.pushArrayData(courseScheduleList);
+      }
+      // this.getCourseSchedule()
+    }
+  }
+
+  aboutToReuse(params: Record<string, Object>): void {
+    this.courseInformation = params.courseInformation as Course;
+    if (this.courseInformation && this.courseInformation.classDateAndPlace) {
+      console.debug(TAG, 'aboutToReuse', JSON.stringify(this.courseInformation))
+      let courseScheduleList =
+        classDateAndPlaceToCourseSchedule(this.courseInformation, new Schedule('', '', ''), false);
       if (courseScheduleList) {
         this.courseSchedules.pushArrayData(courseScheduleList);
       }
@@ -74,7 +91,7 @@ export struct ClassInformationCard {
 
   updateCourseInformation() {
     let courseScheduleList =
-      classDateAndPlaceToCourseSchedule(this.courseInfomation, new Schedule('', '', ''), false);
+      classDateAndPlaceToCourseSchedule(this.courseInformation, new Schedule('', '', ''), false);
     if (courseScheduleList) {
       this.courseSchedules.pushArrayData(courseScheduleList);
     }
@@ -82,7 +99,7 @@ export struct ClassInformationCard {
   }
 
   getCourseSchedule() {
-    getCourseScheduleTask(this.courseInfomation, false).then((courseScheduleList) => {
+    getCourseScheduleTask(this.courseInformation, false).then((courseScheduleList) => {
       this.courseSchedules.pushArrayData(courseScheduleList);
       console.debug(TAG, 'aboutToAppear', JSON.stringify(this.courseSchedules))
     })
@@ -96,7 +113,7 @@ export struct ClassInformationCard {
         content: '编辑'
       })
         .onClick(() => {
-          this.jumpEditCourseInformation(this.courseInfomation.classId, this.selectedSchedule.scheduleId);
+          this.jumpEditCourseInformation(this.courseInformation.classId, this.selectedSchedule.scheduleId);
         })
       MenuItem({
         symbolStartIcon: new SymbolGlyphModifier($r('sys.symbol.trash')).fontSize(24).fontColor([$r('sys.color.warning')]),
@@ -112,7 +129,7 @@ export struct ClassInformationCard {
   build() {
     Column() {
       Row() {
-        Text(this.courseInfomation.courseName)
+        Text(this.courseInformation.courseName)
           .fontSize(16)
           .fontWeight(FontWeight.Bold)
           .fontColor($r('app.color.course_card_font_default_color'))

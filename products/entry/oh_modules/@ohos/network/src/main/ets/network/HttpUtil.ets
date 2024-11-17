@@ -42,6 +42,13 @@ export class HttpUtil {
     return await client.newCall(request).execute();
   }
 
+  HttpPostSimple(url: string, cookie: string) {
+    let client = new HttpClient.Builder().setConnectTimeout(30, TimeUnit.SECONDS)
+      .setReadTimeout(30, TimeUnit.SECONDS).setWriteTimeout(30, TimeUnit.SECONDS).build();
+    let request = new Request.Builder().url(url)
+      .post()
+  }
+
   async HttpGet(url: string, cookies: string): Promise<Response | undefined> {
     let client = new HttpClient.Builder().setConnectTimeout(30, TimeUnit.SECONDS)
       .setReadTimeout(30, TimeUnit.SECONDS).setWriteTimeout(30, TimeUnit.SECONDS).build();

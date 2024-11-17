@@ -98,29 +98,6 @@ export struct ScheduleTable {
     }
   }
 
-  settingGetSchedule() {
-    if (this.isSettingShow) {
-      this.scheduleTableList.pushArrayData(this.scheduleDBFunc.queryAllScheduleTable() as Schedule[]);
-      this.selectedSchedule = this.scheduleTableList.getData(this.selectedScheduleTableIndex);
-      this.selectedWeek = DateUtil.getWeeksBetweenDates(this.selectedSchedule.StartDate, this.mDate.getToday());
-      this.currentWeek = this.selectedWeek;
-      this.sliderValue = this.currentWeek;
-      this.getCourseList();
-    }
-  }
-
-  getCourseList() {
-    console.debug(TAG, 'getCourseList', this.selectedScheduleTableIndex)
-    if (this.selectedScheduleTableIndex !== -1) {
-      const schedule = this.scheduleTableList?.getData(this.selectedScheduleTableIndex);
-      this.scheduleSettingFunc.saveSelectScheduleIndex(this.selectedScheduleTableIndex);
-      console.debug(TAG, 'getCourseList', JSON.stringify(schedule))
-      if (schedule) {
-        this.courseList = this.scheduleDBFunc.queryAllCourseInformation(schedule) as LazyDataSource<Course>
-      }
-    }
-  }
-
   jumpManageSchedule() {
     if (this.currentBreakPoint === BreakPointTypeEnum.LG) {
       this.schedulePathStack.pushPathByName('ManageSchedule', new Object(
