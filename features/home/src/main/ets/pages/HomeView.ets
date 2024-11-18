@@ -2,8 +2,9 @@ import { webview } from '@kit.ArkWeb';
 import { TodayNavigationTitle } from '../components/TodayNavigationTitle';
 import { TodayCourse } from '../components/TodayCourse';
 import { CampusNews } from '../components/CampusNews';
-import { BreakPointTypeEnum } from '@ohos/utils';
+import { BreakPointType, BreakPointTypeEnum } from '@ohos/utils';
 import { NewsUrl } from '../model/News';
+import { WebViewPage } from '@ohos/uicomponents';
 
 @Component
 export struct Home {
@@ -32,25 +33,51 @@ export struct Home {
     }
   }
 
+  @Builder
+  pageMap(name: string) {
+    if (name === 'WebViewPage') {
+      WebViewPage();
+    }
+  }
+
   build() {
     Navigation(this.homePathStack) {
       Column() {
         Stack() {
-          List() {
-            ListItem() {
-              Column().height($r('app.float.navigation_height'))
-            }
+          Column() {
+            Scroll() {
+              Column() {
+                Column()
+                  .height($r('app.float.navigation_height'))
+                WaterFlow() {
+                  FlowItem() {
+                    TodayCourse()
+                  }
 
-            ListItem() {
-              TodayCourse()
+                  FlowItem() {
+                    CampusNews({ handleClick: this.jumpWebView })
+                  }
+                }
+                .columnsTemplate(new BreakPointType({
+                  sm: '1fr',
+                  md: '1fr',
+                  lg: '1fr 1fr'
+                }).getValue(this.currentBreakPoint))
+                .height("100%")
+                .columnsGap($r('app.float.home_column_gap'))
+                .rowsGap($r('app.float.home_row_gap'))
+                .edgeEffect(EdgeEffect.Spring)
+                .scrollBar(BarState.Off)
+                .nestedScroll({
+                  scrollForward: NestedScrollMode.PARENT_FIRST,
+                  scrollBackward: NestedScrollMode.SELF_FIRST
+                })
+              }
             }
-
-            ListItem() {
-              CampusNews({ handleClick: this.jumpWebView })
-            }
+            .scrollBar(BarState.Off)
+            .height('100%')
           }
-          .edgeEffect(EdgeEffect.Spring)
-          .scrollBar(BarState.Off)
+
 
           TodayNavigationTitle()
         }
@@ -62,5 +89,6 @@ export struct Home {
     .mode(NavigationMode.Stack)
     .hideTitleBar(true)
     .hideBackButton(true)
+    .navDestination(this.pageMap)
   }
 }

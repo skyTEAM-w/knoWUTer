@@ -1,4 +1,4 @@
-import { BreakPointTypeEnum, EventType, LazyDataSource, LoadingStatus } from '@ohos/utils';
+import { BreakPointTypeEnum, CookieUtil, EventType, LazyDataSource, LoadingStatus } from '@ohos/utils';
 import { News, NewsType } from '../model/News';
 import { NewsModel } from '../model/NewsModel';
 import { JSON } from '@kit.ArkTS';
@@ -26,10 +26,16 @@ export struct CampusNews {
   }
 
   getNews() {
-    this.newsModel.getNewsResources(this.cookie).then(() => {
-      this.loadingStatus = LoadingStatus.SUCCESS;
-    }).catch(() => {
-      this.loadingStatus = LoadingStatus.FAILED
+    this.newsModel.checkZHLGDCookie().then((cookie: string | null) => {
+      if (cookie) {
+        this.newsModel.getNewsResources(this.cookie).then(() => {
+          this.loadingStatus = LoadingStatus.SUCCESS;
+        }).catch(() => {
+          this.loadingStatus = LoadingStatus.FAILED
+        })
+      } else {
+        this.loadingStatus = LoadingStatus.FAILED
+      }
     })
   }
 
@@ -102,7 +108,6 @@ export struct CampusNews {
       }
 
     }
-    .margin({ top: 20 })
     .width('100%')
   }
 }
@@ -124,7 +129,7 @@ struct NewsList {
     List({ space: 15 }) {
       LazyForEach(this.newsList, (item: News, index: number) => {
         ListItem() {
-          Row() {
+          Row({ space: 10 }) {
             Text(item.TITLE)
               .fontSize($r('sys.float.ohos_id_text_size_body1'))
               .textAlign(TextAlign.Start)
@@ -132,10 +137,10 @@ struct NewsList {
               .textOverflow({ overflow: TextOverflow.Ellipsis })
               .maxLines(2)
               .ellipsisMode(EllipsisMode.END)
-            Text(item.DATE)
+            Text(item.DATE.split('-').length === 3 ? `${item.DATE.split('-')[1]}-${item.DATE.split('-')[2]}` :
+            item.DATE)
               .fontSize($r('sys.float.ohos_id_text_size_body2'))
               .fontColor($r('sys.color.font_secondary'))
-              .width('18%')
           }
           .margin(5)
           .width('100%')
@@ -143,8 +148,7 @@ struct NewsList {
         }
         .backgroundColor($r('sys.color.comp_background_list_card'))
         .borderRadius($r('app.float.light_border_radius'))
-        .width('100%')
-        .clickEffect({ level: ClickEffectLevel.LIGHT, scale: 0.9 })
+        .clickEffect({ level: ClickEffectLevel.LIGHT, scale: 0.95 })
         .onClick(() => {
           this.handleClick(item.HREF)
         })

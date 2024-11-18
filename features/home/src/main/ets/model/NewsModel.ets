@@ -2,8 +2,11 @@ import { LazyDataSource, LoadingStatus } from '@ohos/utils';
 import { NewsNetFunc } from '../service/NewsNetFunc';
 import { GrabNews, News, NewsType } from './News';
 import { JSON } from '@kit.ArkTS';
+import { PreferencesUtil } from '@ohos/datastore/src/main/ets/datasotore/PreferencesUtil';
 
 const TAG = '[NewsModel]'
+
+const ZHLGD_COOKIE = 'zhlgd_cookie';
 
 @Observed
 export class NewsModel {
@@ -73,5 +76,9 @@ export class NewsModel {
         reject();
       });
     });
+  }
+
+  checkZHLGDCookie(): Promise<string | null> {
+    return PreferencesUtil.getInstance().getValue<string>(ZHLGD_COOKIE)
   }
 }

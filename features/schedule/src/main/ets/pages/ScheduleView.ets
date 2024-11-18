@@ -73,15 +73,16 @@ export struct ScheduleTable {
       this.selectedTableId = this.selectedSchedule.scheduleId;
       console.debug(TAG, 'tableid', this.selectedTableId);
       this.currentWeek = DateUtil.getWeeksBetweenDates(this.selectedSchedule.StartDate, this.mDate.getToday());
+      this.eventHub.emit(EventType.CHANGE_TABLE, {
+        scheduleId: this.selectedTableId,
+        scheduleName: this.selectedSchedule?.scheduleName,
+        StartDate: this.selectedSchedule?.StartDate
+      })
       this.selectedWeek = this.currentWeek;
     } else {
       this.scheduleTableList.pushArrayData(this.scheduleDBFunc.queryAllScheduleTable() as Schedule[]);
     }
-    this.eventHub.emit(EventType.CHANGE_TABLE, {
-      scheduleId: this.selectedTableId,
-      scheduleName: this.selectedSchedule?.scheduleName,
-      StartDate: this.selectedSchedule?.StartDate
-    })
+
   }
 
   updateCourseInformation() {

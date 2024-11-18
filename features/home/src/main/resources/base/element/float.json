@@ -7,6 +7,14 @@
     {
       "name": "navigation_title_bar_half_height",
       "value": "77"
+    },
+    {
+      "name": "home_column_gap",
+      "value": "10"
+    },
+    {
+      "name": "home_row_gap",
+      "value": "10"
     }
   ]
 }

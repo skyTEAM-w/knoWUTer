@@ -1,9 +1,11 @@
+import { EventType } from '@ohos/utils';
 import { COURSE_SCHEDULE_HEIGHT, CourseSchedule } from '../model/CourseSchedule';
 import { ScheduleDatabaseFunc } from '../service/ScheduleDatabaseFunc';
+import { common } from '@kit.AbilityKit';
 
 @Component
 export struct WeekScheduleCard {
-  @LocalStorageLink('updateCourse') @Watch("updateCard") updateCourse: boolean = false;
+  @LocalStorageLink('updateCourse') updateCourse: boolean = false;
   @Link isCookieShow: boolean;
   @Link isSettingShow: boolean;
   @Link isScheduleShow: boolean;
@@ -18,6 +20,8 @@ export struct WeekScheduleCard {
   aboutToAppear(): void {
     this.updateCard()
     console.debug('COLOR', this.cardColor)
+    const eventHub: common.EventHub = (getContext(this) as common.UIAbilityContext).eventHub;
+    eventHub.on(EventType.UPDATE_COURSE, (): void => this.updateCard());
   }
 
   updateCard() {

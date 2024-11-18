@@ -1,4 +1,5 @@
 import { PreferencesUtil } from '@ohos/datastore';
+import { Logger } from '../../../../Index';
 
 const CWSF_COOKIE = 'cwsf_cookie';
 
@@ -55,6 +56,7 @@ export class CookieUtil {
       if (!config) {
         config = '';
       }
+      Logger.info('zhlgd: ', config)
       AppStorage.setOrCreate('zhlgd_cookie', config);
     })
   }

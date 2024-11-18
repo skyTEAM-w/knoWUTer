@@ -51,6 +51,10 @@
     {
       "name": "today_schedule_card_height",
       "value": "112"
+    },
+    {
+      "name": "lg_course_card_padding",
+      "value": "10"
     }
   ]
 }

@@ -5,10 +5,10 @@ import { Schedule } from '../model/Schedule';
 import { classDateAndPlaceToCourseSchedule } from '../service/ScheduleBaseFunc';
 import { JSON, taskpool } from '@kit.ArkTS';
 import { classDateAndPlaceToCourseScheduleTask } from '../service/ScheduleTookPoolFunc';
-import { LazyDataSource, VibrateUtil } from '@ohos/utils';
+import { EventType, LazyDataSource, VibrateUtil } from '@ohos/utils';
 import { SymbolGlyphModifier, TipsDialog } from '@kit.ArkUI';
-import { DeleteOptionDialog } from '../dialogs/DeleteOptionDialog';
 import { ScheduleDatabaseFunc } from '../service/ScheduleDatabaseFunc';
+import { common } from '@kit.AbilityKit';
 
 const TAG = '[ClassInformationCard]';
 
@@ -23,7 +23,7 @@ export struct ClassInformationCard {
   @Consume('schedulePathStack') schedulePathStack: NavPathStack;
   @Consume('appPathStack') appPathStack: NavPathStack;
   @LocalStorageLink('deleteCourse') deleteCourse: boolean = false;
-  @LocalStorageLink('updateCourse') @Watch('updateCourseInformation') updateCourse: boolean = false;
+  // @LocalStorageLink('updateCourse') @Watch('updateCourseInformation') updateCourse: boolean = false;
   @State @Watch('updateCourseInformation') courseInformation: Course = new Course();
   @ObjectLink courseInformationList: LazyDataSource<Course>;
   @Prop selectedSchedule: Schedule;
@@ -50,7 +50,8 @@ export struct ClassInformationCard {
         action: () => {
           new ScheduleDatabaseFunc().deleteCourse(this.selectedSchedule.scheduleId, this.courseInformation.classId);
           this.courseInformationList.deleteData(this.index);
-          this.deleteCourse = !this.deleteCourse;
+          const eventHub: common.EventHub = (getContext(this) as common.UIAbilityContext).eventHub;
+          eventHub.emit(EventType.DELETE_COURSE)
         },
         fontColor: $r('sys.color.warning')
       }
@@ -65,6 +66,7 @@ export struct ClassInformationCard {
   }
 
   aboutToAppear(): void {
+    const eventHub: common.EventHub = (getContext(this) as common.UIAbilityContext).eventHub;
     if (this.courseInformation && this.courseInformation.classDateAndPlace) {
       console.debug(TAG, 'aboutToAppear', JSON.stringify(this.courseInformation))
       let courseScheduleList =
@@ -74,6 +76,7 @@ export struct ClassInformationCard {
       }
       // this.getCourseSchedule()
     }
+    eventHub.on(EventType.UPDATE_COURSE, (): void => this.updateCourseInformation())
   }
 
   aboutToReuse(params: Record<string, Object>): void {
@@ -90,10 +93,12 @@ export struct ClassInformationCard {
   }
 
   updateCourseInformation() {
-    let courseScheduleList =
-      classDateAndPlaceToCourseSchedule(this.courseInformation, new Schedule('', '', ''), false);
-    if (courseScheduleList) {
-      this.courseSchedules.pushArrayData(courseScheduleList);
+    if (this.courseInformation.classDateAndPlace) {
+      let courseScheduleList =
+        classDateAndPlaceToCourseSchedule(this.courseInformation, new Schedule('', '', ''), false);
+      if (courseScheduleList) {
+        this.courseSchedules.pushArrayData(courseScheduleList);
+      }
     }
     console.debug(TAG, 'aboutToAppear', JSON.stringify(this.courseSchedules))
   }

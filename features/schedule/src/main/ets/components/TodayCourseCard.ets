@@ -51,7 +51,7 @@ export struct TodayCourseCard {
       }
       .justifyContent(FlexAlign.SpaceEvenly)
       .height('100%')
-      .width(new BreakPointType({ sm: '70%', md: '75%', lg: '85%' }).getValue(this.currentBreakPoint))
+      .width(new BreakPointType({ sm: '70%', md: '75%', lg: '70%' }).getValue(this.currentBreakPoint))
 
       Column() {
         Text(`${TIME_TABLE[this.courseSchedule.StartSession - 1].StartTime}`)
@@ -67,11 +67,12 @@ export struct TodayCourseCard {
           .fontWeight(FontWeight.Bold)
       }
       .justifyContent(FlexAlign.SpaceEvenly)
-      .margin({ right: $r('app.float.course_card_padding') })
+      .padding(this.currentBreakPoint === BreakPointTypeEnum.LG ? { right: $r('app.float.lg_course_card_padding') } :
+        { right: $r('app.float.course_card_padding') })
       .height('100%')
     }
     .clickEffect({ level: ClickEffectLevel.LIGHT, scale: 0.95 })
-    .justifyContent(FlexAlign.SpaceBetween)
+    .justifyContent(FlexAlign.SpaceAround)
     .borderRadius($r('app.float.main_border_radius'))
     .backgroundColor($r('app.color.whut_yellow_background_thick'))
     .width('100%')

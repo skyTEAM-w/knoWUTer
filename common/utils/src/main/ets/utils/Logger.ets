@@ -51,4 +51,4 @@ class Logger {
   }
 }
 
-export default new Logger('[OxHornCampus]', 0xFF00);
+export default new Logger('[KonWUTer]', 0xFF00);

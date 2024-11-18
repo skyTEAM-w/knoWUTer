@@ -32,6 +32,12 @@ export struct TodayCourse {
       this.selectedTableId = data.scheduleId;
       this.startDate = data.StartDate;
     })
+    this.eventHub.on(EventType.UPDATE_COURSE, (): void => {
+      this.getCourseScheduleList()
+    })
+    this.eventHub.on(EventType.DELETE_COURSE, (): void => {
+      this.getCourseScheduleList()
+    })
     this.getCourseScheduleList()
   }
 
@@ -98,7 +104,7 @@ export struct TodayCourse {
           }, (item: CourseSchedule, index: number) => JSON.stringify(item) + index.toString())
         }
         .nestedScroll({ scrollForward: NestedScrollMode.PARENT_FIRST, scrollBackward: NestedScrollMode.PARENT_FIRST })
-        .lanes(new BreakPointType({ sm: 2, md: 3, lg: 4 }).getValue(this.currentBreakPoint))
+        .lanes(new BreakPointType({ sm: 2, md: 3, lg: 2 }).getValue(this.currentBreakPoint))
         .margin(this.currentBreakPoint === BreakPointTypeEnum.LG ?
           { left: $r('app.float.xxl_padding_margin'), right: $r('app.float.xxl_padding_margin'), top: 10 } :
           { left: $r('app.float.md_padding_margin'), right: $r('app.float.md_padding_margin'), top: 10 })

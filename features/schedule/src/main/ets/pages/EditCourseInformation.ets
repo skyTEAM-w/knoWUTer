@@ -1,5 +1,5 @@
 import { ColorSelectDialog, TopNavigationView } from '@ohos/uicomponents';
-import { BreakPointTypeEnum, LazyDataSource } from '@ohos/utils';
+import { BreakPointTypeEnum, EventType, LazyDataSource } from '@ohos/utils';
 import { WeekRangePicker } from '../dialogs/WeekRangePicker';
 import { Course } from '../model/Course';
 import { CourseSchedule, TIME_TABLE, TimeTable, WEEKS } from '../model/CourseSchedule';
@@ -9,6 +9,7 @@ import { ScheduleDatabaseFunc } from '../service/ScheduleDatabaseFunc';
 import { JSON } from '@kit.ArkTS';
 import { PlaceInputDialog } from '../dialogs/PlaceInputDialog';
 import { TipsDialog } from '@kit.ArkUI';
+import { common } from '@kit.AbilityKit';
 
 const TAG = '[EditCourseInformation]'
 
@@ -61,7 +62,8 @@ export struct EditCourseInformation {
         this.courseColor.toString())
       // console.debug(TAG, 'courseScheduleList', JSON.stringify(this.courseSchedule.getDataList()))
       this.scheduleDbFunc.updateCourseSchedule(this.courseSchedule.getDataList(), this.courseInformation);
-      this.updateCourse = !this.updateCourse;
+      const eventHub: common.EventHub = (getContext(this) as common.UIAbilityContext).eventHub;
+      eventHub.emit(EventType.UPDATE_COURSE);
     }
   }
 
