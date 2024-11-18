@@ -8,7 +8,7 @@ export { ScheduleBaseFunc } from './src/main/ets/service/ScheduleBaseFunc';
 
 export { ScheduleDatabaseFunc, queryTodayScheduleByWeek } from './src/main/ets/service/ScheduleDatabaseFunc';
 
-export { Schedule as ScheduleTable } from './src/main/ets/model/Schedule';
+export { Schedule as ScheduleTable, ScheduleEventData } from './src/main/ets/model/Schedule';
 
 export { CourseSchedule,
   CourseScheduleSendable,

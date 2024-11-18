@@ -17,6 +17,7 @@ struct Index {
   @Provide('serviceStack') serviceStack: NavPathStack = new NavPathStack();
   @Provide('appPathStack') appPathStack: NavPathStack = new NavPathStack();
   @Provide('schedulePathStack') schedulePathStack: NavPathStack = new NavPathStack();
+  @Provide('homePathStack') homePathStack: NavPathStack = new NavPathStack();
   @StorageLink('currentBreakPoint') currentBreakPoint: string = BreakPointTypeEnum.MD;
   private bottomTabController: TabsController = new TabsController();
   private breakPointSystem: BreakPointSystem = new BreakPointSystem();

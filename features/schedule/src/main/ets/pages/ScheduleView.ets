@@ -1,4 +1,4 @@
-import { BreakPointTypeEnum, DateUtil, LazyDataSource } from '@ohos/utils';
+import { BreakPointTypeEnum, DateUtil, EventType, LazyDataSource } from '@ohos/utils';
 import { ScheduleNavigation } from '../components/ScheduleNavigationTitle';
 import { ScheduleNetFunc } from '../service/ScheduleNetFunc';
 import { Schedule } from '../model/Schedule';
@@ -9,6 +9,7 @@ import { ScheduleSettingFunc } from '../service/ScheduleSettingFunc';
 import { ItemRestriction, SegmentButtonOptions, SegmentButtonTextItem } from '@ohos.arkui.advanced.SegmentButton';
 import { ScheduleListView } from '../views/ScheduleListView';
 import { ScheduleWeekView } from '../views/ScheduleWeekView';
+import { common } from '@kit.AbilityKit';
 
 const TAG = '[ScheduleTable]'
 
@@ -42,6 +43,7 @@ export struct ScheduleTable {
   private scheduleDBFunc = new ScheduleDatabaseFunc();
   private scheduleSettingFunc = ScheduleSettingFunc.getInstance();
   private mDate = new DateUtil();
+  private eventHub: common.EventHub = (getContext(this) as common.UIAbilityContext).eventHub;
   @State mToday: Date = new Date(this.mDate.getToday());
 
   aboutToAppear(): void {
@@ -57,8 +59,8 @@ export struct ScheduleTable {
     console.debug(TAG, 'aboutToDisappear', this.selectedScheduleTableIndex)
     console.debug(TAG, 'aboutToDisappear', this.currentWeek)
     this.scheduleSettingFunc.saveSelectScheduleIndex(this.selectedScheduleTableIndex);
-    this.scheduleSettingFunc.saveCurrentWeek(this.currentWeek);
     if (this.selectedSchedule) {
+      this.scheduleSettingFunc.saveStartDate(this.selectedSchedule.StartDate);
       this.scheduleSettingFunc.saveSelectedTableId(this.selectedSchedule.scheduleId)
     }
   }
@@ -75,6 +77,11 @@ export struct ScheduleTable {
     } else {
       this.scheduleTableList.pushArrayData(this.scheduleDBFunc.queryAllScheduleTable() as Schedule[]);
     }
+    this.eventHub.emit(EventType.CHANGE_TABLE, {
+      scheduleId: this.selectedTableId,
+      scheduleName: this.selectedSchedule?.scheduleName,
+      StartDate: this.selectedSchedule?.StartDate
+    })
   }
 
   updateCourseInformation() {

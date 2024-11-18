@@ -8,7 +8,7 @@ export { default as LazyDataSource } from './src/main/ets/utils/LazyDataSource';
 
 export { UserSettingUtil } from './src/main/ets/utils/UserSettingUtil'
 
-export { ServiceType, ServiceShowType, SettingTwoStatus, UserPreferenceType } from './src/main/ets/common/CommonEnums';
+export { ServiceType, ServiceShowType, SettingTwoStatus, LoadingStatus, EventType } from './src/main/ets/common/CommonEnums';
 
 export { WebUrl } from './src/main/ets/model/WebUrl';
 
@@ -25,3 +25,5 @@ export { CookieUtil } from './src/main/ets/utils/CookieUtil';
 export { Day, CalendarData } from './src/main/ets/model/CalendarModel';
 
 export { VibrateUtil } from './src/main/ets/utils/VibrateUtil';
+
+export { ObservedArray } from './src/main/ets/utils/ObservedArray'

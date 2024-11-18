@@ -1,9 +1,11 @@
 import { CourseSchedule, WEEKS_START_SUNDAY } from '@feature/schedule/src/main/ets/model/CourseSchedule';
 import { JSON, taskpool } from '@kit.ArkTS';
-import { BreakPointType, BreakPointTypeEnum, LazyDataSource } from '@ohos/utils';
+import { BreakPointType, BreakPointTypeEnum, DateUtil, EventType, LazyDataSource } from '@ohos/utils';
 import { getTodayCourse } from '../service/HomeTaskPoolFunc';
 import { relationalStore } from '@kit.ArkData';
 import { TodayCourseCard } from '@feature/schedule/src/main/ets/components/TodayCourseCard';
+import { common } from '@kit.AbilityKit';
+import { ScheduleEventData } from '@feature/schedule/src/main/ets/model/Schedule';
 
 const TAG = '[TodayCourse]'
 
@@ -14,22 +16,29 @@ async function getTodayCourseTask(tableId: string, currentWeek: number, weekNumb
 
 @Component
 export struct TodayCourse {
-  @StorageProp('currentWeek') @Watch('getCourseScheduleList') currentWeek: number =
-    AppStorage.get<number>('currentWeek') || 1;
-  @StorageProp('selectedTableId') selectedTableId: string | undefined =
+  @StorageProp('startDate') @Watch('getCourseScheduleList') startDate: string =
+    AppStorage.get<string>('startDate') || '2024-9-2';
+  @State currentWeek: number = 1;
+  @StorageProp('selectedTableId') @Watch('getCourseScheduleList') selectedTableId: string | undefined =
     AppStorage.get<string>('selectedTableId') || '1';
   @StorageLink('currentBreakPoint') currentBreakPoint: BreakPointTypeEnum = BreakPointTypeEnum.MD;
   @State todayCourseSchedules: LazyDataSource<CourseSchedule> = new LazyDataSource();
   @State hasCourse: boolean = false;
   private currentWeekDay = new Date().getDay()
+  private eventHub: common.EventHub = (getContext(this) as common.UIAbilityContext).eventHub;
 
   aboutToAppear(): void {
+    this.eventHub.on(EventType.CHANGE_TABLE, (data: ScheduleEventData) => {
+      this.selectedTableId = data.scheduleId;
+      this.startDate = data.StartDate;
+    })
     this.getCourseScheduleList()
   }
 
   getCourseScheduleList() {
+    this.currentWeek = DateUtil.getWeeksBetweenDates(this.startDate, new DateUtil().getToday())
     console.debug(TAG, this.selectedTableId)
-    console.debug(TAG, this.currentWeek)
+    console.debug(TAG, this.startDate)
     console.debug(TAG, this.currentWeekDay)
     getTodayCourseTask(this.selectedTableId as string, this.currentWeek,
       this.currentWeekDay === 7 ? 0 : this.currentWeekDay - 1, getContext(this))
@@ -88,6 +97,7 @@ export struct TodayCourse {
             .margin({ left: 5, right: 5 })
           }, (item: CourseSchedule, index: number) => JSON.stringify(item) + index.toString())
         }
+        .nestedScroll({ scrollForward: NestedScrollMode.PARENT_FIRST, scrollBackward: NestedScrollMode.PARENT_FIRST })
         .lanes(new BreakPointType({ sm: 2, md: 3, lg: 4 }).getValue(this.currentBreakPoint))
         .margin(this.currentBreakPoint === BreakPointTypeEnum.LG ?
           { left: $r('app.float.xxl_padding_margin'), right: $r('app.float.xxl_padding_margin'), top: 10 } :
