@@ -3,10 +3,10 @@ import { Home } from '@feature/home';
 import { Tools } from '@feature/tools';
 import { Service } from '@feature/service';
 import { Schedule, ScheduleSettingFunc } from '@feature/schedule';
-import { User } from '../views/UserView';
 import { BreakPointSystem, BreakPointTypeEnum, CookieUtil, UserSettingUtil } from '@ohos/utils';
 import { DBUtil } from '@ohos/datastore';
 import { WebViewPage } from '@ohos/uicomponents';
+import { UserView } from '@feature/mine/Index';
 
 @Preview
 @Entry
@@ -105,7 +105,7 @@ struct Index {
           }.tabBar(this.TabBuilder(3))
 
           TabContent() {
-            User()
+            UserView()
           }.tabBar(this.TabBuilder(4))
 
         }

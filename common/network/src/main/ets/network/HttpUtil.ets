@@ -1,4 +1,6 @@
-import { FormEncoder, HttpClient, Request, RequestBody, Response, TimeUnit } from '@ohos/httpclient';
+import { HttpClient, Request, RequestBody, Response, TimeUnit } from '@ohos/httpclient';
+import { rcp } from '@kit.RemoteCommunicationKit';
+import { BusinessError } from '@kit.BasicServicesKit';
 
 const TAG = '[HttpUtil]'
 
@@ -13,12 +15,28 @@ export enum ElectricityFeeActionType {
 
 export class HttpUtil {
   private static instance: HttpUtil;
+  private session: rcp.Session;
 
   public static getInstance(): HttpUtil {
     if (!HttpUtil.instance) {
       HttpUtil.instance = new HttpUtil();
     }
     return HttpUtil.instance;
+  }
+
+  constructor() {
+    const config: rcp.SessionConfiguration = {
+      requestConfiguration: {
+        transfer: {
+          timeout: {
+            connectMs: 3000,
+            transferMs: 3000
+          },
+          autoRedirect: false
+        }
+      }
+    }
+    this.session = rcp.createSession(config);
   }
 
   async HttpPost(url: string, cookies: string, body: RequestBody): Promise<Response | undefined> {
@@ -67,4 +85,29 @@ export class HttpUtil {
       .build()
     return await client.newCall(request).execute();
   }
+
+  public httpPostByRcp(url: string, headers: rcp.RequestHeaders, content?: rcp.Form | rcp.MultipartForm) {
+    const req = new rcp.Request(url, 'POST', headers, content);
+    console.debug(this.session.configuration?.requestConfiguration?.transfer?.autoRedirect + '')
+    return new Promise((resolve: (value: rcp.Response | PromiseLike<rcp.Response>) => void, reject) => {
+      this.session.fetch(req).then((response) => {
+        console.debug(response.toString())
+        resolve(response)
+      }).catch((error: BusinessError) => {
+        reject(error)
+      })
+    })
+  }
+
+  public httpGetByRcp(url: string, headers: rcp.RequestHeaders) {
+    const req = new rcp.Request(url, 'GET', headers);
+    return new Promise((resolve: (value: rcp.Response | PromiseLike<rcp.Response>) => void, reject) => {
+      this.session.fetch(req).then((response) => {
+        resolve(response)
+      }).catch((error: BusinessError) => {
+        reject(error)
+      })
+    })
+  }
+
 }

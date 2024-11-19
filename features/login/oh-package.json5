@@ -1,11 +1,13 @@
 {
-  "name": "network",
+  "name": "login",
   "version": "1.0.0",
   "description": "Please describe the basic information.",
   "main": "Index.ets",
   "author": "",
   "license": "",
   "dependencies": {
+    "@ohos/network": "file:../../common/network",
+    "@ohos/util": "file:../../common/utils"
   }
 }
 

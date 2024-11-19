@@ -29,3 +29,5 @@ export { VibrateUtil } from './src/main/ets/utils/VibrateUtil';
 export { ObservedArray } from './src/main/ets/utils/ObservedArray'
 
 export { default as Logger } from './src/main/ets/utils/Logger';
+
+export { CryptoUtil } from './src/main/ets/utils/CryptoUtil';
