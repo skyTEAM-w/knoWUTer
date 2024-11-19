@@ -47,6 +47,10 @@
     {
       "name": "light_border_radius",
       "value": "16"
+    },
+    {
+      "name": "news_tab_bar_height",
+      "value": "44"
     }
   ]
 }

@@ -1,15 +1,13 @@
-import { DateUtil, Day } from '@ohos/utils';
-import { JSON } from '@kit.ArkTS';
+import { DateUtil, Day, EventType } from '@ohos/utils';
 import { CourseSchedule, TIME_TABLE, TimeTable, WEEKS } from '../model/CourseSchedule';
 import { ScheduleDatabaseFunc } from '../service/ScheduleDatabaseFunc';
 import { Schedule } from '../model/Schedule';
 import { paddingCourseSchedule } from '../service/ScheduleBaseFunc';
 import { WeekScheduleCard } from '../components/WeekSheduleCard';
+import { common } from '@kit.AbilityKit';
 
 @Component
 export struct ScheduleWeekViewItem {
-  @LocalStorageLink('updateCourse') @Watch("updateWeekData") updateCourse: boolean = false;
-  @LocalStorageLink('deleteCourse') @Watch("updateWeekData") deleteCourse: boolean = false;
   @Link isCookieShow: boolean;
   @Link isSettingShow: boolean;
   @Link isScheduleShow: boolean;
@@ -26,6 +24,9 @@ export struct ScheduleWeekViewItem {
   aboutToAppear(): void {
     this.getWeekViewData(this.weekNum);
     this.getWeekCourseData()
+    const eventHub: common.EventHub = (getContext(this) as common.UIAbilityContext).eventHub;
+    eventHub.on(EventType.UPDATE_COURSE, (): void => this.updateWeekData());
+    eventHub.on(EventType.DELETE_COURSE, (): void => this.updateWeekData());
   }
 
   getWeekViewData(weekNum: number) {

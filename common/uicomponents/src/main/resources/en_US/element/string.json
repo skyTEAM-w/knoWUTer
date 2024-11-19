@@ -11,6 +11,10 @@
     {
       "name": "UicomponentsAbility_label",
       "value": "label"
+    },
+    {
+      "name": "loading_failed",
+      "value": "Loading Failed! Please check your Connection or Login Status"
     }
   ]
 }
