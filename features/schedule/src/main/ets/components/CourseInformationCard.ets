@@ -17,7 +17,7 @@ async function getCourseScheduleTask(course: Course, isList: boolean) {
   return await taskpool.execute(task) as CourseSchedule[]
 }
 
-@Reusable
+// @Reusable
 @Component
 export struct ClassInformationCard {
   @Consume('schedulePathStack') schedulePathStack: NavPathStack;
@@ -79,18 +79,18 @@ export struct ClassInformationCard {
     eventHub.on(EventType.UPDATE_COURSE, (): void => this.updateCourseInformation())
   }
 
-  aboutToReuse(params: Record<string, Object>): void {
-    this.courseInformation = params.courseInformation as Course;
-    if (this.courseInformation && this.courseInformation.classDateAndPlace) {
-      console.debug(TAG, 'aboutToReuse', JSON.stringify(this.courseInformation))
-      let courseScheduleList =
-        classDateAndPlaceToCourseSchedule(this.courseInformation, new Schedule('', '', ''), false);
-      if (courseScheduleList) {
-        this.courseSchedules.pushArrayData(courseScheduleList);
-      }
-      // this.getCourseSchedule()
-    }
-  }
+  // aboutToReuse(params: Record<string, Object>): void {
+  //   this.courseInformation = params.courseInformation as Course;
+  //   if (this.courseInformation && this.courseInformation.classDateAndPlace) {
+  //     console.debug(TAG, 'aboutToReuse', JSON.stringify(this.courseInformation))
+  //     let courseScheduleList =
+  //       classDateAndPlaceToCourseSchedule(this.courseInformation, new Schedule('', '', ''), false);
+  //     if (courseScheduleList) {
+  //       this.courseSchedules.pushArrayData(courseScheduleList);
+  //     }
+  //     // this.getCourseSchedule()
+  //   }
+  // }
 
   updateCourseInformation() {
     if (this.courseInformation.classDateAndPlace) {

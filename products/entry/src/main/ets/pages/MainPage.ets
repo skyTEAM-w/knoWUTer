@@ -73,6 +73,7 @@ struct Index {
       bottom: this.currentBreakPoint === BreakPointTypeEnum.LG ? 8 : AppStorage.get<number>('naviIndicatorHeight'),
       top: 8
     })
+    .justifyContent(FlexAlign.Center)
   }
 
   build() {
