@@ -8,7 +8,6 @@ import { ScheduleSettingFunc } from '@feature/schedule';
 export default class EntryAbility extends UIAbility {
   onCreate(want: Want, launchParam: AbilityConstant.LaunchParam): void {
     hilog.info(0x0000, 'testTag', '%{public}s', 'Ability onCreate');
-    AppStorage.setOrCreate('Cookie', '');
   }
 
   onDestroy(): void {
@@ -41,7 +40,6 @@ export default class EntryAbility extends UIAbility {
       }
       hilog.info(0x0000, 'testTag', 'Succeeded in loading the content.');
     });
-
   }
 
   onWindowStageDestroy(): void {

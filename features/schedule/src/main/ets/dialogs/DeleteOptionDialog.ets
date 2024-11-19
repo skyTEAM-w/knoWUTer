@@ -1,7 +1,9 @@
-import { CourseSchedule } from "../model/CourseSchedule";
-import { JSON } from "@kit.ArkTS";
-import { compressRange } from "../service/ScheduleBaseFunc";
-import { ScheduleDatabaseFunc } from "../service/ScheduleDatabaseFunc";
+import { CourseSchedule } from '../model/CourseSchedule';
+import { JSON } from '@kit.ArkTS';
+import { compressRange } from '../service/ScheduleBaseFunc';
+import { ScheduleDatabaseFunc } from '../service/ScheduleDatabaseFunc';
+import { common } from '@kit.AbilityKit';
+import { EventType } from '@ohos/utils';
 
 enum SelectedType {
   DeleteThisSchedule = 0,
@@ -36,23 +38,24 @@ export struct DeleteOptionDialog {
   }
 
   onConfirm() {
+    const eventHub: common.EventHub = (getContext(this) as common.UIAbilityContext).eventHub;
     switch (this.choice) {
       case SelectedType.DeleteThisSchedule: {
         this.courseSchedule.weekRanges = this.buildSelectedWeekList();
         this.courseSchedule.weekRangesStr = compressRange(this.courseSchedule.weekRanges);
         console.debug(JSON.stringify(this.courseSchedule));
         new ScheduleDatabaseFunc().updateOneCourseSchedule(this.courseSchedule);
-        this.deleteCourse = !this.deleteCourse;
+        eventHub.emit(EventType.DELETE_COURSE)
         break;
       }
       case SelectedType.DeleteWeekdaySchedule: {
         new ScheduleDatabaseFunc().deleteCourseSchedule([this.courseSchedule]);
-        this.deleteCourse = !this.deleteCourse;
+        eventHub.emit(EventType.DELETE_COURSE)
         break;
       }
       case SelectedType.DeleteCourse: {
         new ScheduleDatabaseFunc().deleteCourse(this.courseSchedule.TableId, this.courseSchedule.ClassId);
-        this.deleteCourse = !this.deleteCourse;
+        eventHub.emit(EventType.DELETE_COURSE)
         break;
       }
       default : {

@@ -10,3 +10,9 @@ export class Schedule {
     this.StartDate = StartDate;
   }
 }
+
+export interface ScheduleEventData {
+  scheduleId: string;
+  scheduleName: string;
+  StartDate: string;
+}

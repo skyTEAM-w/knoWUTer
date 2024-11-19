@@ -1,10 +1,11 @@
-import { BreakPointType, BreakPointTypeEnum } from '@ohos/utils';
+import { BreakPointType, BreakPointTypeEnum, EventType } from '@ohos/utils';
 import LazyDataSource from '@ohos/utils/src/main/ets/utils/LazyDataSource';
 import { Course } from '../model/Course';
 import { ClassInformationCard } from '../components/CourseInformationCard';
 import { Schedule } from '../model/Schedule';
 import { ScheduleDatabaseFunc } from '../service/ScheduleDatabaseFunc';
 import { ScheduleNetFunc } from '../service/ScheduleNetFunc';
+import { common } from '@kit.AbilityKit';
 
 const INTERVAL = 30;
 const DURATION = 300;
@@ -17,11 +18,10 @@ export struct ScheduleListView {
   @Consume('appPathStack') appPathStack: NavPathStack;
   @StorageLink('selectScheduleIndex') @Watch('updateCourseInformation') selectedScheduleTableIndex: number =
     AppStorage.get<number>('selectScheduleIndex') || -1;
-  @LocalStorageLink('updateCourse') @Watch("updateCourseInformation") updateCourse: boolean = false;
-  @LocalStorageLink('deleteCourse') @Watch("updateCourseInformation") deleteCourse: boolean = false;
   @State courseList: LazyDataSource<Course> = new LazyDataSource();
   @StorageLink('currentBreakPoint') currentBreakPoint: string = BreakPointTypeEnum.MD;
   @ObjectLink @Watch("updateCourseInformation") selectedSchedule: Schedule;
+  @State deleteCourseIndex: number = 0;
   private scheduleNetFunc = new ScheduleNetFunc();
   private scheduleDBFunc = new ScheduleDatabaseFunc();
   jumpEditCourseInformation: (courseId: string, tableId: string) => void = () => {
@@ -29,11 +29,22 @@ export struct ScheduleListView {
   };
 
   aboutToAppear(): void {
+    const eventHub: common.EventHub = (getContext(this) as common.UIAbilityContext).eventHub;
+    eventHub.on(EventType.UPDATE_COURSE, (): void => this.updateCourseEvent());
+    eventHub.on(EventType.DELETE_COURSE, (): void => this.deleteCourseEvent());
     this.getCourseList()
   }
 
   updateCourseInformation() {
+      this.courseList.pushArrayData((new ScheduleDatabaseFunc().queryAllCourseInformation(this.selectedSchedule as Schedule) as LazyDataSource<Course>).getDataList())
+  }
+
+  updateCourseEvent() {
     this.courseList.pushArrayData((new ScheduleDatabaseFunc().queryAllCourseInformation(this.selectedSchedule as Schedule) as LazyDataSource<Course>).getDataList())
+  }
+
+  deleteCourseEvent() {
+    this.courseList.reloadData();
   }
 
   getCourseList() {
@@ -49,10 +60,12 @@ export struct ScheduleListView {
       LazyForEach(this.courseList, (item: Course, index: number) => {
         FlowItem() {
           ClassInformationCard({
-            courseInfomation: item,
+            courseInformation: item,
             longPressEnable: true,
             selectedSchedule: this.selectedSchedule,
-            jumpEditCourseInformation: this.jumpEditCourseInformation
+            jumpEditCourseInformation: this.jumpEditCourseInformation,
+            courseInformationList: this.courseList,
+            index: index
           })
         }
         .padding({ left: $r('app.float.md_padding_margin'), right: $r('app.float.md_padding_margin') })

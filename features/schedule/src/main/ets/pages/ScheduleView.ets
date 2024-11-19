@@ -1,4 +1,4 @@
-import { BreakPointTypeEnum, DateUtil, LazyDataSource } from '@ohos/utils';
+import { BreakPointTypeEnum, DateUtil, EventType, LazyDataSource } from '@ohos/utils';
 import { ScheduleNavigation } from '../components/ScheduleNavigationTitle';
 import { ScheduleNetFunc } from '../service/ScheduleNetFunc';
 import { Schedule } from '../model/Schedule';
@@ -9,6 +9,7 @@ import { ScheduleSettingFunc } from '../service/ScheduleSettingFunc';
 import { ItemRestriction, SegmentButtonOptions, SegmentButtonTextItem } from '@ohos.arkui.advanced.SegmentButton';
 import { ScheduleListView } from '../views/ScheduleListView';
 import { ScheduleWeekView } from '../views/ScheduleWeekView';
+import { common } from '@kit.AbilityKit';
 
 const TAG = '[ScheduleTable]'
 
@@ -42,6 +43,7 @@ export struct ScheduleTable {
   private scheduleDBFunc = new ScheduleDatabaseFunc();
   private scheduleSettingFunc = ScheduleSettingFunc.getInstance();
   private mDate = new DateUtil();
+  private eventHub: common.EventHub = (getContext(this) as common.UIAbilityContext).eventHub;
   @State mToday: Date = new Date(this.mDate.getToday());
 
   aboutToAppear(): void {
@@ -57,8 +59,8 @@ export struct ScheduleTable {
     console.debug(TAG, 'aboutToDisappear', this.selectedScheduleTableIndex)
     console.debug(TAG, 'aboutToDisappear', this.currentWeek)
     this.scheduleSettingFunc.saveSelectScheduleIndex(this.selectedScheduleTableIndex);
-    this.scheduleSettingFunc.saveCurrentWeek(this.currentWeek);
     if (this.selectedSchedule) {
+      this.scheduleSettingFunc.saveStartDate(this.selectedSchedule.StartDate);
       this.scheduleSettingFunc.saveSelectedTableId(this.selectedSchedule.scheduleId)
     }
   }
@@ -71,10 +73,16 @@ export struct ScheduleTable {
       this.selectedTableId = this.selectedSchedule.scheduleId;
       console.debug(TAG, 'tableid', this.selectedTableId);
       this.currentWeek = DateUtil.getWeeksBetweenDates(this.selectedSchedule.StartDate, this.mDate.getToday());
+      this.eventHub.emit(EventType.CHANGE_TABLE, {
+        scheduleId: this.selectedTableId,
+        scheduleName: this.selectedSchedule?.scheduleName,
+        StartDate: this.selectedSchedule?.StartDate
+      })
       this.selectedWeek = this.currentWeek;
     } else {
       this.scheduleTableList.pushArrayData(this.scheduleDBFunc.queryAllScheduleTable() as Schedule[]);
     }
+
   }
 
   updateCourseInformation() {
@@ -95,29 +103,6 @@ export struct ScheduleTable {
       this.currentWeek = DateUtil.getWeeksBetweenDates(this.selectedSchedule.StartDate, this.mDate.getToday());
       this.selectedWeek = this.currentWeek;
     } else {
-    }
-  }
-
-  settingGetSchedule() {
-    if (this.isSettingShow) {
-      this.scheduleTableList.pushArrayData(this.scheduleDBFunc.queryAllScheduleTable() as Schedule[]);
-      this.selectedSchedule = this.scheduleTableList.getData(this.selectedScheduleTableIndex);
-      this.selectedWeek = DateUtil.getWeeksBetweenDates(this.selectedSchedule.StartDate, this.mDate.getToday());
-      this.currentWeek = this.selectedWeek;
-      this.sliderValue = this.currentWeek;
-      this.getCourseList();
-    }
-  }
-
-  getCourseList() {
-    console.debug(TAG, 'getCourseList', this.selectedScheduleTableIndex)
-    if (this.selectedScheduleTableIndex !== -1) {
-      const schedule = this.scheduleTableList?.getData(this.selectedScheduleTableIndex);
-      this.scheduleSettingFunc.saveSelectScheduleIndex(this.selectedScheduleTableIndex);
-      console.debug(TAG, 'getCourseList', JSON.stringify(schedule))
-      if (schedule) {
-        this.courseList = this.scheduleDBFunc.queryAllCourseInformation(schedule) as LazyDataSource<Course>
-      }
     }
   }
 

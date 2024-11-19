@@ -2,7 +2,7 @@ import { PreferencesUtil } from '@ohos/datastore';
 
 const SELECT_SCHEDULE_INDEX = 'select_schedule_index';
 
-const CURRENT_WEEK = 'current_week';
+const START_DATE = 'start_date';
 
 const SELECTED_TABLE_ID = 'selected_table_id';
 
@@ -22,9 +22,9 @@ export class ScheduleSettingFunc {
     AppStorage.setOrCreate('selectScheduleIndex', selectIndex);
   }
 
-  public saveCurrentWeek(currentWeek: number) {
-    this.preferenceUtil.setValue<number>(CURRENT_WEEK, currentWeek);
-    AppStorage.setOrCreate('currentWeek', currentWeek);
+  public saveStartDate(startDate: string) {
+    this.preferenceUtil.setValue<string>(START_DATE, startDate);
+    AppStorage.setOrCreate('startDate', startDate);
   }
 
   public saveSelectedTableId(tableId: string) {
@@ -41,12 +41,12 @@ export class ScheduleSettingFunc {
     })
   }
 
-  public checkCurrentWeek(): void {
-    this.preferenceUtil.getValue<number>(CURRENT_WEEK).then((config: number | null) => {
+  public checkStartDate(): void {
+    this.preferenceUtil.getValue<string>(START_DATE).then((config: string | null) => {
       if (config === null) {
-        config = 1;
+        config = '2024-1-1';
       }
-      AppStorage.setOrCreate('currentWeek', config);
+      AppStorage.setOrCreate('startDate', config);
     })
   }
 
@@ -62,13 +62,13 @@ export class ScheduleSettingFunc {
   public saveAllScheduleSetting() {
     this.saveSelectScheduleIndex(AppStorage.get<number>('selectScheduleIndex') !== -1 ?
       AppStorage.get<number>('selectScheduleIndex') as number : -1);
-    this.saveCurrentWeek(AppStorage.get<number>('currentWeek') || 1);
+    this.saveStartDate(AppStorage.get<string>('startDate') || '2024-1-1');
     this.saveSelectedTableId(AppStorage.get<string>('selectedTableId') || '1');
   }
 
   public checkAllScheduleSetting() {
     this.checkSelectScheduleIndex();
-    this.checkCurrentWeek();
+    this.checkStartDate();
     this.checkSelectedTableId();
   }
 }

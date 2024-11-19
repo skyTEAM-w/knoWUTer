@@ -217,7 +217,7 @@ export struct CreateNewSchedule {
             LazyForEach(this.courseList, (item: Course, index: number) => {
               if (!this.courseList.isEmpty()) {
                 FlowItem() {
-                  ClassInformationCard({ courseInfomation: item })
+                  ClassInformationCard({ courseInformation: item, courseInformationList: this.courseList })
                 }
                 .padding({ left: $r('app.float.md_padding_margin'), right: $r('app.float.md_padding_margin') })
                 .transition(TransitionEffect.OPACITY.combine(TransitionEffect.scale({ x: 0.8, y: 0.8 }))

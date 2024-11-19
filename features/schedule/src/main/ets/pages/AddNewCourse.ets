@@ -1,4 +1,4 @@
-import { BreakPointTypeEnum, DateUtil, LazyDataSource } from '@ohos/utils';
+import { BreakPointTypeEnum, DateUtil, EventType, LazyDataSource } from '@ohos/utils';
 import { TipsDialog } from '@kit.ArkUI';
 import { ColorSelectDialog, TopNavigationView } from '@ohos/uicomponents';
 import { Course } from '../model/Course';
@@ -8,6 +8,7 @@ import { courseScheduleToClassDateAndPlace } from '../service/ScheduleBaseFunc';
 import { ScheduleDatabaseFunc } from '../service/ScheduleDatabaseFunc';
 import { Schedule } from '../model/Schedule';
 import { JSON } from '@kit.ArkTS';
+import { common } from '@kit.AbilityKit';
 
 
 @Component
@@ -69,7 +70,9 @@ export struct AddNewCourse {
         this.courseColor.toString())
       console.debug('courseScheduleList', JSON.stringify(this.courseSchedule.getDataList()))
       this.scheduleDbFunc.updateCourseSchedule(this.courseSchedule.getDataList(), this.courseInformation);
-      this.updateCourse = !this.updateCourse;
+      // this.updateCourse = !this.updateCourse;
+      const eventHub: common.EventHub = (getContext(this) as common.UIAbilityContext).eventHub;
+      eventHub.emit(EventType.UPDATE_COURSE);
     }
   }
 
