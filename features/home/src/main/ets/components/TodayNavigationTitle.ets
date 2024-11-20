@@ -1,12 +1,13 @@
 import { webview } from '@kit.ArkWeb';
 import { CookieUtil, EventType } from '@ohos/utils';
-import { NewsNetFunc } from '../service/NewsNetFunc';
 import { common } from '@kit.AbilityKit';
+import { NewsModel } from '../model/NewsModel';
 
 @Component
 export struct TodayNavigationTitle {
   @StorageLink('zhlgd_cookie') cookie: string = AppStorage.get<string>('zhlgd_cookie') || '';
   @State isLoginShow: boolean = false;
+  @State newsModel: NewsModel = NewsModel.getInstance();
   private webViewController: webview.WebviewController = new webview.WebviewController();
   private eventHub: common.EventHub = (getContext(this) as common.UIAbilityContext).eventHub;
   @Styles
@@ -26,7 +27,7 @@ export struct TodayNavigationTitle {
         this.cookie =
           webview.WebCookieManager.fetchCookieSync('https://zhlgd.whut.edu.cn/tp_up/view?m=up#act=portal/viewhome');
         CookieUtil.getInstance().saveZHLGDCookie(this.cookie);
-        new NewsNetFunc().checkLoginStatus(this.cookie).then((status: boolean) => {
+        this.newsModel.checkZhlgdLogged().then((status: boolean) => {
           if (status) {
             this.eventHub.emit(EventType.REFRESH_NEWS)
           }

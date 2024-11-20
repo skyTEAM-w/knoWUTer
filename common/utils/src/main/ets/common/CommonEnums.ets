@@ -28,7 +28,9 @@ export enum LoadingStatus {
 }
 
 export enum EventType {
+  REFRESH_TODAY_COURSE = 'refresh_today_course',
   REFRESH_NEWS='refresh_news',
+  REFRESH_NEWS_END = 'refresh_news_end',
   UPDATE_COURSE='update_course',
   DELETE_COURSE='deleted_course',
   CHANGE_TABLE='change_schedule_table'

@@ -7,7 +7,9 @@
   "license": "",
   "dependencies": {
     "@ohos/network": "file:../../common/network",
-    "@ohos/util": "file:../../common/utils"
+    "@ohos/util": "file:../../common/utils",
+    "@feature/mine": "file:../mine",
+    "@ohos/datastore": "file:../../common/datastore"
   }
 }
 

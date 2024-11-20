@@ -38,6 +38,9 @@ export struct TodayCourse {
     this.eventHub.on(EventType.DELETE_COURSE, (): void => {
       this.getCourseScheduleList()
     })
+    this.eventHub.on(EventType.REFRESH_TODAY_COURSE, (): void => {
+      this.getCourseScheduleList();
+    })
     this.getCourseScheduleList()
   }
 

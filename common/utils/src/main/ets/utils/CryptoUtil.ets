@@ -35,10 +35,9 @@ export class CryptoUtil {
     return keyPair;
   }
 
-  public static genKeyPairByPubKey(algName: string, pubKeyData: Uint8Array) {
-    let pubKeyBlob: cryptoFramework.DataBlob = { data: pubKeyData };
+  public static genKeyPairByPubKey(algName: string, pubKeyData: string) {
     let rsaGenerator = cryptoFramework.createAsyKeyGenerator(algName);
-    let keyPair = rsaGenerator.convertKeySync(pubKeyBlob, null);
+    let keyPair = rsaGenerator.convertPemKeySync(pubKeyData, null);
     return keyPair;
   }
 }

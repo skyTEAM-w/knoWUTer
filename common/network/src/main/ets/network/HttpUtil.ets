@@ -91,7 +91,6 @@ export class HttpUtil {
     console.debug(this.session.configuration?.requestConfiguration?.transfer?.autoRedirect + '')
     return new Promise((resolve: (value: rcp.Response | PromiseLike<rcp.Response>) => void, reject) => {
       this.session.fetch(req).then((response) => {
-        console.debug(response.toString())
         resolve(response)
       }).catch((error: BusinessError) => {
         reject(error)

@@ -1,4 +1,4 @@
-import { BreakPointTypeEnum, CookieUtil, EventType, LazyDataSource, LoadingStatus } from '@ohos/utils';
+import { BreakPointTypeEnum, EventType, LazyDataSource, LoadingStatus } from '@ohos/utils';
 import { News, NewsType } from '../model/News';
 import { NewsModel } from '../model/NewsModel';
 import { JSON } from '@kit.ArkTS';
@@ -30,11 +30,14 @@ export struct CampusNews {
       if (cookie) {
         this.newsModel.getNewsResources(this.cookie).then(() => {
           this.loadingStatus = LoadingStatus.SUCCESS;
+          this.eventHub.emit(EventType.REFRESH_NEWS_END)
         }).catch(() => {
           this.loadingStatus = LoadingStatus.FAILED
+          this.eventHub.emit(EventType.REFRESH_NEWS_END)
         })
       } else {
         this.loadingStatus = LoadingStatus.FAILED
+        this.eventHub.emit(EventType.REFRESH_NEWS_END)
       }
     })
   }

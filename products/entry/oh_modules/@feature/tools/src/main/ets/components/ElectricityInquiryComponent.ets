@@ -289,7 +289,10 @@ export struct ElectricityInquiryTool {
       .sticky(StickyStyle.Header)
       .margin({ left: 16, right: 16 })
     } else {
-      Web({ src: new ElectricityFeeUrl().url, controller: this.webViewController })
+      Web({
+        src: 'https://zhlgd.whut.edu.cn/tpass/login?service=http%3A%2F%2Fcwsf.whut.edu.cn%2FcasLogin',
+        controller: this.webViewController
+      })
         .onPageEnd(() => {
           let FeeCookie =
             webview.WebCookieManager.fetchCookieSync('http://cwsf.whut.edu.cn/nyyPayElecPages51274E035').toString();

@@ -51,6 +51,10 @@
     {
       "name": "news_tab_bar_height",
       "value": "44"
+    },
+    {
+      "name": "xxl_padding_margin_large",
+      "value": "24"
     }
   ]
 }

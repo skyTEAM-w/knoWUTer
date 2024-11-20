@@ -18,7 +18,9 @@ struct Index {
   @Provide('appPathStack') appPathStack: NavPathStack = new NavPathStack();
   @Provide('schedulePathStack') schedulePathStack: NavPathStack = new NavPathStack();
   @Provide('homePathStack') homePathStack: NavPathStack = new NavPathStack();
+  @Provide('minePathStack') minePathStack: NavPathStack = new NavPathStack();
   @StorageLink('currentBreakPoint') currentBreakPoint: string = BreakPointTypeEnum.MD;
+  @StorageProp('naviIndicatorHeight') naviIndicatorHeight: number = 0;
   private bottomTabController: TabsController = new TabsController();
   private breakPointSystem: BreakPointSystem = new BreakPointSystem();
 
@@ -110,7 +112,7 @@ struct Index {
 
         }
         .width('100%')
-        .barHeight(this.currentBreakPoint === BreakPointTypeEnum.LG ? '100%' : '10%')
+        .barHeight(this.currentBreakPoint === BreakPointTypeEnum.LG ? '100%' : (56 + this.naviIndicatorHeight))
         .barWidth(this.currentBreakPoint === BreakPointTypeEnum.LG ? '5%' : '100%')
         .scrollable(false)
         .barMode(this.currentBreakPoint === BreakPointTypeEnum.LG ? BarMode.Scrollable : BarMode.Fixed,
