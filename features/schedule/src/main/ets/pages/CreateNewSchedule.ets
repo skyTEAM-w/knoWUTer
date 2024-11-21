@@ -25,7 +25,7 @@ export struct CreateNewSchedule {
   @StorageLink('schedule_cookie') ScheduleCookie: string = AppStorage.get<string>('schedule_cookie') || '';
   @Consume('schedulePathStack') schedulePathStack: NavPathStack;
   @State @Watch('triggerCourseCardAnimation') courseList: LazyDataSource<Course> = new LazyDataSource();
-  @StorageLink('currentBreakPoint') currentBreakPoint: BreakPointTypeEnum = BreakPointTypeEnum.MD;
+  @StorageProp('currentBreakPoint') currentBreakPoint: BreakPointTypeEnum = BreakPointTypeEnum.MD;
   @State scheduleName: string = '未命名';
   @State inputName: string = '未命名';
   textInputDialogController: CustomDialogController | null = new CustomDialogController({

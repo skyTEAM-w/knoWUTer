@@ -33,5 +33,7 @@ export enum EventType {
   REFRESH_NEWS_END = 'refresh_news_end',
   UPDATE_COURSE='update_course',
   DELETE_COURSE='deleted_course',
-  CHANGE_TABLE='change_schedule_table'
+  CHANGE_TABLE = 'change_schedule_table',
+  REFRESH_HALL = 'refresh_hall',
+  REFRESH_HALL_END = 'refresh_hall_end'
 }

@@ -46,6 +46,7 @@ export struct TodayCourse {
 
   getCourseScheduleList() {
     this.currentWeek = DateUtil.getWeeksBetweenDates(this.startDate, new DateUtil().getToday())
+    this.currentWeekDay = new Date().getDay()
     console.debug(TAG, this.selectedTableId)
     console.debug(TAG, this.startDate)
     console.debug(TAG, this.currentWeekDay)
@@ -81,7 +82,7 @@ export struct TodayCourse {
   build() {
     Column() {
       Row() {
-        Text('课程')
+        Text($r('app.string.today_course'))
           .fontSize($r('sys.float.ohos_id_text_size_headline8'))
           .fontWeight(FontWeight.Bold)
         Text(`第${this.currentWeek}周  周${WEEKS_START_SUNDAY[this.currentWeekDay]}`)

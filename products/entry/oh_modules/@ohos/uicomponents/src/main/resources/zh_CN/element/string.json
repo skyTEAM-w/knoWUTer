@@ -23,6 +23,10 @@
     {
       "name": "loading_failed",
       "value": "加载失败！请检查网络连接或登录状态"
+    },
+    {
+      "name": "please_login",
+      "value": "请登录"
     }
   ]
 }

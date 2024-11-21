@@ -3,6 +3,42 @@
     {
       "name": "mine_navigation_header_height",
       "value": "48"
+    },
+    {
+      "name": "user_image_height",
+      "value": "48"
+    },
+    {
+      "name": "user_name_size",
+      "value": "20"
+    },
+    {
+      "name": "user_background_height_md",
+      "value": "120"
+    },
+    {
+      "name": "user_background_height_lg",
+      "value": "150"
+    },
+    {
+      "name": "larg_border_radius",
+      "value": "20"
+    },
+    {
+      "name": "work_hall_item_height",
+      "value": "88"
+    },
+    {
+      "name": "work_hall_item_padding",
+      "value": "10"
+    },
+    {
+      "name": "work_hall_item_margin",
+      "value": "5"
+    },
+    {
+      "name": "user_description_font_size",
+      "value": "16"
     }
   ]
 }

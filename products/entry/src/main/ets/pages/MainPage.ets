@@ -19,6 +19,7 @@ struct Index {
   @Provide('schedulePathStack') schedulePathStack: NavPathStack = new NavPathStack();
   @Provide('homePathStack') homePathStack: NavPathStack = new NavPathStack();
   @Provide('minePathStack') minePathStack: NavPathStack = new NavPathStack();
+  @Provide('settingPathStack') settingPathStack: NavPathStack = new NavPathStack();
   @StorageLink('currentBreakPoint') currentBreakPoint: string = BreakPointTypeEnum.MD;
   @StorageProp('naviIndicatorHeight') naviIndicatorHeight: number = 0;
   private bottomTabController: TabsController = new TabsController();
@@ -80,57 +81,65 @@ struct Index {
 
   build() {
     Navigation(this.appPathStack) {
-      Flex({
-        direction: this.currentBreakPoint === BreakPointTypeEnum.LG ? FlexDirection.Row : FlexDirection.Column,
-        alignItems: ItemAlign.End,
-        justifyContent: FlexAlign.End
-      }) {
-        Tabs({
-          barPosition: this.currentBreakPoint === BreakPointTypeEnum.LG ? BarPosition.Start : BarPosition.End,
-          index: this.bottomTabIndex,
-          controller: this.bottomTabController
+      Stack() {
+        if (this.currentBreakPoint === BreakPointTypeEnum.LG && this.bottomTabIndex === 4) {
+          Image($r('app.media.user_background_lg'))
+            .width('100%')
+            .height('100%')
+        }
+        Flex({
+          direction: this.currentBreakPoint === BreakPointTypeEnum.LG ? FlexDirection.Row : FlexDirection.Column,
+          alignItems: ItemAlign.End,
+          justifyContent: FlexAlign.End
         }) {
-          TabContent() {
-            Schedule()
-          }.tabBar(this.TabBuilder(0))
+          Tabs({
+            barPosition: this.currentBreakPoint === BreakPointTypeEnum.LG ? BarPosition.Start : BarPosition.End,
+            index: this.bottomTabIndex,
+            controller: this.bottomTabController
+          }) {
+            TabContent() {
+              Schedule()
+            }.tabBar(this.TabBuilder(0))
 
-          TabContent() {
-            Service()
-          }.tabBar(this.TabBuilder(1))
+            TabContent() {
+              Service()
+            }.tabBar(this.TabBuilder(1))
 
-          TabContent() {
-            Home()
-          }.tabBar(this.TabBuilder(2))
+            TabContent() {
+              Home()
+            }.tabBar(this.TabBuilder(2))
 
-          TabContent() {
-            Tools()
-          }.tabBar(this.TabBuilder(3))
+            TabContent() {
+              Tools()
+            }.tabBar(this.TabBuilder(3))
 
-          TabContent() {
-            UserView()
-          }.tabBar(this.TabBuilder(4))
+            TabContent() {
+              UserView()
+            }.tabBar(this.TabBuilder(4))
 
+          }
+          .width('100%')
+          .barHeight(this.currentBreakPoint === BreakPointTypeEnum.LG ? '100%' : (56 + this.naviIndicatorHeight))
+          .barWidth(this.currentBreakPoint === BreakPointTypeEnum.LG ? 76 : '100%')
+          .scrollable(false)
+          .barMode(this.currentBreakPoint === BreakPointTypeEnum.LG ? BarMode.Scrollable : BarMode.Fixed,
+            { nonScrollableLayoutStyle: LayoutStyle.ALWAYS_CENTER })
+          .onChange((index: number) => {
+            this.bottomTabIndex = index;
+          })
+          .onTabBarClick((index: number) => {
+            this.bottomTabEffectIndex = index;
+          })
+          .animationDuration(0)
+          .height('100%')
+          .barOverlap(this.currentBreakPoint !== BreakPointTypeEnum.LG)
+          .barBackgroundColor(Color.Transparent)
+          .barBackgroundBlurStyle(BlurStyle.Regular)
+          .vertical(this.currentBreakPoint === BreakPointTypeEnum.LG)
         }
         .width('100%')
-        .barHeight(this.currentBreakPoint === BreakPointTypeEnum.LG ? '100%' : (56 + this.naviIndicatorHeight))
-        .barWidth(this.currentBreakPoint === BreakPointTypeEnum.LG ? '5%' : '100%')
-        .scrollable(false)
-        .barMode(this.currentBreakPoint === BreakPointTypeEnum.LG ? BarMode.Scrollable : BarMode.Fixed,
-          { nonScrollableLayoutStyle: LayoutStyle.ALWAYS_CENTER })
-        .onChange((index: number) => {
-          this.bottomTabIndex = index;
-        })
-        .onTabBarClick((index: number) => {
-          this.bottomTabEffectIndex = index;
-        })
-        .animationDuration(0)
-        .height('100%')
-        .barOverlap(this.currentBreakPoint !== BreakPointTypeEnum.LG)
-        .barBackgroundColor(Color.Transparent)
-        .barBackgroundBlurStyle(BlurStyle.Regular)
-        .vertical(this.currentBreakPoint === BreakPointTypeEnum.LG)
       }
-      .width('100%')
+
     }
     .navDestination(this.pageMap)
     .hideToolBar(true)

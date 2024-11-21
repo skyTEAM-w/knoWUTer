@@ -14,21 +14,23 @@ export struct CampusNews {
   @State newsModel: NewsModel = NewsModel.getInstance();
   @State currentIndex: number = 0;
   @State loadingStatus: LoadingStatus = LoadingStatus.OFF;
-  @StorageLink('zhlgd_cookie') cookie: string = AppStorage.get<string>('zhlgd_cookie') || '';
   @StorageLink('currentBreakPoint') currentBreakPoint: BreakPointTypeEnum = BreakPointTypeEnum.MD;
   private eventHub: common.EventHub = (getContext(this) as common.UIAbilityContext).eventHub;
   handleClick: (url: string) => void = () => {
   }
 
   aboutToAppear(): void {
+    this.loadingStatus = LoadingStatus.LOADING
     this.getNews()
-    this.eventHub.on(EventType.REFRESH_NEWS, (): void => this.getNews())
+    this.eventHub.on(EventType.REFRESH_NEWS, (): void => {
+      this.getNews();
+    })
   }
 
   getNews() {
     this.newsModel.checkZHLGDCookie().then((cookie: string | null) => {
       if (cookie) {
-        this.newsModel.getNewsResources(this.cookie).then(() => {
+        this.newsModel.getNewsResources(cookie).then(() => {
           this.loadingStatus = LoadingStatus.SUCCESS;
           this.eventHub.emit(EventType.REFRESH_NEWS_END)
         }).catch(() => {
@@ -140,6 +142,8 @@ struct NewsList {
               .textOverflow({ overflow: TextOverflow.Ellipsis })
               .maxLines(2)
               .ellipsisMode(EllipsisMode.END)
+            Blank()
+              .layoutWeight(1)
             Text(item.DATE.split('-').length === 3 ? `${item.DATE.split('-')[1]}-${item.DATE.split('-')[2]}` :
             item.DATE)
               .fontSize($r('sys.float.ohos_id_text_size_body2'))
@@ -147,7 +151,6 @@ struct NewsList {
           }
           .margin(5)
           .width('100%')
-          .justifyContent(FlexAlign.SpaceBetween)
         }
         .backgroundColor($r('sys.color.comp_background_list_card'))
         .borderRadius($r('app.float.light_border_radius'))

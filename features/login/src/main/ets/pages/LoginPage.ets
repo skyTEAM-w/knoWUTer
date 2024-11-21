@@ -24,18 +24,18 @@ struct LoginPage {
         .onPageEnd(() => {
           this.accessModel.getUsername(this.webViewController).then((username) => {
             this.preference.setValue<string>('username', username);
+            let cookie =
+              webview.WebCookieManager.fetchCookieSync('https://zhlgd.whut.edu.cn/tp_up/view?m=up#act=portal/viewhome');
+            CookieUtil.getInstance().saveZHLGDCookie(cookie)
+            this.userModel.checkIsLogged().then((result) => {
+              if (result) {
+                const bundleName = (getContext(this) as common.UIAbilityContext).applicationInfo.name;
+                router.replaceUrl({
+                  url: `@bundle:${bundleName}/entry/ets/pages/MainPage`
+                })
+              }
+            })
           });
-          let cookie =
-            webview.WebCookieManager.fetchCookieSync('https://zhlgd.whut.edu.cn/tp_up/view?m=up#act=portal/viewhome');
-          CookieUtil.getInstance().saveZHLGDCookie(cookie)
-          this.userModel.checkIsLogged().then((result) => {
-            if (result) {
-              const bundleName = (getContext(this) as common.UIAbilityContext).applicationInfo.name;
-              router.replaceUrl({
-                url: `@bundle:${bundleName}/entry/ets/pages/MainPage`
-              })
-            }
-          })
         })
     }
   }

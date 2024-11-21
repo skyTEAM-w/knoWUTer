@@ -55,6 +55,10 @@
     {
       "name": "xxl_padding_margin_large",
       "value": "24"
+    },
+    {
+      "name": "large_border_radius",
+      "value": "20"
     }
   ]
 }

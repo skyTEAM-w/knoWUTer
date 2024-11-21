@@ -3,6 +3,22 @@
     {
       "name": "start_window_background",
       "value": "#FFFFFF"
+    },
+    {
+      "name": "hall_review_item_bg",
+      "value": "#2D7CCB"
+    },
+    {
+      "name": "hall_close_item_bg",
+      "value": "#33ABA3"
+    },
+    {
+      "name": "hall_progress_item_bg",
+      "value": "#D3407A"
+    },
+    {
+      "name": "hall_score_item_bg",
+      "value": "#30A434"
     }
   ]
 }

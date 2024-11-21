@@ -15,6 +15,18 @@
     {
       "name": "text_user_setting",
       "value": "Mine"
+    },
+    {
+      "name": "work_hall",
+      "value": "Work Hall"
+    },
+    {
+      "name": "more_work_service",
+      "value": "more"
+    },
+    {
+      "name": "setting",
+      "value": "Setting"
     }
   ]
 }

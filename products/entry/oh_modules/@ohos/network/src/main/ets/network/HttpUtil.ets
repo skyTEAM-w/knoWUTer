@@ -86,7 +86,7 @@ export class HttpUtil {
     return await client.newCall(request).execute();
   }
 
-  public httpPostByRcp(url: string, headers: rcp.RequestHeaders, content?: rcp.Form | rcp.MultipartForm) {
+  public httpPostByRcp(url: string, headers: rcp.RequestHeaders, content?: rcp.Form | rcp.MultipartForm | string) {
     const req = new rcp.Request(url, 'POST', headers, content);
     console.debug(this.session.configuration?.requestConfiguration?.transfer?.autoRedirect + '')
     return new Promise((resolve: (value: rcp.Response | PromiseLike<rcp.Response>) => void, reject) => {

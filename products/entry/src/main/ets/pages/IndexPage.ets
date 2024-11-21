@@ -10,8 +10,8 @@ const TAG = '[IndexPage]'
 @Entry
 @Component
 struct IndexPage {
-  @State isShow: boolean = true;
-  @State isSkip: boolean = false;
+  @State isShow: boolean = false;
+  @State isSkip: boolean = true;
   @State isLogged: boolean = false;
   @StorageProp('currentBreakPoint') currentBreakPoint: string = BreakPointTypeEnum.MD;
   private userModel = UserModel.getInstance();
@@ -45,6 +45,8 @@ struct IndexPage {
             router.replaceUrl({
               url: 'pages/MainPage'
             })
+          } else {
+            this.isSkip = false;
           }
         }).catch((error: Error) => {
           console.error(JSON.stringify(error))
@@ -57,12 +59,11 @@ struct IndexPage {
   checkIsLogged() {
     this.userModel.checkIsLogged().then((isLogged) => {
       if (isLogged) {
-        this.preference.setValue<boolean>('isLogged', isLogged)
-        AppStorage.setOrCreate<boolean>('isLogged', isLogged)
         router.replaceUrl({
           url: 'pages/MainPage'
         })
       } else {
+        this.isLogged = false
         this.isShow = true
       }
     })
@@ -70,7 +71,7 @@ struct IndexPage {
 
   build() {
     Column() {
-      if (!this.isSkip && !this.isLogged && this.isShow) {
+      if (this.isShow) {
         Image($r('app.media.startIcon_whut'))
           .width(new BreakPointType({ sm: '100%', md: '77%', lg: '66%' }).getValue(this.currentBreakPoint))
           .objectFit(ImageFit.Contain)

@@ -15,6 +15,10 @@
     {
       "name": "loading_failed",
       "value": "Loading Failed! Please check your Connection or Login Status"
+    },
+    {
+      "name": "please_login",
+      "value": "Please Login"
     }
   ]
 }

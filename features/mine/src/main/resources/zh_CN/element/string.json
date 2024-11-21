@@ -15,6 +15,18 @@
     {
       "name": "text_user_setting",
       "value": "我的"
+    },
+    {
+      "name": "work_hall",
+      "value": "办事大厅"
+    },
+    {
+      "name": "more_work_service",
+      "value": "更多服务"
+    },
+    {
+      "name": "setting",
+      "value": "设置"
     }
   ]
 }
