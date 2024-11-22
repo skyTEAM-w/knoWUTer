@@ -1,7 +1,9 @@
 import { WebViewPage } from '@ohos/uicomponents';
-import { BreakPointTypeEnum } from '@ohos/utils';
+import { BreakPointTypeEnum, EventType } from '@ohos/utils';
 import { WorkHall } from '../component/WorkHall';
 import { UserModel } from '../model/UserModel';
+import { common } from '@kit.AbilityKit';
+import { MyInformation } from '../component/MyInformation';
 
 @Component
 export struct Hall {
@@ -11,13 +13,19 @@ export struct Hall {
   @Consume('appPathStack') appPathStack: NavPathStack;
   @Consume('minePathStack') minePathStack: NavPathStack;
   @State userModel: UserModel = UserModel.getInstance()
+  private eventHub: common.EventHub = (getContext(this) as common.UIAbilityContext).eventHub;
   innerScroller?: Scroller
-  handelClick: (url: string) => void = () => {
+  handelClickWork: (url: string) => void = () => {
+
+  }
+  handelClickInfo: (url: string) => void = () => {
 
   }
 
   aboutToAppear(): void {
     this.userModel.getWorkHallResourse();
+    this.userModel.getUnbackBook();
+    this.userModel.getCardMoney();
   }
 
   @Builder
@@ -29,14 +37,22 @@ export struct Hall {
 
   build() {
     Navigation(this.hallPathStack) {
-      List({ scroller: this.innerScroller }) {
+      List({ scroller: this.innerScroller, space: 10 }) {
         ListItem() {
           WorkHall({
+            userModel: this.userModel,
+            handelClick: this.handelClickWork,
             numberOfItemReview: this.userModel.numberOfItemReview,
             numberOfItemInProgress: this.userModel.numberOfItemInProgress,
             numberOfItemScore: this.userModel.numberOfItemScore,
-            numberOfItemClosing: this.userModel.numberOfItemClosing,
-            handelClick: this.handelClick
+            numberOfItemClosing: this.userModel.numberOfItemClosing
+          })
+        }
+
+        ListItem() {
+          MyInformation({
+            userModel: this.userModel,
+            handelClick: this.handelClickInfo
           })
         }
       }

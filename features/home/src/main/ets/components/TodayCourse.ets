@@ -24,7 +24,7 @@ export struct TodayCourse {
   @StorageLink('currentBreakPoint') currentBreakPoint: BreakPointTypeEnum = BreakPointTypeEnum.MD;
   @State todayCourseSchedules: LazyDataSource<CourseSchedule> = new LazyDataSource();
   @State hasCourse: boolean = false;
-  private currentWeekDay = new Date().getDay()
+  @State currentWeekDay: number = new Date().getDay()
   private eventHub: common.EventHub = (getContext(this) as common.UIAbilityContext).eventHub;
 
   aboutToAppear(): void {
@@ -75,8 +75,9 @@ export struct TodayCourse {
             weekDay as string, startSession as number, endSession as number, place as string, weekRangesStr as string))
         })
         this.todayCourseSchedules.pushArrayData(dataList);
+        AppStorage.setOrCreate<string>('currentWeekAndDay',
+          `第${this.currentWeek}周  周${WEEKS_START_SUNDAY[this.currentWeekDay]}`)
       })
-
   }
 
   build() {

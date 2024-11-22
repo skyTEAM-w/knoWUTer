@@ -24,6 +24,7 @@ export class UserNetFunc {
           if (responseJson) {
             resolve((responseJson as object)?.['NUM'])
           }
+          reject(new Object)
         })
         .catch((error: BusinessError) => {
           reject(error)
@@ -45,6 +46,7 @@ export class UserNetFunc {
           if (responseJson) {
             resolve((responseJson as object)?.['NUM'])
           }
+          reject(new Object)
         })
         .catch((error: BusinessError) => {
           reject(error)
@@ -66,6 +68,7 @@ export class UserNetFunc {
           if (responseJson) {
             resolve((responseJson as object)?.['NUM'])
           }
+          reject(new Object)
         })
         .catch((error: BusinessError) => {
           reject(error)
@@ -87,12 +90,60 @@ export class UserNetFunc {
           if (responseJson) {
             resolve((responseJson as object)?.['NUM'])
           }
+          reject(new Object)
         })
         .catch((error: BusinessError) => {
           reject(error)
         })
     })
   }
+
+  public getBookNum(cookie: string) {
+    const headers: rcp.RequestHeaders = {
+      "content-type": 'application/json;charset=utf-8',
+      "cookie": cookie
+    }
+    let content = '{}';
+    return new Promise((resolve: (value: number | PromiseLike<number>) => void,
+      reject: (value: object) => void) => {
+      this.httpUtil.httpPostByRcp('https://zhlgd.whut.edu.cn/tp_up/up/sysintegration/getlibraryRecordCount', headers,
+        content)
+        .then((response) => {
+          const responseJson = response.toJSON()
+          if (responseJson) {
+            resolve((responseJson as object)?.['UNBACKLIBRARYCOUNT'])
+          }
+          reject(new Object)
+        })
+        .catch((error: BusinessError) => {
+          reject(error)
+        })
+    })
+  }
+
+  public getCardMoney(cookie: string) {
+    const headers: rcp.RequestHeaders = {
+      "content-type": 'application/json;charset=utf-8',
+      "cookie": cookie
+    }
+    let content = '{}';
+    return new Promise((resolve: (value: number | PromiseLike<number>) => void,
+      reject: (value: object) => void) => {
+      this.httpUtil.httpPostByRcp('https://zhlgd.whut.edu.cn/tp_up/up/sysintegration/getCardMoney', headers, content)
+        .then((response) => {
+          const responseJson = response.toJSON()
+          if (responseJson) {
+            resolve((responseJson as object)?.['KHYE'])
+          }
+          reject(new Object)
+        })
+        .catch((error: BusinessError) => {
+          reject(error)
+        })
+    })
+  }
+
+
 
   public checkZhlgdIsLogged(cookie: string) {
     let headers: rcp.RequestHeaders = {

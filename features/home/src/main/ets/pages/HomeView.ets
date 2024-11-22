@@ -12,8 +12,10 @@ export struct Home {
   @Consume('homePathStack') homePathStack: NavPathStack;
   @Consume('appPathStack') appPathStack: NavPathStack;
   @StorageLink('currentBreakPoint') currentBreakPoint: BreakPointTypeEnum = BreakPointTypeEnum.MD;
+  @StorageLink('isShowWeekAndDay') isShowWeekAndDay: boolean = false;
   @State isRefresh: boolean = false;
   private webviewController: webview.WebviewController = new webview.WebviewController();
+  private outScroller: Scroller = new Scroller();
 
   aboutToAppear(): void {
     const eventHub: common.EventHub = (getContext(this) as common.UIAbilityContext).eventHub;
@@ -56,10 +58,17 @@ export struct Home {
       Column() {
         Stack() {
           Column() {
-            Scroll() {
+            Scroll(this.outScroller) {
               Column() {
                 Column()
                   .height($r('app.float.navigation_height'))
+                  .onVisibleAreaChange([0, 1], (isExpanding: boolean, currentRatio: number) => {
+                    if (currentRatio == 0 && !isExpanding && this.outScroller.currentOffset().yOffset !== 0) {
+                      this.isShowWeekAndDay = true;
+                    } else if (currentRatio == 1 && isExpanding) {
+                      this.isShowWeekAndDay = false;
+                    }
+                  })
                 Refresh({ refreshing: $$this.isRefresh }) {
                   WaterFlow() {
                     FlowItem() {

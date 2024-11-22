@@ -31,6 +31,26 @@
     {
       "name": "setting",
       "value": "Setting"
+    },
+    {
+      "name": "default_user_name",
+      "value": "WUTer"
+    },
+    {
+      "name": "always_skip_login",
+      "value": "always skip login page"
+    },
+    {
+      "name": "account",
+      "value": "Account"
+    },
+    {
+      "name": "logout",
+      "value": "Logout"
+    },
+    {
+      "name": "my_information",
+      "value": "My Info"
     }
   ]
 }

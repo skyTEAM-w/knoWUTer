@@ -1,4 +1,7 @@
-import { BreakPointType, BreakPointTypeEnum, CommonUrls } from '@ohos/utils';
+import { BreakPointType, BreakPointTypeEnum, CommonUrls, EventType } from '@ohos/utils';
+import { UserModel } from '../model/UserModel';
+import { User } from '../pages/UserView';
+import { common } from '@kit.AbilityKit';
 
 @Component
 export struct WorkHall {
@@ -6,11 +9,28 @@ export struct WorkHall {
   @Consume('hallPathStack') hallPathStack: NavPathStack;
   @Consume('appPathStack') appPathStack: NavPathStack;
   @Consume('minePathStack') minePathStack: NavPathStack;
-  @Prop numberOfItemReview: number = 0;
-  @Prop numberOfItemInProgress: number = 0;
-  @Prop numberOfItemScore: number = 0;
-  @Prop numberOfItemClosing: number = 0;
+  @ObjectLink userModel: UserModel;
+  @Prop numberOfItemReview: number = 0
+  @Prop numberOfItemInProgress: number = 0
+  @Prop numberOfItemScore: number = 0
+  @Prop numberOfItemClosing: number = 0
   handelClick: (url: string) => void = () => {
+  }
+
+  aboutToAppear(): void {
+    this.getNumber()
+    const eventHub: common.EventHub = (getContext(this) as common.UIAbilityContext).eventHub
+    eventHub.on(EventType.REFRESH_HALL, () => {
+      this.getNumber()
+    })
+  }
+
+  getNumber() {
+    this.userModel.getWorkHallResourse()
+    this.numberOfItemReview = this.userModel.numberOfItemReview;
+    this.numberOfItemInProgress = this.userModel.numberOfItemInProgress;
+    this.numberOfItemScore = this.userModel.numberOfItemScore;
+    this.numberOfItemClosing = this.userModel.numberOfItemClosing;
   }
 
   @Builder
@@ -48,7 +68,7 @@ export struct WorkHall {
         WorkHallItem({
           numberOfItem: this.numberOfItemInProgress,
           itemName: '在办事项',
-          itemSymbol: $r('sys.symbol.list_letter'),
+          itemSymbol: $r('sys.symbol.list_number'),
           itemBackgroundColor: $r('app.color.hall_progress_item_bg'),
           handelClick: this.handelClick,
           url: CommonUrls.WORK_HALL_PROGRESS_URL
@@ -87,10 +107,11 @@ export struct WorkHall {
 @Component
 struct WorkHallItem {
   @StorageProp('currentBreakPoint') currentBreakPoint: BreakPointTypeEnum = BreakPointTypeEnum.MD;
+  @StorageProp('isLogged') isLogged: boolean = false;
   @Consume('hallPathStack') hallPathStack: NavPathStack;
   @Consume('appPathStack') appPathStack: NavPathStack;
   @Consume('minePathStack') minePathStack: NavPathStack;
-  @Prop numberOfItem: number = 0;
+  @Prop numberOfItem: number;
   @Prop itemName: ResourceStr | undefined = undefined;
   @Prop itemSymbol: Resource;
   @Prop itemBackgroundColor: ResourceColor = 'rgba(0, 0, 233, 0.5)';
@@ -114,7 +135,7 @@ struct WorkHallItem {
       .height('100%')
 
       Blank()
-      Text(this.numberOfItem.toString())
+      Text(this.isLogged ? this.numberOfItem.toString() : '0')
         .fontSize(20)
         .fontColor($r('sys.color.white'))
     }

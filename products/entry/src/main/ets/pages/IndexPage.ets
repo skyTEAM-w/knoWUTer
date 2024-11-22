@@ -51,6 +51,9 @@ struct IndexPage {
         }).catch((error: Error) => {
           console.error(JSON.stringify(error))
         })
+      } else {
+        this.preference.setValue<boolean>('isAlwaysSkip', false);
+        this.isSkip = false;
       }
 
     })
@@ -93,6 +96,7 @@ struct IndexPage {
                 .fontColor($r('sys.color.ohos_id_color_text_secondary'))
                 .width('100%')
                 .onClick(() => {
+                  AppStorage.setOrCreate<boolean>('isLogged', false)
                   this.preference.setValue<boolean>('isAlwaysSkip', this.isSkip);
                   router.replaceUrl({
                     url: 'pages/MainPage'

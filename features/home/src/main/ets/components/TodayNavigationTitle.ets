@@ -1,11 +1,13 @@
 import { webview } from '@kit.ArkWeb';
-import { CookieUtil, EventType } from '@ohos/utils';
+import { CommonConstants, CookieUtil, EventType } from '@ohos/utils';
 import { common } from '@kit.AbilityKit';
 import { NewsModel } from '../model/NewsModel';
 
 @Component
 export struct TodayNavigationTitle {
   @StorageLink('zhlgd_cookie') cookie: string = AppStorage.get<string>('zhlgd_cookie') || '';
+  @StorageLink('isShowWeekAndDay') isShowWeekAndDay: boolean = false;
+  @StorageProp('currentWeekAndDay') currentWeekAndDay: string = '';
   @State isLoginShow: boolean = false;
   @State newsModel: NewsModel = NewsModel.getInstance();
   private webViewController: webview.WebviewController = new webview.WebviewController();
@@ -39,10 +41,18 @@ export struct TodayNavigationTitle {
     Row() {
       GridRow({ columns: { sm: 6, md: 8, lg: 12 } }) {
         GridCol({ span: { sm: 3, md: 4, lg: 6 } }) {
-          Row() {
+          Row({ space: 10 }) {
             Text($r('app.string.today'))
               .fontSize(24)
               .fontWeight(FontWeight.Bold)
+            if (this.isShowWeekAndDay) {
+              Text(this.currentWeekAndDay)
+                .fontSize(14)
+                .transition(TransitionEffect.OPACITY.combine(TransitionEffect.scale({ x: 0.8, y: 0.8 })).animation({
+                  duration: CommonConstants.VERY_SHORT_ANIMATION_DURATION,
+                  curve: Curve.Friction
+                }))
+            }
           }
           .justifyContent(FlexAlign.Start)
           .width('100%')

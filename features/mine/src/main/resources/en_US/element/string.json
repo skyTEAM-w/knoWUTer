@@ -26,7 +26,23 @@
     },
     {
       "name": "setting",
-      "value": "Setting"
+      "value": "Set up"
+    },
+    {
+      "name": "always_skip_login",
+      "value": "always skip login page"
+    },
+    {
+      "name": "account",
+      "value": "Account"
+    },
+    {
+      "name": "logout",
+      "value": "logout"
+    },
+    {
+      "name": "my_information",
+      "value": "My Info"
     }
   ]
 }

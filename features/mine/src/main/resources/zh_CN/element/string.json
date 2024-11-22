@@ -27,6 +27,22 @@
     {
       "name": "setting",
       "value": "设置"
+    },
+    {
+      "name": "always_skip_login",
+      "value": "总是跳过登录页"
+    },
+    {
+      "name": "account",
+      "value": "用户数据"
+    },
+    {
+      "name": "logout",
+      "value": "登出"
+    },
+    {
+      "name": "my_information",
+      "value": "我的信息"
     }
   ]
 }

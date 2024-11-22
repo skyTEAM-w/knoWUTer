@@ -19,6 +19,18 @@
     {
       "name": "hall_score_item_bg",
       "value": "#30A434"
+    },
+    {
+      "name": "hall_lib_item_bg",
+      "value": "#4CBDEC"
+    },
+    {
+      "name": "hall_email_item_bg",
+      "value": "#99CD7F"
+    },
+    {
+      "name": "hall_card_item_bg",
+      "value": "#FEB95B"
     }
   ]
 }

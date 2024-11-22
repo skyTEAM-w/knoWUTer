@@ -1,13 +1,15 @@
 import { WebViewPage } from '@ohos/uicomponents';
-import { BreakPointTypeEnum, EventType, SettingTwoStatus, UserSettingUtil } from '@ohos/utils';
+import { BreakPointTypeEnum, CommonConstants, EventType, SettingTwoStatus, UserSettingUtil } from '@ohos/utils';
 import { WorkHallUrl } from '../model/HallUrl';
 import { UserModel } from '../model/UserModel';
 import { Hall } from '../views/HallView';
 import { router } from '@kit.ArkUI';
 import { common } from '@kit.AbilityKit';
+import { SettingView } from '../views/SettingView';
 
 @Component
 export struct User {
+  @StorageProp('bottomTabIndex') bottomTabIndex: number = 2;
   @StorageLink('isShowInHeader') isShowInHeader: boolean = false;
   @Consume('minePathStack') minePathStack: NavPathStack;
   @Consume('appPathStack') appPathStack: NavPathStack;
@@ -20,7 +22,7 @@ export struct User {
     AppStorage.get<SettingTwoStatus>('customServiceListConfig') || SettingTwoStatus.OFF
   userSettingUtil: UserSettingUtil = UserSettingUtil.getInstance();
   @State isRefresh: boolean = false;
-  private userModel: UserModel = UserModel.getInstance()
+  @State userModel: UserModel = UserModel.getInstance()
   private outScroller: Scroller = new Scroller();
   private innerScroller: Scroller = new Scroller();
   private eventHub: common.EventHub = (getContext(this) as common.UIAbilityContext).eventHub;
@@ -40,6 +42,24 @@ export struct User {
   }
 
   jumpWorkHallWebView(url: string) {
+    if (this.currentBreakPoint === BreakPointTypeEnum.LG) {
+      this.hallPathStack.replacePathByName('WebViewPage', new Object({
+        webUrl: new WorkHallUrl(url),
+        onDestinationBack: () => {
+          this.hallPathStack.pop();
+        }
+      }))
+    } else {
+      this.appPathStack.pushPathByName('WebViewPage', new Object({
+        webUrl: new WorkHallUrl(url),
+        onDestinationBack: () => {
+          this.appPathStack.pop();
+        }
+      }))
+    }
+  }
+
+  jumpInformationWebView(url: string) {
     if (this.currentBreakPoint === BreakPointTypeEnum.LG) {
       this.hallPathStack.replacePathByName('WebViewPage', new Object({
         webUrl: new WorkHallUrl(url),
@@ -111,7 +131,8 @@ export struct User {
                 UserInfo()
               }
               .onVisibleAreaChange([0, 1], (isVisible: boolean, currentRatio: number) => {
-                if (currentRatio == 0 && !isVisible && this.outScroller.currentOffset().yOffset !== 0) {
+                if (currentRatio == 0 && !isVisible && this.outScroller.currentOffset().yOffset !== 0 &&
+                  this.bottomTabIndex === 4) {
                   this.isShowInHeader = true;
                 } else if (currentRatio == 1 && isVisible) {
                   this.isShowInHeader = false;
@@ -119,7 +140,11 @@ export struct User {
               })
 
               ListItem() {
-                Hall({ innerScroller: this.innerScroller, handelClick: this.jumpWorkHallWebView })
+                Hall({
+                  innerScroller: this.innerScroller,
+                  handelClickWork: this.jumpWorkHallWebView,
+                  handelClickInfo: this.jumpInformationWebView
+                })
               }
               .clip(true)
               .height('100%')
@@ -160,14 +185,24 @@ struct MineNavigationHeader {
   @StorageProp('isLogged') isLogged: boolean = false;
   @StorageProp('username') username: string | null = null;
   @StorageProp('currentBreakPoint') currentBreakPoint: BreakPointTypeEnum = BreakPointTypeEnum.MD;
+  @State isShowSetting: boolean = false;
+
+  @Builder
+  settingSheet() {
+    Column() {
+      SettingView()
+    }
+  }
+
   build() {
     Row() {
-      if (this.isShowInHeader) {
-        Text(this.isLogged ? this.username : $r('app.string.please_login'))
-          .transition(TransitionEffect.SLIDE.animation({ duration: 200, curve: Curve.Friction }))
-          .padding({ left: $r('app.float.xxl_padding_margin') })
-          .fontWeight(FontWeight.Bold)
-      }
+      Text(this.isLogged ? this.username : $r('app.string.please_login'))
+        .padding({ left: $r('app.float.xxl_padding_margin') })
+        .fontWeight(FontWeight.Bold)
+        .position({ y: this.isShowInHeader ? 16 : $r('app.float.mine_navigation_header_height') })
+        .opacity(this.isShowInHeader ? 1 : 0)
+        .scale(this.isShowInHeader ? { x: 1, y: 1 } : { x: 0.8, y: 0.8 })
+        .animation({ duration: CommonConstants.VERY_SHORT_ANIMATION_DURATION, curve: Curve.Friction })
       Blank()
       Button({ type: ButtonType.Circle }) {
         Row() {
@@ -175,8 +210,18 @@ struct MineNavigationHeader {
             .fontSize(24)
         }
       }
+      .bindSheet($$this.isShowSetting, this.settingSheet(), {
+        preferType: SheetType.CENTER,
+        dragBar: false,
+        maskColor: $r('sys.color.ohos_id_color_fourth'),
+        backgroundColor: $r('sys.color.ohos_id_color_panel_bg')
+      })
       .onClick(() => {
-        this.appPathStack.pushPathByName('SettingView', undefined)
+        if (this.currentBreakPoint !== BreakPointTypeEnum.SM) {
+          this.isShowSetting = true;
+        } else {
+          this.appPathStack.pushPathByName('SettingView', undefined)
+        }
       })
       .margin({ right: $r('app.float.xxl_padding_margin_large') })
       .clickEffect({ level: ClickEffectLevel.LIGHT, scale: 0.9 })
@@ -210,7 +255,7 @@ struct UserInfo {
       .justifyContent(this.isLogged ? FlexAlign.Start : FlexAlign.Center)
       .onClick(() => {
         if (!this.isLogged) {
-          router.pushNamedRoute({ name: 'LoginPage' })
+          router.replaceNamedRoute({ name: 'LoginPage' })
         }
       })
 

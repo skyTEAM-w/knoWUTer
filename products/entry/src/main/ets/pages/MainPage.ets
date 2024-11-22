@@ -12,7 +12,7 @@ import { UserView } from '@feature/mine/Index';
 @Entry
 @Component
 struct Index {
-  @State bottomTabIndex: number = 2;
+  @StorageLink('bottomTabIndex') bottomTabIndex: number = 2;
   @State bottomTabEffectIndex: number = 2;
   @Provide('serviceStack') serviceStack: NavPathStack = new NavPathStack();
   @Provide('appPathStack') appPathStack: NavPathStack = new NavPathStack();
@@ -34,6 +34,7 @@ struct Index {
 
   aboutToAppear(): void {
     this.breakPointSystem.register();
+
   }
 
   aboutToDisappear(): void {
