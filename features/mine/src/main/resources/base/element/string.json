@@ -1,0 +1,60 @@
+{
+  "string": [
+    {
+      "name": "module_desc",
+      "value": "module description"
+    },
+    {
+      "name": "MineAbility_desc",
+      "value": "description"
+    },
+    {
+      "name": "MineAbility_label",
+      "value": "label"
+    },
+    {
+      "name": "text_user_setting",
+      "value": "Mine"
+    },
+    {
+      "name": "work_hall",
+      "value": "Work Hall"
+    },
+    {
+      "name": "more_work_service",
+      "value": "more"
+    },
+    {
+      "name": "user_default_description",
+      "value": "厚德博学  追求卓越"
+    },
+    {
+      "name": "setting",
+      "value": "Setting"
+    },
+    {
+      "name": "default_user_name",
+      "value": "WUTer"
+    },
+    {
+      "name": "always_skip_login",
+      "value": "always skip login page"
+    },
+    {
+      "name": "account",
+      "value": "Account"
+    },
+    {
+      "name": "logout",
+      "value": "Logout"
+    },
+    {
+      "name": "my_information",
+      "value": "My Info"
+    },
+    {
+      "name": "application_setting",
+      "value": "App Setting"
+    }
+  ]
+}

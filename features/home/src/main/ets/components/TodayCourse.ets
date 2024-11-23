@@ -1,11 +1,12 @@
 import { CourseSchedule, WEEKS_START_SUNDAY } from '@feature/schedule/src/main/ets/model/CourseSchedule';
 import { JSON, taskpool } from '@kit.ArkTS';
-import { BreakPointType, BreakPointTypeEnum, DateUtil, EventType, LazyDataSource } from '@ohos/utils';
+import { BreakPointType, BreakPointTypeEnum, CommonConstants, DateUtil, EventType, LazyDataSource } from '@ohos/utils';
 import { getTodayCourse } from '../service/HomeTaskPoolFunc';
 import { relationalStore } from '@kit.ArkData';
 import { TodayCourseCard } from '@feature/schedule/src/main/ets/components/TodayCourseCard';
 import { common } from '@kit.AbilityKit';
 import { ScheduleEventData } from '@feature/schedule/src/main/ets/model/Schedule';
+import { curves } from '@kit.ArkUI';
 
 const TAG = '[TodayCourse]'
 
@@ -24,7 +25,8 @@ export struct TodayCourse {
   @StorageLink('currentBreakPoint') currentBreakPoint: BreakPointTypeEnum = BreakPointTypeEnum.MD;
   @State todayCourseSchedules: LazyDataSource<CourseSchedule> = new LazyDataSource();
   @State hasCourse: boolean = false;
-  private currentWeekDay = new Date().getDay()
+  @State currentWeekDay: number = new Date().getDay()
+  @Prop isThisTab: boolean;
   private eventHub: common.EventHub = (getContext(this) as common.UIAbilityContext).eventHub;
 
   aboutToAppear(): void {
@@ -38,11 +40,15 @@ export struct TodayCourse {
     this.eventHub.on(EventType.DELETE_COURSE, (): void => {
       this.getCourseScheduleList()
     })
+    this.eventHub.on(EventType.REFRESH_TODAY_COURSE, (): void => {
+      this.getCourseScheduleList();
+    })
     this.getCourseScheduleList()
   }
 
   getCourseScheduleList() {
     this.currentWeek = DateUtil.getWeeksBetweenDates(this.startDate, new DateUtil().getToday())
+    this.currentWeekDay = new Date().getDay()
     console.debug(TAG, this.selectedTableId)
     console.debug(TAG, this.startDate)
     console.debug(TAG, this.currentWeekDay)
@@ -71,19 +77,36 @@ export struct TodayCourse {
             weekDay as string, startSession as number, endSession as number, place as string, weekRangesStr as string))
         })
         this.todayCourseSchedules.pushArrayData(dataList);
+        AppStorage.setOrCreate<string>('currentWeekAndDay',
+          `第${this.currentWeek}周  周${WEEKS_START_SUNDAY[this.currentWeekDay]}`)
       })
-
   }
 
   build() {
     Column() {
       Row() {
-        Text('课程')
-          .fontSize($r('sys.float.ohos_id_text_size_headline8'))
-          .fontWeight(FontWeight.Bold)
-        Text(`第${this.currentWeek}周  周${WEEKS_START_SUNDAY[this.currentWeekDay]}`)
-          .fontSize($r('sys.float.ohos_id_text_size_body1'))
-          .margin({ right: 5 })
+        if (this.isThisTab) {
+          Text($r('app.string.today_course'))
+            .fontSize($r('sys.float.ohos_id_text_size_headline8'))
+            .fontWeight(FontWeight.Bold)
+            .transition(this.currentBreakPoint === BreakPointTypeEnum.LG ?
+            TransitionEffect.OPACITY.combine(TransitionEffect.scale({ x: 0.3, y: 0.3 }))
+              .animation({
+                curve: curves.springMotion(0.38, 0.7),
+                duration: CommonConstants.SHORT_ANIMATION_DURATION
+              }) : TransitionEffect.move(TransitionEdge.START)
+              .animation({ curve: curves.springMotion(0.38, 0.7), duration: CommonConstants.SHORT_ANIMATION_DURATION }))
+          Text(`第${this.currentWeek}周  周${WEEKS_START_SUNDAY[this.currentWeekDay]}`)
+            .fontSize($r('sys.float.ohos_id_text_size_body1'))
+            .margin({ right: 5 })
+            .transition(this.currentBreakPoint === BreakPointTypeEnum.LG ?
+            TransitionEffect.OPACITY.combine(TransitionEffect.scale({ x: 0.3, y: 0.3 }))
+              .animation({
+                curve: curves.springMotion(0.38, 0.7),
+                duration: CommonConstants.SHORT_ANIMATION_DURATION
+              }) : TransitionEffect.move(TransitionEdge.END)
+              .animation({ curve: curves.springMotion(0.38, 0.7), duration: CommonConstants.SHORT_ANIMATION_DURATION }))
+        }
       }
       .justifyContent(FlexAlign.SpaceBetween)
       .width('100%')
@@ -100,9 +123,16 @@ export struct TodayCourse {
             ListItem() {
               TodayCourseCard({ courseSchedule: item })
             }
+            .opacity(this.isThisTab ? 1 : 0)
+            .scale(this.isThisTab ? { x: 1, y: 1 } : { x: 0, y: 0 })
+            .animation({
+              curve: curves.springMotion(0.35, 0.77),
+              delay: CommonConstants.NORMAL_ANIMATION_DELAY * index
+            })
             .margin({ left: 5, right: 5 })
           }, (item: CourseSchedule, index: number) => JSON.stringify(item) + index.toString())
         }
+        .clip(false)
         .nestedScroll({ scrollForward: NestedScrollMode.PARENT_FIRST, scrollBackward: NestedScrollMode.PARENT_FIRST })
         .lanes(new BreakPointType({ sm: 2, md: 3, lg: 2 }).getValue(this.currentBreakPoint))
         .margin(this.currentBreakPoint === BreakPointTypeEnum.LG ?

@@ -23,6 +23,26 @@
     {
       "name": "loading_failed",
       "value": "加载失败！请检查网络连接或登录状态"
+    },
+    {
+      "name": "please_login",
+      "value": "请登录"
+    },
+    {
+      "name": "user_name",
+      "value": "用户名"
+    },
+    {
+      "name": "password",
+      "value": "密码"
+    },
+    {
+      "name": "login",
+      "value": "登录"
+    },
+    {
+      "name": "save",
+      "value": "保存"
     }
   ]
 }

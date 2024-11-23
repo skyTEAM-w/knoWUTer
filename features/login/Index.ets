@@ -1,0 +1,1 @@
+export { LoginNetFunc } from './src/main/ets/service/LoginNetFunc'

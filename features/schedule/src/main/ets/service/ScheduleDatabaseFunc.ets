@@ -314,7 +314,8 @@ export class ScheduleDatabaseFunc {
     let predicates = new relationalStore.RdbPredicates(CourseScheduleTable);
     predicates.equalTo('TableId', courseSchedule.TableId)
       .and()
-      .equalTo('ClassId', courseSchedule.ClassId).and()
+      .equalTo('ClassId', courseSchedule.ClassId)
+      .and()
       .equalTo('ScheduleId', courseSchedule.ScheduleId);
     const valueBucket: ValuesBucket = {
       WeekRanges: courseSchedule.weekRanges,

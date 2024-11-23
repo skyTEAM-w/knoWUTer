@@ -51,6 +51,34 @@
     {
       "name": "news_tab_bar_height",
       "value": "44"
+    },
+    {
+      "name": "xxl_padding_margin_large",
+      "value": "24"
+    },
+    {
+      "name": "large_border_radius",
+      "value": "20"
+    },
+    {
+      "name": "normal_text_line_height",
+      "value": "22"
+    },
+    {
+      "name": "nav_title_font_size",
+      "value": "24"
+    },
+    {
+      "name": "sm_padding_margin",
+      "value": "8"
+    },
+    {
+      "name": "ss_padding_margin",
+      "value": "4"
+    },
+    {
+      "name": "toggle_width",
+      "value": "40"
     }
   ]
 }

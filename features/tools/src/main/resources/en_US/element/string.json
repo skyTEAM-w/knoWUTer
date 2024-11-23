@@ -11,6 +11,38 @@
     {
       "name": "ToolsAbility_label",
       "value": "label"
+    },
+    {
+      "name": "campus_net_login_successfully",
+      "value": "Login Succeed!"
+    },
+    {
+      "name": "campus_net_auth_failed",
+      "value": "Authentication Failed"
+    },
+    {
+      "name": "campus_net_require_code",
+      "value": "Verification code required"
+    },
+    {
+      "name": "campus_net_other",
+      "value": "Check WLAN connection or the device has logged in"
+    },
+    {
+      "name": "net_login_failed",
+      "value": "Login Failed"
+    },
+    {
+      "name": "campus_net_logout_successfully",
+      "value": "Logout Succeed"
+    },
+    {
+      "name": "login_net",
+      "value": "Login"
+    },
+    {
+      "name": "logout_net",
+      "value": "Logout"
     }
   ]
 }

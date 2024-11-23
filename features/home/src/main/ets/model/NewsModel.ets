@@ -68,7 +68,7 @@ export class NewsModel {
             }
           }
         })
-        console.debug(TAG, JSON.stringify(this.comprehensiveNews))
+        console.debug(TAG, JSON.stringify(this.departmentNews))
         this.loadingStatus = LoadingStatus.SUCCESS;
         resolve();
       }).catch((err: Error) => {
@@ -80,5 +80,13 @@ export class NewsModel {
 
   checkZHLGDCookie(): Promise<string | null> {
     return PreferencesUtil.getInstance().getValue<string>(ZHLGD_COOKIE)
+  }
+
+  checkZhlgdLogged() {
+    return new Promise((resolve: (value: boolean | PromiseLike<boolean>) => void, reject) => {
+      this.checkZHLGDCookie().then((cookie) => {
+        resolve(this.networkFun.checkLoginStatus(cookie as string))
+      })
+    })
   }
 }

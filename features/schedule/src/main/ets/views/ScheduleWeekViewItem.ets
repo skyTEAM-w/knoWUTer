@@ -1,13 +1,17 @@
-import { DateUtil, Day, EventType } from '@ohos/utils';
+import { CommonConstants, DateUtil, Day, EventType } from '@ohos/utils';
 import { CourseSchedule, TIME_TABLE, TimeTable, WEEKS } from '../model/CourseSchedule';
 import { ScheduleDatabaseFunc } from '../service/ScheduleDatabaseFunc';
 import { Schedule } from '../model/Schedule';
 import { paddingCourseSchedule } from '../service/ScheduleBaseFunc';
 import { WeekScheduleCard } from '../components/WeekSheduleCard';
 import { common } from '@kit.AbilityKit';
+import { curves } from '@kit.ArkUI';
 
 @Component
 export struct ScheduleWeekViewItem {
+  @StorageProp('bottomTabIndex') @Watch('onBottomIndexChange') bottomTabIndex: number = 2;
+  @Prop @Watch('onBottomIndexChange') tabSelectedIndexes: number[]
+  @State isThisTab: boolean = false;
   @Link isCookieShow: boolean;
   @Link isSettingShow: boolean;
   @Link isScheduleShow: boolean;
@@ -20,6 +24,8 @@ export struct ScheduleWeekViewItem {
   @Prop @Watch("updateWeekData") selectedSchedule: Schedule;
   private scheduleDBFunc: ScheduleDatabaseFunc = new ScheduleDatabaseFunc();
   private scrollController = new Scroller();
+  private timeTableScale: ScaleOptions = { x: 0.3, y: 0.3 }
+  private timeTableCurve: ICurve = curves.springMotion(0.35, 0.66)
 
   aboutToAppear(): void {
     this.getWeekViewData(this.weekNum);
@@ -27,6 +33,10 @@ export struct ScheduleWeekViewItem {
     const eventHub: common.EventHub = (getContext(this) as common.UIAbilityContext).eventHub;
     eventHub.on(EventType.UPDATE_COURSE, (): void => this.updateWeekData());
     eventHub.on(EventType.DELETE_COURSE, (): void => this.updateWeekData());
+  }
+
+  onBottomIndexChange() {
+    this.isThisTab = this.bottomTabIndex === CommonConstants.SCHEDULE_BOTTOM_INDEX && this.tabSelectedIndexes[0] === 0;
   }
 
   getWeekViewData(weekNum: number) {
@@ -82,15 +92,23 @@ export struct ScheduleWeekViewItem {
               .fontSize(12)
               .fontWeight(FontWeight.Bold)
           }
+          .opacity(this.isThisTab ? 1 : 0.5)
+          .scale(this.isThisTab ? CommonConstants.FULL_SCALE : this.timeTableScale)
+          .animation({ curve: this.timeTableCurve })
         }
 
         ForEach(this.weekDays, (items: Day[]) => {
           ForEach(items, (item: Day, index: number) => {
-            WeekDayColumnHeader({ day: item, weekDay: index })
+            WeekDayColumnHeader({
+              day: item,
+              weekDay: index,
+              isThisTab: this.isThisTab,
+              timeTableScale: this.timeTableScale,
+              timeTableCurve: this.timeTableCurve
+            })
           }, (item: Day, index: number) => {
             return item.dayNum + '' + index;
           })
-          // .justifyContent(FlexAlign.SpaceBetween)
         }, (item: Day[], index: number) => {
           return item.reduce((item1, item2) => {
             return item1 + item2.dayInfo.year + item2.dayInfo.month + item2.dayInfo.date
@@ -100,7 +118,11 @@ export struct ScheduleWeekViewItem {
 
       Scroll(this.scrollController) {
         GridRow({ columns: { sm: 8, md: 8, lg: 15 } }) {
-          TimeTableColumn()
+          TimeTableColumn({
+            isThisTab: this.isThisTab,
+            timeTableScale: this.timeTableScale,
+            timeTableCurve: this.timeTableCurve
+          })
           ForEach(this.weekCourse, (item: CourseSchedule[], index: number) => {
             WeekDayColumn({
               dayCourse: item,
@@ -110,7 +132,8 @@ export struct ScheduleWeekViewItem {
               isScheduleShow: this.isScheduleShow,
               weekCourse: this.weekCourse,
               selectedCourse: this.selectedCourse,
-              indexX: index
+              indexX: index,
+              tabSelectedIndexes: this.tabSelectedIndexes
             })
           })
         }
@@ -129,42 +152,51 @@ export struct ScheduleWeekViewItem {
 struct WeekDayColumnHeader {
   @Prop day: Day;
   @Prop weekDay: number
+  @Prop isThisTab: boolean;
+  timeTableScale?: ScaleOptions
+  timeTableCurve?: ICurve;
 
   build() {
     GridCol({ span: { sm: 1, md: 1, lg: 2 } }) {
       Column() {
-        Column() {
-          if (new DateUtil().getToday() ===
-          [this.day.dayInfo.year, this.day.dayInfo.month, this.day.dayInfo.date].join('/')) {
-            Text(this.day.dayInfo.month + '/' + this.day.dayNum.toString())
-              .fontSize(12)
-              .fontWeight(FontWeight.Medium)
-            Text(WEEKS[this.weekDay])
-              .fontSize(12)
-              .fontWeight(FontWeight.Medium)
-          } else {
-            Text(this.day.dayInfo.month + '/' + this.day.dayNum.toString())
-              .fontSize(12)
-              .fontColor(Color.Gray)
-              .opacity(0.8)
-            Text(WEEKS[this.weekDay])
-              .fontSize(12)
-              .fontColor(Color.Gray)
-              .opacity(0.8)
-          }
-
+        if (new DateUtil().getToday() ===
+        [this.day.dayInfo.year, this.day.dayInfo.month, this.day.dayInfo.date].join('/')) {
+          Text(this.day.dayInfo.month + '/' + this.day.dayNum.toString())
+            .fontSize(12)
+            .fontWeight(FontWeight.Medium)
+          Text(WEEKS[this.weekDay])
+            .fontSize(12)
+            .fontWeight(FontWeight.Medium)
+        } else {
+          Text(this.day.dayInfo.month + '/' + this.day.dayNum.toString())
+            .fontSize(12)
+            .fontColor(Color.Gray)
+            .opacity(0.8)
+          Text(WEEKS[this.weekDay])
+            .fontSize(12)
+            .fontColor(Color.Gray)
+            .opacity(0.8)
         }
       }
+      .opacity(this.isThisTab ? 1 : 0)
+      .scale(this.isThisTab ? CommonConstants.FULL_SCALE : this.timeTableScale)
+      .animation(this.isThisTab ?
+        { curve: this.timeTableCurve, delay: CommonConstants.NORMAL_ANIMATION_DELAY * (this.weekDay + 1) } :
+        { curve: Curve.Linear, duration: 0 })
     }
   }
 }
 
 @Component
 struct TimeTableColumn {
+  @Prop isThisTab: boolean;
+  timeTableScale?: ScaleOptions
+  timeTableCurve?: ICurve;
+
   build() {
     GridCol({ span: 1 }) {
       Column() {
-        ForEach(TIME_TABLE, (item: TimeTable) => {
+        ForEach(TIME_TABLE, (item: TimeTable, index: number) => {
           Column() {
             Text(item.session.toString())
               .fontSize(12)
@@ -173,6 +205,11 @@ struct TimeTableColumn {
             Text(item.EndTime)
               .fontSize(12)
           }
+          .scale(this.isThisTab ? CommonConstants.FULL_SCALE : this.timeTableScale)
+          .opacity(this.isThisTab ? 1 : 0)
+          .animation(this.isThisTab ?
+            { curve: this.timeTableCurve, delay: CommonConstants.NORMAL_ANIMATION_DELAY * (index + 1) } :
+            { curve: Curve.Linear, duration: 0 })
           .justifyContent(FlexAlign.Center)
           .height($r('app.float.course_schedule_height'))
         })
@@ -185,6 +222,7 @@ struct TimeTableColumn {
 
 @Component
 struct WeekDayColumn {
+  @Prop tabSelectedIndexes: number[]
   @Link isCookieShow: boolean;
   @Link isSettingShow: boolean;
   @Link isScheduleShow: boolean;
@@ -211,7 +249,8 @@ struct WeekDayColumn {
               isSettingShow: this.isSettingShow,
               isScheduleShow: this.isScheduleShow,
               weekCourse: this.weekCourse,
-              selectedCourse: this.selectedCourse
+              selectedCourse: this.selectedCourse,
+              tabSelectedIndexes: this.tabSelectedIndexes
             })
           }
         }, (item: CourseSchedule, index: number) => index.toString())

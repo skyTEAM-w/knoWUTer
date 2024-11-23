@@ -6,6 +6,7 @@ import { Schedule } from '../model/Schedule';
 import { ScheduleDatabaseFunc } from '../service/ScheduleDatabaseFunc';
 import { ScheduleNetFunc } from '../service/ScheduleNetFunc';
 import { common } from '@kit.AbilityKit';
+import { curves } from '@kit.ArkUI';
 
 const INTERVAL = 30;
 const DURATION = 300;
@@ -36,7 +37,7 @@ export struct ScheduleListView {
   }
 
   updateCourseInformation() {
-      this.courseList.pushArrayData((new ScheduleDatabaseFunc().queryAllCourseInformation(this.selectedSchedule as Schedule) as LazyDataSource<Course>).getDataList())
+    this.courseList.pushArrayData((new ScheduleDatabaseFunc().queryAllCourseInformation(this.selectedSchedule as Schedule) as LazyDataSource<Course>).getDataList())
   }
 
   updateCourseEvent() {
@@ -70,7 +71,7 @@ export struct ScheduleListView {
         }
         .padding({ left: $r('app.float.md_padding_margin'), right: $r('app.float.md_padding_margin') })
         .transition(TransitionEffect.OPACITY.combine(TransitionEffect.scale({ x: 0.8, y: 0.8 }))
-          .animation({ duration: DURATION, curve: Curve.Friction, delay: INTERVAL * index }))
+          .animation({ duration: DURATION, curve: curves.springMotion(0.4, 0.6), delay: INTERVAL * index }))
       }, (item: Course, index: number) => JSON.stringify(item) + index.toString())
       FlowItem() {
 

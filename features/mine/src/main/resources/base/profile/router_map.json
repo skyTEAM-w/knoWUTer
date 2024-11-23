@@ -1,0 +1,14 @@
+{
+  "routerMap": [
+    {
+      "name": "SettingView",
+      "pageSourceFile": "src/main/ets/views/SettingView.ets",
+      "buildFunction": "SettingViewBuilder"
+    },
+    {
+      "name": "AccountView",
+      "pageSourceFile": "src/main/ets/views/AccountView.ets",
+      "buildFunction": "AccountViewBuilder"
+    }
+  ]
+}

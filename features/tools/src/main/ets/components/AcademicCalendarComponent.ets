@@ -59,9 +59,8 @@ export struct AcademicCalender {
     }
     .renderFit(RenderFit.RESIZE_CONTAIN)
     .justifyContent(FlexAlign.Center)
-    .backgroundColor($r('app.color.whut_blue_background'))
+    .backgroundColor($r('app.color.whut_yellow_background_selected'))
     .borderRadius($r('app.float.border_radius'))
-    .borderWidth(1)
     .borderStyle(BorderStyle.Solid)
     .clickEffect({ level: ClickEffectLevel.LIGHT })
     .width('100%')

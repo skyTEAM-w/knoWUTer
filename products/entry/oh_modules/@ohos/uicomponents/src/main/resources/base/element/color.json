@@ -42,7 +42,7 @@
     },
     {
       "name": "whut_yellow_background_selected",
-      "value": "#40FAC640"
+      "value": "#FFFADA94"
     },
     {
       "name": "whut_blue_background_thick",
@@ -59,6 +59,22 @@
     {
       "name": "delete_button_background",
       "value": "#9AFF8A8A"
+    },
+    {
+      "name": "sky_blue_background",
+      "value": "#E0F7FA"
+    },
+    {
+      "name": "leaf_green_background",
+      "value": "#D0F8CE"
+    },
+    {
+      "name": "thin_pink_background",
+      "value": "#FFEBEE"
+    },
+    {
+      "name": "thin_yellow_background",
+      "value": "#FFFDE7"
     }
   ]
 }

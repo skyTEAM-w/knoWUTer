@@ -19,6 +19,10 @@
     {
       "name": "today",
       "value": "Today"
+    },
+    {
+      "name": "today_course",
+      "value": "Course"
     }
   ]
 }
