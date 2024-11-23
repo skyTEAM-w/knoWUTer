@@ -74,21 +74,27 @@ struct UserAccountSetting {
 struct ApplicationSetting {
   build() {
     Column({ space: 5 }) {
-      Row() {
-        SkipLoginSetting()
+      Text($r('app.string.application_setting'))
+        .fontSize($r('sys.float.ohos_id_text_size_body2'))
+        .fontWeight(FontWeight.Medium)
+        .width('100%')
+      Column({ space: 5 }) {
+        Row() {
+          SkipLoginSetting()
+        }
+        .height($r('app.float.app_setting_item_height'))
+        .width('100%')
       }
-      .height($r('app.float.app_setting_item_height'))
+      .backgroundColor($r('sys.color.comp_background_primary'))
       .width('100%')
+      .borderRadius($r('app.float.light_border_radius'))
+      .padding({
+        left: $r('app.float.sm_padding_margin'),
+        top: $r('app.float.lg_padding_margin'),
+        right: $r('app.float.sm_padding_margin'),
+        bottom: $r('app.float.lg_padding_margin')
+      })
     }
-    .backgroundColor($r('sys.color.comp_background_primary'))
-    .width('100%')
-    .borderRadius($r('app.float.light_border_radius'))
-    .padding({
-      left: $r('app.float.sm_padding_margin'),
-      top: $r('app.float.lg_padding_margin'),
-      right: $r('app.float.sm_padding_margin'),
-      bottom: $r('app.float.lg_padding_margin')
-    })
   }
 }
 

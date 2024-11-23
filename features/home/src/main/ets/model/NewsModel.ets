@@ -68,7 +68,7 @@ export class NewsModel {
             }
           }
         })
-        console.debug(TAG, JSON.stringify(this.comprehensiveNews))
+        console.debug(TAG, JSON.stringify(this.departmentNews))
         this.loadingStatus = LoadingStatus.SUCCESS;
         resolve();
       }).catch((err: Error) => {

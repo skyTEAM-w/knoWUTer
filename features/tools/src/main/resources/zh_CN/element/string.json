@@ -23,6 +23,38 @@
     {
       "name": "text_tools",
       "value": "工具"
+    },
+    {
+      "name": "campus_net_login_successfully",
+      "value": "校园网登录成功"
+    },
+    {
+      "name": "campus_net_auth_failed",
+      "value": "认证失败"
+    },
+    {
+      "name": "campus_net_require_code",
+      "value": "需要验证码"
+    },
+    {
+      "name": "campus_net_other",
+      "value": "1. 网络未连接; 2.用户名密码错误; 3. 设备已经登录"
+    },
+    {
+      "name": "net_login_failed",
+      "value": "登录失败"
+    },
+    {
+      "name": "campus_net_logout_successfully",
+      "value": "校园网注销成功"
+    },
+    {
+      "name": "login_net",
+      "value": "登录"
+    },
+    {
+      "name": "logout_net",
+      "value": "注销"
     }
   ]
 }

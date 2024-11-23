@@ -43,6 +43,10 @@
     {
       "name": "my_information",
       "value": "我的信息"
+    },
+    {
+      "name": "application_setting",
+      "value": "应用设置"
     }
   ]
 }

@@ -51,6 +51,10 @@
     {
       "name": "my_information",
       "value": "My Info"
+    },
+    {
+      "name": "application_setting",
+      "value": "App Setting"
     }
   ]
 }

@@ -31,10 +31,6 @@ export struct ClassInformationCard {
   @State isShow: boolean = false;
   longPressEnable?: boolean;
   index: number = -1;
-  private mDate = new DateUtil();
-  jumpEditCourseInformation: (courseId: string, tableId: string) => void = () => {
-
-  };
   confirmDialogController: CustomDialogController | null = new CustomDialogController({
     builder: TipsDialog({
       title: '删除课程',
@@ -57,6 +53,10 @@ export struct ClassInformationCard {
       }
     })
   })
+  private mDate = new DateUtil();
+  jumpEditCourseInformation: (courseId: string, tableId: string) => void = () => {
+
+  };
 
   @Styles
   scheduleCardStyle() {
@@ -78,19 +78,6 @@ export struct ClassInformationCard {
     }
     eventHub.on(EventType.UPDATE_COURSE, (): void => this.updateCourseInformation())
   }
-
-  // aboutToReuse(params: Record<string, Object>): void {
-  //   this.courseInformation = params.courseInformation as Course;
-  //   if (this.courseInformation && this.courseInformation.classDateAndPlace) {
-  //     console.debug(TAG, 'aboutToReuse', JSON.stringify(this.courseInformation))
-  //     let courseScheduleList =
-  //       classDateAndPlaceToCourseSchedule(this.courseInformation, new Schedule('', '', ''), false);
-  //     if (courseScheduleList) {
-  //       this.courseSchedules.pushArrayData(courseScheduleList);
-  //     }
-  //     // this.getCourseSchedule()
-  //   }
-  // }
 
   updateCourseInformation() {
     if (this.courseInformation.classDateAndPlace) {
@@ -121,7 +108,8 @@ export struct ClassInformationCard {
           this.jumpEditCourseInformation(this.courseInformation.classId, this.selectedSchedule.scheduleId);
         })
       MenuItem({
-        symbolStartIcon: new SymbolGlyphModifier($r('sys.symbol.trash')).fontSize(24).fontColor([$r('sys.color.warning')]),
+        symbolStartIcon: new SymbolGlyphModifier($r('sys.symbol.trash')).fontSize(24)
+          .fontColor([$r('sys.color.warning')]),
         content: '删除'
       })
         .contentFontColor($r('sys.color.warning'))
@@ -157,7 +145,7 @@ export struct ClassInformationCard {
             .justifyContent(FlexAlign.Start)
             .scheduleCardStyle()
 
-            Divider()
+            Divider().width('90%')
             Row() {
               SymbolGlyph($r('sys.symbol.clock_fill'))
                 .fontSize(20)
@@ -169,6 +157,7 @@ export struct ClassInformationCard {
             .scheduleCardStyle()
 
             Divider()
+              .width('90%')
             Row() {
               SymbolGlyph($r('sys.symbol.location_north_up_right_circle_fill'))
                 .fontSize(20)
@@ -181,7 +170,6 @@ export struct ClassInformationCard {
           }
           .width('100%')
           .backgroundColor($r('sys.color.background_tertiary'))
-          .borderWidth(1)
           .borderRadius($r('app.float.main_border_radius'))
           .padding($r('app.float.course_card_padding'))
         })

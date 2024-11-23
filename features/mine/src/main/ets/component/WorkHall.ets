@@ -1,6 +1,5 @@
 import { BreakPointType, BreakPointTypeEnum, CommonUrls, EventType } from '@ohos/utils';
 import { UserModel } from '../model/UserModel';
-import { User } from '../pages/UserView';
 import { common } from '@kit.AbilityKit';
 
 @Component
@@ -46,6 +45,7 @@ export struct WorkHall {
         .fontColor($r('sys.color.font_secondary'))
         .onClick(() => this.handelClick(CommonUrls.WORK_HALL_URL))
     }
+    .padding({ top: 10 })
     .width('100%')
   }
 

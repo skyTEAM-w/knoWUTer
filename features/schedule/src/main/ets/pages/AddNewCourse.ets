@@ -22,9 +22,6 @@ export struct AddNewCourse {
   @State courseInformation: Course | undefined = undefined;
   @State courseSchedule: LazyDataSource<CourseSchedule> = new LazyDataSource();
   @State courseColor: ResourceColor = '#FF000000';
-  private scheduleDbFunc = new ScheduleDatabaseFunc();
-  private mDate = new DateUtil();
-  private scheduleCount = 0;
   confirmDialogController: CustomDialogController | null = new CustomDialogController({
     builder: TipsDialog({
       title: '保存新的课程',
@@ -49,6 +46,10 @@ export struct AddNewCourse {
       color: this.courseColor
     })
   })
+  private scheduleDbFunc = new ScheduleDatabaseFunc();
+  private mDate = new DateUtil();
+  private scheduleCount = 0;
+
   onDestinationBack: () => void = () => {
   };
 
@@ -63,7 +64,8 @@ export struct AddNewCourse {
     if (this.courseInformation && this.courseSchedule) {
       this.courseInformation.classDateAndPlace =
         courseScheduleToClassDateAndPlace(this.courseSchedule?.getDataList() as CourseSchedule[]);
-      this.courseInformation.courseName = this.courseInformation.courseName === '' ? '新课程' : this.courseInformation.courseName;
+      this.courseInformation.courseName =
+        this.courseInformation.courseName === '' ? '新课程' : this.courseInformation.courseName;
       console.debug(JSON.stringify(this.courseInformation))
       this.scheduleDbFunc.insertCourseInformation([this.courseInformation],
         new Schedule(this.selectedTableId as string, '', ''),

@@ -1,12 +1,14 @@
-import { BreakPointTypeEnum, CookieUtil, DateUtil, LazyDataSource, VibrateUtil } from '@ohos/utils';
+import { BreakPointTypeEnum, CommonConstants, CookieUtil, DateUtil, LazyDataSource, VibrateUtil } from '@ohos/utils';
 import { Schedule } from '../model/Schedule';
 import { webview } from '@kit.ArkWeb';
 import { ScheduleNetFunc } from '../service/ScheduleNetFunc';
-import { promptAction, SegmentButton, SegmentButtonOptions, SymbolGlyphModifier } from '@kit.ArkUI';
+import { curves, promptAction, SegmentButton, SegmentButtonOptions, SymbolGlyphModifier } from '@kit.ArkUI';
 import { ScheduleCard } from './ScheduleCard';
 
 @Component
 export struct ScheduleNavigation {
+  @StorageProp('bottomTabIndex') @Watch('onBottomIndexChange') bottomTabIndex: number = 2;
+  @State isThisTab: boolean = false;
   @Link selectedScheduleTableIndex: number | undefined;
   @Link selectedDate: Date;
   @Link isCookieShow: boolean;
@@ -25,6 +27,11 @@ export struct ScheduleNavigation {
   private mDate = new DateUtil();
   private webViewController: webview.WebviewController = new webview.WebviewController();
   private scheduleNetFunc = new ScheduleNetFunc();
+  private navigationSpringCurve: ICurve = curves.springMotion(0.38, 0.7)
+
+  onBottomIndexChange() {
+    this.isThisTab = this.bottomTabIndex === CommonConstants.SCHEDULE_BOTTOM_INDEX;
+  }
 
   jumpCreateNewSchedule() {
     if (this.currentBreakPoint === BreakPointTypeEnum.LG) {
@@ -256,35 +263,38 @@ export struct ScheduleNavigation {
     Row() {
       GridRow({ columns: { sm: 6, md: 10, lg: 12 } }) {
         GridCol({ span: { sm: 3, md: 3, lg: 3 } }) {
-          Column() {
-            TextClock()
-              .format('yyyy/MM/dd')
-              .fontSize(22)
-              .fontWeight(FontWeight.Bold)
-            Row({ space: 5 }) {
-              Text('第' + this.selectWeek + '周')
-              if (this.currentWeek === this.selectWeek) {
-                TextClock()
-                  .format('EEEE')
-              } else {
-                Text('非本周')
-              }
+          if (this.isThisTab) {
+            Column() {
+              TextClock()
+                .format('yyyy/MM/dd')
+                .fontSize(22)
+                .fontWeight(FontWeight.Bold)
+              Row({ space: 5 }) {
+                Text('第' + this.selectWeek + '周')
+                if (this.currentWeek === this.selectWeek) {
+                  TextClock()
+                    .format('EEEE')
+                } else {
+                  Text('非本周')
+                }
 
+              }
             }
+            .width('100%')
+            .height('100%')
+            .alignItems(HorizontalAlign.Start)
+            .justifyContent(FlexAlign.SpaceBetween)
+            .bindMenu([{
+              value: '回到本周',
+              symbolIcon: new SymbolGlyphModifier($r(`sys.symbol.calendar_${new Date().getDate()
+                .toString()
+                .padStart(2, '0')}`)).fontSize(24),
+              action: () => {
+                this.selectWeek = this.currentWeek;
+              }
+            }], { placement: Placement.BottomLeft, offset: { x: 15, y: 0 } })
+            .transition(TransitionEffect.move(TransitionEdge.START).animation({ curve: this.navigationSpringCurve }))
           }
-          .width('100%')
-          .height('100%')
-          .alignItems(HorizontalAlign.Start)
-          .justifyContent(FlexAlign.SpaceBetween)
-          .bindMenu([{
-            value: '回到本周',
-            symbolIcon: new SymbolGlyphModifier($r(`sys.symbol.calendar_${new Date().getDate()
-              .toString()
-              .padStart(2, '0')}`)).fontSize(24),
-            action: () => {
-              this.selectWeek = this.currentWeek;
-            }
-          }], { placement: Placement.BottomLeft, offset: { x: 15, y: 0 } })
         }
         .alignSelf(ItemAlign.Start)
 
@@ -293,69 +303,77 @@ export struct ScheduleNavigation {
 
         GridCol({ span: { sm: 1, md: 4, lg: 4 } }) {
           if (this.currentBreakPoint !== BreakPointTypeEnum.SM) {
-            SegmentButton({
-              options: this.tabOptions,
-              selectedIndexes: this.tabSelectedIndexes
-            })
+            Row() {
+              SegmentButton({
+                options: this.tabOptions,
+                selectedIndexes: this.tabSelectedIndexes
+              })
+            }
+            .height('100%')
+            .width('100%')
           }
         }
 
         GridCol({ span: { sm: 0, md: 0, lg: 1 } })
 
         GridCol({ span: { sm: 2, md: 3, lg: 3 } }) {
-          Row() {
-            Button({ type: ButtonType.Circle }) {
-              SymbolGlyph($r('sys.symbol.plus'))
-                .fontSize(22)
-                .fontWeight(FontWeight.Medium)
-            }
-            .barButtonStyle()
-            .bindMenu(this.plusButtonMenu())
-
-            Button({ type: ButtonType.Circle }) {
-              SymbolGlyph($r('sys.symbol.person'))
-                .fontSize(22)
-                .fontWeight(FontWeight.Medium)
-            }
-            .barButtonStyle()
-            .onClick(() => {
-              this.isCookieShow = !this.isCookieShow;
-            })
-            .bindPopup(!this.loginStatus && !this.isCookieShow, {
-              message: '教务系统未登录'
-            })
-            .bindSheet($$this.isCookieShow, this.cookieBindSheet(), {
-              preferType: SheetType.POPUP,
-              showClose: this.currentBreakPoint === BreakPointTypeEnum.LG,
-              onWillAppear: () => {
-                this.isSettingShow = false
+          if (this.isThisTab) {
+            Row() {
+              Button({ type: ButtonType.Circle }) {
+                SymbolGlyph($r('sys.symbol.plus'))
+                  .fontSize(22)
+                  .fontWeight(FontWeight.Medium)
               }
-            })
+              .barButtonStyle()
+              .bindMenu(this.plusButtonMenu())
 
-            Button({ type: ButtonType.Circle }) {
-              SymbolGlyph($r('sys.symbol.dot_grid_2x2'))
-                .fontSize(22)
-                .fontWeight(FontWeight.Medium)
-            }
-            .bindSheet($$this.isSettingShow, this.settingBindSheet, {
-              preferType: this.currentBreakPoint === BreakPointTypeEnum.LG ? SheetType.CENTER : SheetType.BOTTOM,
-              detents: [300],
-              showClose: this.currentBreakPoint === BreakPointTypeEnum.LG,
-              blurStyle: BlurStyle.Thin,
-              backgroundColor: Color.Transparent,
-              maskColor: Color.Transparent,
-              onWillAppear: () => {
-                this.isCookieShow = false;
+              Button({ type: ButtonType.Circle }) {
+                SymbolGlyph($r('sys.symbol.person'))
+                  .fontSize(22)
+                  .fontWeight(FontWeight.Medium)
               }
-            })
-            .barButtonStyle()
-            .onClick(() => {
-              this.isSettingShow = !this.isSettingShow;
-            })
+              .barButtonStyle()
+              .onClick(() => {
+                this.isCookieShow = !this.isCookieShow;
+              })
+              .bindPopup(!this.loginStatus && !this.isCookieShow, {
+                message: '教务系统未登录'
+              })
+              .bindSheet($$this.isCookieShow, this.cookieBindSheet(), {
+                preferType: SheetType.POPUP,
+                showClose: this.currentBreakPoint === BreakPointTypeEnum.LG,
+                onWillAppear: () => {
+                  this.isSettingShow = false
+                }
+              })
+
+              Button({ type: ButtonType.Circle }) {
+                SymbolGlyph($r('sys.symbol.dot_grid_2x2'))
+                  .fontSize(22)
+                  .fontWeight(FontWeight.Medium)
+              }
+              .bindSheet($$this.isSettingShow, this.settingBindSheet, {
+                preferType: this.currentBreakPoint === BreakPointTypeEnum.LG ? SheetType.CENTER : SheetType.BOTTOM,
+                detents: [300],
+                showClose: this.currentBreakPoint === BreakPointTypeEnum.LG,
+                blurStyle: BlurStyle.Thin,
+                backgroundColor: Color.Transparent,
+                maskColor: Color.Transparent,
+                onWillAppear: () => {
+                  this.isCookieShow = false;
+                }
+              })
+              .barButtonStyle()
+              .onClick(() => {
+                this.isSettingShow = !this.isSettingShow;
+              })
+            }
+            .transition(TransitionEffect.move(TransitionEdge.END).animation({ curve: this.navigationSpringCurve }))
+            .height('100%')
+            .width('100%')
+            .justifyContent(FlexAlign.SpaceEvenly)
           }
-          .height('100%')
-          .width('100%')
-          .justifyContent(FlexAlign.SpaceEvenly)
+
         }
         .alignSelf(ItemAlign.End)
       }

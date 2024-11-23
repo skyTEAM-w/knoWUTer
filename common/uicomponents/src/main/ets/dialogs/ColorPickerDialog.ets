@@ -1,6 +1,6 @@
 @CustomDialog
 @Component
-export struct  ColorSelectDialog {
+export struct ColorSelectDialog {
   @Link color: ResourceColor;
   @State selectedColor: ResourceColor = 'rgba(255, 255, 255, 0.5)';
   @State @Watch('changeColor') red: number = 0;
@@ -27,10 +27,10 @@ export struct  ColorSelectDialog {
       this.blue = 0
     } else {
       const color = hex.replace("#", "");
-      this.alpha = parseInt(color.substring(0,2), 16) / 256.0;
-      this.red = parseInt(color.substring(2,4), 16);
-      this.green = parseInt(color.substring(4,6), 16);
-      this.blue = parseInt(color.substring(6,8), 16);
+      this.alpha = parseInt(color.substring(0, 2), 16) / 256.0;
+      this.red = parseInt(color.substring(2, 4), 16);
+      this.green = parseInt(color.substring(4, 6), 16);
+      this.blue = parseInt(color.substring(6, 8), 16);
     }
   }
 
@@ -40,7 +40,8 @@ export struct  ColorSelectDialog {
     const b = parseInt(this.blue.toString());
     const a = parseInt(Math.round(this.alpha * 255).toString());
     console.debug('', r, g, b, a)
-    const hex = `#${a.toString(16).padStart(2, '0')}${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`
+    const hex = `#${a.toString(16).padStart(2, '0')}${r.toString(16).padStart(2, '0')}${g.toString(16)
+      .padStart(2, '0')}${b.toString(16).padStart(2, '0')}`
     return hex;
   }
 
@@ -71,7 +72,8 @@ export struct  ColorSelectDialog {
         .height(33)
       }
       .alignContent(Alignment.Center)
-      Column(){
+
+      Column() {
         Row() {
           Text('R')
           Slider({
@@ -86,6 +88,7 @@ export struct  ColorSelectDialog {
         }
         .width('100%')
         .justifyContent(FlexAlign.SpaceBetween)
+
         Row() {
           Text('G')
           Slider({
@@ -100,6 +103,7 @@ export struct  ColorSelectDialog {
         }
         .width('100%')
         .justifyContent(FlexAlign.SpaceBetween)
+
         Row() {
           Text('B')
           Slider({
@@ -114,6 +118,7 @@ export struct  ColorSelectDialog {
         }
         .width('100%')
         .justifyContent(FlexAlign.SpaceBetween)
+
         Row() {
           Text('A')
           Slider({
@@ -131,6 +136,7 @@ export struct  ColorSelectDialog {
         .justifyContent(FlexAlign.SpaceBetween)
       }
       .margin({ left: $r('app.float.lg_padding_margin'), right: $r('app.float.lg_padding_margin') })
+
       Row() {
         Button($r('app.string.cancel'))
           .width('40%')

@@ -14,12 +14,13 @@ const TAG = '[LoginNetFunc]'
 
 export class LoginNetFunc {
   private client: HttpClient;
-  cookieJar: () => void = (): void => CookieJar();
 
   constructor() {
     this.client = new HttpClient.Builder().setConnectTimeout(30, TimeUnit.SECONDS)
       .setReadTimeout(30, TimeUnit.SECONDS).setWriteTimeout(30, TimeUnit.SECONDS).build();
   }
+
+  cookieJar: () => void = (): void => CookieJar();
 
   public loginZhlgd(userAccount: UserAccount) {
     this.zhlgdLoginData(userAccount).then((result) => {
@@ -37,7 +38,7 @@ export class LoginNetFunc {
         .post(formBody)
         .url('https://zhlgd.whut.edu.cn/tpass/login?service=https%3A%2F%2Fzhlgd.whut.edu.cn%2Ftp_up%2F')
         .addHeader("Accept",
-        "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7")
+          "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7")
         .addHeader("Accept-Encoding", "gzip, deflate, br")
         .addHeader("Accept-Language", "zh-CN,zh;q=0.9")
         .addHeader("Cache-Control", "max-age=0")

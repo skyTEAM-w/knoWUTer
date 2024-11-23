@@ -1,6 +1,6 @@
 import { TopNavigationView } from '@ohos/uicomponents';
-import { BreakPointTypeEnum, CommonUrls } from '@ohos/utils';
-import { UserHead } from '../component/UserComponent';
+import { BreakPointTypeEnum } from '@ohos/utils';
+import { CampusNetAccount, UserHead } from '../component/UserComponent';
 import { UserModel } from '../model/UserModel';
 import { router } from '@kit.ArkUI';
 import { webview } from '@kit.ArkWeb';
@@ -10,7 +10,7 @@ struct AccountView {
   @Consume('settingPathStack') settingPathStack: NavPathStack;
   @StorageProp('currentBreakPoint') currentBreakPoint: BreakPointTypeEnum = BreakPointTypeEnum.MD;
   @StorageProp('isLogged') isLogged: boolean = false;
-  private userModel: UserModel = UserModel.getInstance();
+  @State userModel: UserModel = UserModel.getInstance();
   private webViewController = new webview.WebviewController()
 
   goBack(): void {
@@ -37,6 +37,19 @@ struct AccountView {
               top: $r('app.float.lg_padding_margin'),
               right: $r('app.float.sm_padding_margin'),
               bottom: $r('app.float.lg_padding_margin')
+            })
+
+            Row() {
+              CampusNetAccount()
+            }
+            .backgroundColor($r('sys.color.comp_background_primary'))
+            .width('100%')
+            .borderRadius($r('app.float.light_border_radius'))
+            .padding({
+              left: $r('app.float.sm_padding_margin'),
+              top: $r('app.float.sm_padding_margin'),
+              right: $r('app.float.sm_padding_margin'),
+              bottom: $r('app.float.sm_padding_margin')
             })
 
           }

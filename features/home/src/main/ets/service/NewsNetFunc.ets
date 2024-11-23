@@ -35,6 +35,7 @@ export class NewsNetFunc {
       })
     })
   }
+
   public checkLoginStatus(cookie: string) {
     let headers: rcp.RequestHeaders = {
       "content-type": 'application/json;charset=utf-8',
@@ -43,7 +44,7 @@ export class NewsNetFunc {
     let content = '{}'
     let req = new rcp.Request('https://zhlgd.whut.edu.cn/tp_up/up/grabnews/getGrabNewsList', 'POST', headers, content);
     return new Promise((resolve: (value: boolean | PromiseLike<boolean>) => void,
-    reject: (value: object) => void) => {
+      reject: (value: object) => void) => {
       this.session.fetch(req).then((response) => {
         const responseString = response.toString()
         resolve(!(responseString as string).includes('登录'))

@@ -144,7 +144,6 @@ export class UserNetFunc {
   }
 
 
-
   public checkZhlgdIsLogged(cookie: string) {
     let headers: rcp.RequestHeaders = {
       "content-type": 'application/json;charset=utf-8',
@@ -157,7 +156,7 @@ export class UserNetFunc {
         .then((response) => {
           console.debug(TAG, response.statusCode)
           resolve(response.statusCode === 200)
-      }).catch((error: BusinessError) => {
+        }).catch((error: BusinessError) => {
         reject(error)
       })
     })

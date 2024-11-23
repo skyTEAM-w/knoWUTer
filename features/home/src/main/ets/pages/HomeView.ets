@@ -2,7 +2,7 @@ import { webview } from '@kit.ArkWeb';
 import { TodayNavigationTitle } from '../components/TodayNavigationTitle';
 import { TodayCourse } from '../components/TodayCourse';
 import { CampusNews } from '../components/CampusNews';
-import { BreakPointType, BreakPointTypeEnum, EventType } from '@ohos/utils';
+import { BreakPointType, BreakPointTypeEnum, CommonConstants, EventType } from '@ohos/utils';
 import { NewsUrl } from '../model/News';
 import { WebViewPage } from '@ohos/uicomponents';
 import { common } from '@kit.AbilityKit';
@@ -13,17 +13,24 @@ export struct Home {
   @Consume('appPathStack') appPathStack: NavPathStack;
   @StorageLink('currentBreakPoint') currentBreakPoint: BreakPointTypeEnum = BreakPointTypeEnum.MD;
   @StorageLink('isShowWeekAndDay') isShowWeekAndDay: boolean = false;
+  @StorageProp('bottomTabIndex') @Watch('onBottomIndexChange') bottomTabIndex: number = 2;
+  @State isThisTab: boolean = false;
   @State isRefresh: boolean = false;
   private webviewController: webview.WebviewController = new webview.WebviewController();
   private outScroller: Scroller = new Scroller();
 
   aboutToAppear(): void {
     const eventHub: common.EventHub = (getContext(this) as common.UIAbilityContext).eventHub;
+    this.onBottomIndexChange()
     eventHub.on(EventType.REFRESH_NEWS_END, () => {
       setTimeout(() => {
         this.isRefresh = false
       }, 1500)
     })
+  }
+
+  onBottomIndexChange() {
+    this.isThisTab = this.bottomTabIndex === CommonConstants.HOME_BOTTOM_INDEX;
   }
 
   jumpWebView(url: string) {
@@ -72,12 +79,15 @@ export struct Home {
                 Refresh({ refreshing: $$this.isRefresh }) {
                   WaterFlow() {
                     FlowItem() {
-                      TodayCourse()
+                      TodayCourse({ isThisTab: this.isThisTab })
                     }
 
                     FlowItem() {
-                      CampusNews({ handleClick: this.jumpWebView })
+                      CampusNews({ handleClick: this.jumpWebView, isThisTab: this.isThisTab })
                     }
+
+                    FlowItem()
+                      .height('33%')
                   }
                   .columnsTemplate(new BreakPointType({
                     sm: '1fr',
@@ -99,7 +109,6 @@ export struct Home {
                   eventHub.emit(EventType.REFRESH_NEWS)
                   eventHub.emit(EventType.REFRESH_TODAY_COURSE)
                 })
-
               }
             }
             .scrollBar(BarState.Off)
@@ -107,7 +116,7 @@ export struct Home {
           }
 
 
-          TodayNavigationTitle()
+          TodayNavigationTitle({ isThisTab: this.isThisTab })
         }
         .alignContent(Alignment.Top)
       }

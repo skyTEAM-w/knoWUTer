@@ -17,13 +17,6 @@ export class HttpUtil {
   private static instance: HttpUtil;
   private session: rcp.Session;
 
-  public static getInstance(): HttpUtil {
-    if (!HttpUtil.instance) {
-      HttpUtil.instance = new HttpUtil();
-    }
-    return HttpUtil.instance;
-  }
-
   constructor() {
     const config: rcp.SessionConfiguration = {
       requestConfiguration: {
@@ -37,6 +30,13 @@ export class HttpUtil {
       }
     }
     this.session = rcp.createSession(config);
+  }
+
+  public static getInstance(): HttpUtil {
+    if (!HttpUtil.instance) {
+      HttpUtil.instance = new HttpUtil();
+    }
+    return HttpUtil.instance;
   }
 
   async HttpPost(url: string, cookies: string, body: RequestBody): Promise<Response | undefined> {
@@ -109,4 +109,13 @@ export class HttpUtil {
     })
   }
 
+  public httpGetByRcpOnlyUrl(url: string) {
+    return new Promise((resolve: (value: rcp.Response | PromiseLike<rcp.Response>) => void, reject) => {
+      this.session.get(url).then((response) => {
+        resolve(response)
+      }).catch((error: BusinessError) => {
+        reject(error)
+      })
+    })
+  }
 }

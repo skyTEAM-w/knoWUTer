@@ -27,6 +27,22 @@
     {
       "name": "please_login",
       "value": "请登录"
+    },
+    {
+      "name": "user_name",
+      "value": "用户名"
+    },
+    {
+      "name": "password",
+      "value": "密码"
+    },
+    {
+      "name": "login",
+      "value": "登录"
+    },
+    {
+      "name": "save",
+      "value": "保存"
     }
   ]
 }

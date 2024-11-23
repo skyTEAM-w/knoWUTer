@@ -663,9 +663,8 @@ export struct ElectricityInquiryTool {
       }
     })
     .justifyContent(FlexAlign.Center)
-    .backgroundColor($r('app.color.whut_blue_background'))
+    .backgroundColor($r('app.color.sky_blue_background'))
     .borderRadius($r('app.float.border_radius'))
-    .borderWidth(1)
     .borderStyle(BorderStyle.Solid)
     .width('100%')
     .clickEffect({ level: ClickEffectLevel.LIGHT, scale: 0.99 })

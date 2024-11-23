@@ -19,6 +19,7 @@ export struct ScheduleWeekView {
   @Link isSettingShow: boolean;
   @Link isScheduleShow: boolean;
   @Prop currentWeek: number;
+  @Prop tabSelectedIndexes: number[]
   @State swiperWeekIndex: number = 1;
   @State weekNumOne: number = -1;
   @State weekNumTwo: number = 0;
@@ -40,7 +41,6 @@ export struct ScheduleWeekView {
   private oldWeekViewIndex: number = 1;
   private oldSelectWeek: number = 1;
   private isSwiping: boolean = false;
-
   jumpEditCourseInformation: (courseId: string, tableId: string) => void = () => {
 
   };
@@ -259,7 +259,8 @@ export struct ScheduleWeekView {
           isCookieShow: this.isCookieShow,
           isSettingShow: this.isSettingShow,
           isScheduleShow: this.isScheduleShow,
-          selectedCourse: this.selectedCourse
+          selectedCourse: this.selectedCourse,
+          tabSelectedIndexes: this.tabSelectedIndexes
         })
         ScheduleWeekViewItem({
           weekNum: this.weekNumTwo,
@@ -269,7 +270,8 @@ export struct ScheduleWeekView {
           isCookieShow: this.isCookieShow,
           isSettingShow: this.isSettingShow,
           isScheduleShow: this.isScheduleShow,
-          selectedCourse: this.selectedCourse
+          selectedCourse: this.selectedCourse,
+          tabSelectedIndexes: this.tabSelectedIndexes
         })
         ScheduleWeekViewItem({
           weekNum: this.weekNumThree,
@@ -279,7 +281,8 @@ export struct ScheduleWeekView {
           isCookieShow: this.isCookieShow,
           isSettingShow: this.isSettingShow,
           isScheduleShow: this.isScheduleShow,
-          selectedCourse: this.selectedCourse
+          selectedCourse: this.selectedCourse,
+          tabSelectedIndexes: this.tabSelectedIndexes
         })
       }
       .onAnimationStart((index: number, targetIndex: number, extraInfo: SwiperAnimationEvent) => {

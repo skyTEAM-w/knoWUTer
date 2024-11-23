@@ -1,4 +1,4 @@
-import { BreakPointTypeEnum, DateUtil, EventType, LazyDataSource } from '@ohos/utils';
+import { BreakPointTypeEnum, CommonConstants, DateUtil, EventType, LazyDataSource } from '@ohos/utils';
 import { ScheduleNavigation } from '../components/ScheduleNavigationTitle';
 import { ScheduleNetFunc } from '../service/ScheduleNetFunc';
 import { Schedule } from '../model/Schedule';
@@ -15,6 +15,7 @@ const TAG = '[ScheduleTable]'
 
 @Component
 export struct ScheduleTable {
+  @StorageProp('bottomTabIndex') @Watch('onBottomIndexChange') bottomTabIndex: number = 2;
   @StorageLink('currentBreakPoint') currentBreakPoint: string = BreakPointTypeEnum.MD;
   @StorageLink('schedule_cookie') ScheduleCookie: string = AppStorage.get<string>('schedule_cookie') || '';
   @LocalStorageLink('updateCourse') @Watch('updateCourseInformation') updateCourse: boolean = false;
@@ -24,6 +25,7 @@ export struct ScheduleTable {
     AppStorage.get<number>('selectScheduleIndex') || -1;
   @StorageLink('selectedTableId') selectedTableId: string | undefined =
     AppStorage.get<string>('selectedTableId') || '1';
+  @State isThisTab: boolean = false;
   @State isCookieShow: boolean = false;
   @State @Watch('onWeekNeedChange') isSettingShow: boolean = false;
   @State isScheduleShow: boolean = false;
@@ -43,8 +45,8 @@ export struct ScheduleTable {
   private scheduleDBFunc = new ScheduleDatabaseFunc();
   private scheduleSettingFunc = ScheduleSettingFunc.getInstance();
   private mDate = new DateUtil();
-  private eventHub: common.EventHub = (getContext(this) as common.UIAbilityContext).eventHub;
   @State mToday: Date = new Date(this.mDate.getToday());
+  private eventHub: common.EventHub = (getContext(this) as common.UIAbilityContext).eventHub;
 
   aboutToAppear(): void {
     ScheduleSettingFunc.getInstance().checkSelectScheduleIndex();
@@ -63,6 +65,10 @@ export struct ScheduleTable {
       this.scheduleSettingFunc.saveStartDate(this.selectedSchedule.StartDate);
       this.scheduleSettingFunc.saveSelectedTableId(this.selectedSchedule.scheduleId)
     }
+  }
+
+  onBottomIndexChange() {
+    this.isThisTab = this.bottomTabIndex === CommonConstants.SCHEDULE_BOTTOM_INDEX;
   }
 
   onWeekNeedChange(propName: string) {
@@ -188,7 +194,8 @@ export struct ScheduleTable {
                 isCookieShow: this.isCookieShow,
                 isSettingShow: this.isSettingShow,
                 isScheduleShow: this.isScheduleShow,
-                jumpEditCourseInformation: this.jumpEditCoursePage
+                jumpEditCourseInformation: this.jumpEditCoursePage,
+                tabSelectedIndexes: this.tabSelectedIndexes
               })
             }
           }

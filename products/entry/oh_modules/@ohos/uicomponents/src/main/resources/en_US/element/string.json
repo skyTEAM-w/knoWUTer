@@ -19,6 +19,30 @@
     {
       "name": "please_login",
       "value": "Please Login"
+    },
+    {
+      "name": "user_name",
+      "value": "username"
+    },
+    {
+      "name": "password",
+      "value": "password"
+    },
+    {
+      "name": "cancel",
+      "value": "Cancel"
+    },
+    {
+      "name": "confirm",
+      "value": "Confirm"
+    },
+    {
+      "name": "login",
+      "value": "Login"
+    },
+    {
+      "name": "save",
+      "value": "Save"
     }
   ]
 }

@@ -1,3 +1,5 @@
+import { UserModel } from '../model/UserModel';
+
 @Component
 export struct UserHead {
   @StorageProp('isLogged') isLogged: boolean = false;
@@ -21,5 +23,60 @@ export struct UserHead {
       .layoutWeight(1)
       .alignItems(HorizontalAlign.Start)
     }
+  }
+}
+
+@Component
+export struct CampusNetAccount {
+  @State userModel: UserModel = UserModel.getInstance();
+  @State showPassword: boolean = false;
+
+  build() {
+    Column({ space: 5 }) {
+      Row() {
+        Text('校园网')
+          .fontSize(18)
+          .fontWeight(FontWeight.Regular)
+          .textAlign(TextAlign.Start)
+          .margin({ left: $r('app.float.md_padding_margin') })
+        Blank()
+        Button($r('app.string.save'))
+          .backgroundColor(Color.Transparent)
+          .fontColor($r('sys.color.font_primary'))
+          .onClick(() => {
+            this.userModel.saveCampusNetAccount()
+          })
+      }
+      .width('100%')
+      .justifyContent(FlexAlign.Start)
+
+      Column({ space: 5 }) {
+        Row() {
+          TextInput({ placeholder: $r('app.string.user_name'), text: this.userModel.campusNetAccount.username })
+            .type(InputType.USER_NAME)
+            .enableAutoFill(false)
+            .onChange((value: string) => {
+              this.userModel.campusNetAccount.username = value
+            })
+        }
+
+        Row() {
+          TextInput({ placeholder: $r('app.string.password'), text: this.userModel.campusNetAccount.password })
+            .type(InputType.Password)
+            .enableAutoFill(false)
+            .showPasswordIcon(true)
+            .showPassword(this.showPassword)
+            .onSecurityStateChange((isShowPassword: boolean) => {
+              this.showPassword = isShowPassword;
+            })
+            .onChange((value: string) => {
+              this.userModel.campusNetAccount.password = value
+            })
+
+        }
+      }
+
+    }
+    .layoutWeight(1)
   }
 }

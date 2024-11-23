@@ -112,7 +112,7 @@ export struct PlaceInputDialog {
           }).backgroundColor(Color.Transparent).fontColor($r('sys.color.brand_font'))
       }
       .margin({ bottom: 10, top: 10 })
-      .justifyContent(FlexAlign.SpaceAround)
+      .justifyContent(FlexAlign.SpaceEvenly)
     }
   }
 }

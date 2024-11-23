@@ -13,5 +13,6 @@ export class CommonUrls {
     'https://zhlgd.whut.edu.cn/tp_up/view?m=up#act=up/sysintegration/userlibrary';
   public static readonly USER_EMAIL: string =
     'https://zhlgd.whut.edu.cn/tp_fp/view?m=fp#act=fp/serveapply&from=hall&serveID=7668c2e0-5a74-4d48-b8b9-1a9221943041';
-  public static readonly USER_CARD: string = 'https://yktapp.whut.edu.cn/plat-pc/newsannouncement/main'
+  public static readonly USER_CARD: string = 'https://yktapp.whut.edu.cn/plat-pc/newsannouncement/main';
+  public static readonly CAMPUS_NET_BASE: string = 'http://172.30.21.100'
 }
