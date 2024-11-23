@@ -1,11 +1,15 @@
-import { EventType } from '@ohos/utils';
+import { CommonConstants, EventType } from '@ohos/utils';
 import { COURSE_SCHEDULE_HEIGHT, CourseSchedule } from '../model/CourseSchedule';
 import { ScheduleDatabaseFunc } from '../service/ScheduleDatabaseFunc';
 import { common } from '@kit.AbilityKit';
+import { curves } from '@kit.ArkUI';
 
 @Component
 export struct WeekScheduleCard {
   @LocalStorageLink('updateCourse') updateCourse: boolean = false;
+  @StorageProp('bottomTabIndex') @Watch('onBottomIndexChange') bottomTabIndex: number = 2;
+  @Prop @Watch('onBottomIndexChange') tabSelectedIndexes: number[];
+  @State isThisTab: boolean = false;
   @Link isCookieShow: boolean;
   @Link isSettingShow: boolean;
   @Link isScheduleShow: boolean;
@@ -16,6 +20,7 @@ export struct WeekScheduleCard {
   @State cardColor: ResourceColor = $r('app.color.course_card_bg_default_color');
   indexY: number = 0;
   indexX: number = 0;
+  private weekScheduleCurve: ICurve = curves.springMotion(0.3, 0.66)
 
   aboutToAppear(): void {
     this.updateCard()
@@ -25,6 +30,7 @@ export struct WeekScheduleCard {
   }
 
   updateCard() {
+    this.isThisTab = true
     this.cardColor = new ScheduleDatabaseFunc().queryCourseColor(this.courseSchedule);
   }
 
@@ -50,8 +56,16 @@ export struct WeekScheduleCard {
       }
 
     }
+    .opacity(this.isThisTab ? 1 : 0)
+    .scale(this.isThisTab ? CommonConstants.FULL_SCALE : { x: 0.8, y: 0.8 })
+    .animation(this.isThisTab ?
+      { curve: this.weekScheduleCurve, delay: (this.indexY + this.indexX) * CommonConstants.SHORT_ANIMATION_DELAY } :
+      { duration: 0 })
     .transition(TransitionEffect.OPACITY.combine(TransitionEffect.scale({ x: 0.8, y: 0.8 }))
-      .animation({ duration: 300, curve: Curve.Friction }))
+      .animation({
+        curve: this.weekScheduleCurve,
+        delay: (this.indexY + this.indexX) * CommonConstants.SHORT_ANIMATION_DELAY
+      }))
     .margin({ left: 5, right: 5 })
     .justifyContent(FlexAlign.Center)
     .clickEffect({ level: ClickEffectLevel.LIGHT, scale: 0.9 })
@@ -64,5 +78,9 @@ export struct WeekScheduleCard {
       this.selectedCourse = this.weekCourse[this.indexX][this.indexY]
       this.isScheduleShow = true;
     })
+  }
+
+  onBottomIndexChange() {
+    this.isThisTab = this.bottomTabIndex === CommonConstants.SCHEDULE_BOTTOM_INDEX && this.tabSelectedIndexes[0] === 0;
   }
 }

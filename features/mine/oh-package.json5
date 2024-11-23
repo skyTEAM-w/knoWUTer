@@ -1,0 +1,15 @@
+{
+  "name": "mine",
+  "version": "1.0.0",
+  "description": "Please describe the basic information.",
+  "main": "Index.ets",
+  "author": "",
+  "license": "",
+  "dependencies": {
+    "@ohos/uicomponents": "file:../../common/uicomponents",
+    "@ohos/utils": "file:../../common/utils",
+    "@ohos/datastore": "file:../../common/datastore",
+    "@ohos/network": "file:../../common/network"
+  }
+}
+

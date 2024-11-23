@@ -20,10 +20,11 @@ export struct DeleteOptionDialog {
   @LocalStorageLink('deleteCourse') deleteCourse: boolean = false;
   @StorageProp('selectedTableId') selectedTableId: string | undefined =
     AppStorage.get<string>('selectedTableId') || '1';
+  controller?: CustomDialogController;
   private weekRangeSelectedStatus: boolean[] = new Array(21).fill(false);
   private weekRangeNumbers: number[] = [];
   private choice: SelectedType = SelectedType.NONE;
-  controller?: CustomDialogController;
+
   cancel: () => void = () => {
   }
   confirm: () => void = () => {
@@ -58,7 +59,7 @@ export struct DeleteOptionDialog {
         eventHub.emit(EventType.DELETE_COURSE)
         break;
       }
-      default : {
+      default: {
 
         break;
       }
@@ -83,7 +84,7 @@ export struct DeleteOptionDialog {
 
   build() {
     Column() {
-      Column({space: 5}) {
+      Column({ space: 5 }) {
         Text('删除课程')
           .fontSize($r('sys.float.ohos_id_text_size_body1'))
         Text(this.courseSchedule.CourseName)
@@ -92,9 +93,9 @@ export struct DeleteOptionDialog {
       }
       .margin({ top: 10, bottom: 10 })
 
-      Column({space: 10}) {
-        Row({space: 10}) {
-          Radio({value: 'deleteThisSchedule', group: 'deleteRadio'})
+      Column({ space: 10 }) {
+        Row({ space: 10 }) {
+          Radio({ value: 'deleteThisSchedule', group: 'deleteRadio' })
             .onChange((isChecked: boolean) => {
               if (isChecked) {
                 this.choice = SelectedType.DeleteThisSchedule
@@ -104,8 +105,9 @@ export struct DeleteOptionDialog {
         }
         .justifyContent(FlexAlign.Start)
         .radioStyle()
-        Row({space: 10}) {
-          Radio({value: 'deleteWeekdaySchedule', group: 'deleteRadio'})
+
+        Row({ space: 10 }) {
+          Radio({ value: 'deleteWeekdaySchedule', group: 'deleteRadio' })
             .onChange((isChecked: boolean) => {
               if (isChecked) {
                 this.choice = SelectedType.DeleteWeekdaySchedule
@@ -115,8 +117,9 @@ export struct DeleteOptionDialog {
         }
         .justifyContent(FlexAlign.Start)
         .radioStyle()
-        Row({space: 10}) {
-          Radio({value: 'deleteCourse', group: 'deleteRadio'})
+
+        Row({ space: 10 }) {
+          Radio({ value: 'deleteCourse', group: 'deleteRadio' })
             .onChange((isChecked: boolean) => {
               if (isChecked) {
                 this.choice = SelectedType.DeleteCourse

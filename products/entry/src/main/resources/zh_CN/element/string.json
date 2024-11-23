@@ -67,6 +67,18 @@
     {
       "name": "text_save",
       "value": "保存"
+    },
+    {
+      "name": "login",
+      "value": "登录"
+    },
+    {
+      "name": "skip_login",
+      "value": "跳过"
+    },
+    {
+      "name": "always_skip_login",
+      "value": "始终跳过登录页"
     }
   ]
 }

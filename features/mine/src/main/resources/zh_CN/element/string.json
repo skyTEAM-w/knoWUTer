@@ -1,0 +1,52 @@
+{
+  "string": [
+    {
+      "name": "module_desc",
+      "value": "模块描述"
+    },
+    {
+      "name": "MineAbility_desc",
+      "value": "description"
+    },
+    {
+      "name": "MineAbility_label",
+      "value": "label"
+    },
+    {
+      "name": "text_user_setting",
+      "value": "我的"
+    },
+    {
+      "name": "work_hall",
+      "value": "办事大厅"
+    },
+    {
+      "name": "more_work_service",
+      "value": "更多服务"
+    },
+    {
+      "name": "setting",
+      "value": "设置"
+    },
+    {
+      "name": "always_skip_login",
+      "value": "总是跳过登录页"
+    },
+    {
+      "name": "account",
+      "value": "用户数据"
+    },
+    {
+      "name": "logout",
+      "value": "登出"
+    },
+    {
+      "name": "my_information",
+      "value": "我的信息"
+    },
+    {
+      "name": "application_setting",
+      "value": "应用设置"
+    }
+  ]
+}

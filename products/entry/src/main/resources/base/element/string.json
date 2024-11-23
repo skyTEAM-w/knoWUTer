@@ -75,6 +75,18 @@
     {
       "name": "vibrate_permission_desc",
       "value": "vibrate"
+    },
+    {
+      "name": "login",
+      "value": "Login"
+    },
+    {
+      "name": "skip_login",
+      "value": "Skip"
+    },
+    {
+      "name": "always_skip_login",
+      "value": "always skip login page"
     }
   ]
 }

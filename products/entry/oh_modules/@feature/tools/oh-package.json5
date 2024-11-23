@@ -9,7 +9,8 @@
     "@ohos/uicomponents": "file:../../common/uicomponents",
     "@ohos/datastore": "file:../../common/datastore",
     "@ohos/utils": "file:../../common/utils",
-    "@ohos/network": "file:../../common/network"
+    "@ohos/network": "file:../../common/network",
+    "@feature/mine": "file:../mine"
   }
 }
 

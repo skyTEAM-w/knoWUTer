@@ -1,0 +1,36 @@
+{
+  "color": [
+    {
+      "name": "start_window_background",
+      "value": "#FFFFFF"
+    },
+    {
+      "name": "hall_review_item_bg",
+      "value": "#2D7CCB"
+    },
+    {
+      "name": "hall_close_item_bg",
+      "value": "#33ABA3"
+    },
+    {
+      "name": "hall_progress_item_bg",
+      "value": "#D3407A"
+    },
+    {
+      "name": "hall_score_item_bg",
+      "value": "#30A434"
+    },
+    {
+      "name": "hall_lib_item_bg",
+      "value": "#4CBDEC"
+    },
+    {
+      "name": "hall_email_item_bg",
+      "value": "#99CD7F"
+    },
+    {
+      "name": "hall_card_item_bg",
+      "value": "#FEB95B"
+    }
+  ]
+}

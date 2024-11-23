@@ -19,6 +19,10 @@
     {
       "name": "today",
       "value": "今天"
+    },
+    {
+      "name": "today_course",
+      "value": "课程"
     }
   ]
 }

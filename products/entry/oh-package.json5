@@ -18,7 +18,9 @@
     "@ohos/uicomponents": "file:../../common/uicomponents",
     "@feature/tools": "file:../../features/tools",
     "@feature/schedule": "file:../../features/schedule",
-    "@feature/home": "file:../../features/home"
+    "@feature/home": "file:../../features/home",
+    "@feature/mine": "file:../../features/mine",
+    "@feature/login": "file:../../features/login"
   },
   "devDependencies": {
     "@type/libhello.so": "file:./src/main/cpp/types/libhello"

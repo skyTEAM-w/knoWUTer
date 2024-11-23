@@ -289,7 +289,10 @@ export struct ElectricityInquiryTool {
       .sticky(StickyStyle.Header)
       .margin({ left: 16, right: 16 })
     } else {
-      Web({ src: new ElectricityFeeUrl().url, controller: this.webViewController })
+      Web({
+        src: 'https://zhlgd.whut.edu.cn/tpass/login?service=http%3A%2F%2Fcwsf.whut.edu.cn%2FcasLogin',
+        controller: this.webViewController
+      })
         .onPageEnd(() => {
           let FeeCookie =
             webview.WebCookieManager.fetchCookieSync('http://cwsf.whut.edu.cn/nyyPayElecPages51274E035').toString();
@@ -660,9 +663,8 @@ export struct ElectricityInquiryTool {
       }
     })
     .justifyContent(FlexAlign.Center)
-    .backgroundColor($r('app.color.whut_blue_background'))
+    .backgroundColor($r('app.color.sky_blue_background'))
     .borderRadius($r('app.float.border_radius'))
-    .borderWidth(1)
     .borderStyle(BorderStyle.Solid)
     .width('100%')
     .clickEffect({ level: ClickEffectLevel.LIGHT, scale: 0.99 })

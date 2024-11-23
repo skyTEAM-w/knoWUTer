@@ -40,9 +40,9 @@ export struct EditCourseInformation {
     })
   })
   colorSelectDialogController: CustomDialogController = new CustomDialogController({
-     builder: ColorSelectDialog({
-       color: this.courseColor
-     })
+    builder: ColorSelectDialog({
+      color: this.courseColor
+    })
   })
   courseId: String = '';
   tableId: String = '';
