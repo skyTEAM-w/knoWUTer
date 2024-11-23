@@ -2,7 +2,7 @@
   "app": {
     "bundleName": "com.wuchengpei.whuthelper",
     "vendor": "example",
-    "versionCode": 111904,
+    "versionCode": 111905,
     "versionName": "0.1.4",
     "icon": "$media:app_icon",
     "label": "$string:app_name"
