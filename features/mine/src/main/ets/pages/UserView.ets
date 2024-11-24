@@ -3,18 +3,19 @@ import { BreakPointTypeEnum, CommonConstants, EventType, SettingTwoStatus, UserS
 import { WorkHallUrl } from '../model/HallUrl';
 import { UserModel } from '../model/UserModel';
 import { Hall } from '../views/HallView';
-import { router } from '@kit.ArkUI';
+import { curves, router } from '@kit.ArkUI';
 import { common } from '@kit.AbilityKit';
 import { SettingView } from '../views/SettingView';
 
 @Component
 export struct User {
-  @StorageProp('bottomTabIndex') bottomTabIndex: number = 2;
+  @StorageProp('bottomTabIndex') @Watch('onBottomIndexChange') bottomTabIndex: number = 2;
   @StorageLink('isShowInHeader') isShowInHeader: boolean = false;
   @Consume('minePathStack') minePathStack: NavPathStack;
   @Consume('appPathStack') appPathStack: NavPathStack;
   @Provide('hallPathStack') hallPathStack: NavPathStack = new NavPathStack();
   @StorageProp('currentBreakPoint') currentBreakPoint: BreakPointTypeEnum = BreakPointTypeEnum.MD;
+  @State isThisTab: boolean = false;
   @StorageProp('isLogged') isLogged: boolean = false;
   @StorageProp('username') username: string | null = null;
   @State offsetY: number = 0;
@@ -39,6 +40,10 @@ export struct User {
 
   calImageHeight(): number {
     return (this.offsetY + 150) * 2.5;
+  }
+
+  onBottomIndexChange() {
+    this.isThisTab = this.bottomTabIndex === CommonConstants.USER_BOTTOM_INDEX;
   }
 
   jumpWorkHallWebView(url: string) {
@@ -89,24 +94,6 @@ export struct User {
   }
 
   @Builder
-  NavigationTitle(title: ResourceStr) {
-    Column() {
-      Text(title)
-        .fontSize($r('app.float.component_title_size'))
-        .fontWeight(700)
-        .width('100%')
-        .padding({ left: 16 })
-        .fontFamily('HarmonyHeiTi-Bold')
-        .lineHeight(33)
-        .textAlign(TextAlign.Start)
-    }
-    .width('100%')
-    .renderFit(RenderFit.CENTER)
-    .backgroundBlurStyle(BlurStyle.Thick)
-    .padding({ top: AppStorage.get<number>('statusBarHeight') })
-  }
-
-  @Builder
   mineBackgroundImage() {
     Column() {
       Image($r("app.media.user_background"))
@@ -124,12 +111,22 @@ export struct User {
           this.mineBackgroundImage()
         }
         Column() {
-          MineNavigationHeader()
+          if (this.isThisTab) {
+            MineNavigationHeader()
+          } else {
+            Column()
+              .height($r('app.float.mine_navigation_header_height'))
+              .margin({ top: AppStorage.get<number>('statusBarHeight') })
+          }
           Refresh({ refreshing: $$this.isRefresh }) {
             List({ scroller: this.outScroller }) {
               ListItem() {
-                UserInfo()
+                if (this.isThisTab) {
+                  UserInfo()
+                }
               }
+              .height(this.currentBreakPoint === BreakPointTypeEnum.LG ? $r('app.float.user_background_height_md') :
+              $r('app.float.user_background_height_lg'))
               .onVisibleAreaChange([0, 1], (isVisible: boolean, currentRatio: number) => {
                 if (currentRatio == 0 && !isVisible && this.outScroller.currentOffset().yOffset !== 0 &&
                   this.bottomTabIndex === 4) {
@@ -143,14 +140,17 @@ export struct User {
                 Hall({
                   innerScroller: this.innerScroller,
                   handelClickWork: this.jumpWorkHallWebView,
-                  handelClickInfo: this.jumpInformationWebView
+                  handelClickInfo: this.jumpInformationWebView,
+                  isThisTab: this.isThisTab
                 })
+
               }
-              .clip(true)
+              .clip(false)
               .height('100%')
               .borderRadius($r('app.float.large_border_radius'))
-              .backgroundColor($r('sys.color.comp_background_primary'))
+              .backgroundColor($r('sys.color.background_primary'))
             }
+            .clip(false)
             .layoutWeight(1)
             .width('100%')
             .edgeEffect(EdgeEffect.None)
@@ -184,8 +184,23 @@ struct MineNavigationHeader {
   @StorageProp('isShowInHeader') isShowInHeader: boolean = false;
   @StorageProp('isLogged') isLogged: boolean = false;
   @StorageProp('username') username: string | null = null;
-  @StorageProp('currentBreakPoint') currentBreakPoint: BreakPointTypeEnum = BreakPointTypeEnum.MD;
+  @StorageProp('currentBreakPoint') @Watch('foldExpandChange') currentBreakPoint: string = BreakPointTypeEnum.MD;
+  @StorageProp('foldExpanded') @Watch('foldExpandChange') foldExpanded: boolean = false;
   @State isShowSetting: boolean = false;
+
+  foldExpandChange() {
+    console.debug('index: ', this.appPathStack.getIndexByName('SettingView').length)
+    if (this.foldExpanded && this.currentBreakPoint === BreakPointTypeEnum.MD &&
+      this.appPathStack.getIndexByName('SettingView').length > 0) {
+      console.debug('expended')
+      this.isShowSetting = true;
+      this.appPathStack.pop();
+    } else if (!this.foldExpanded && this.currentBreakPoint === BreakPointTypeEnum.SM && this.isShowSetting) {
+      this.appPathStack.pushPathByName('SettingView', undefined);
+      this.isShowSetting = false;
+      console.debug('unexpended')
+    }
+  }
 
   @Builder
   settingSheet() {
@@ -208,6 +223,7 @@ struct MineNavigationHeader {
         Row() {
           SymbolGlyph($r('sys.symbol.gearshape'))
             .fontSize(24)
+            .fontColor([$r('sys.color.icon')])
         }
       }
       .bindSheet($$this.isShowSetting, this.settingSheet(), {
@@ -217,10 +233,10 @@ struct MineNavigationHeader {
         backgroundColor: $r('sys.color.ohos_id_color_panel_bg')
       })
       .onClick(() => {
-        if (this.currentBreakPoint !== BreakPointTypeEnum.SM) {
-          this.isShowSetting = true;
-        } else {
+        if (this.currentBreakPoint === BreakPointTypeEnum.SM) {
           this.appPathStack.pushPathByName('SettingView', undefined)
+        } else {
+          this.isShowSetting = true;
         }
       })
       .margin({ right: $r('app.float.xxl_padding_margin_large') })
@@ -230,6 +246,7 @@ struct MineNavigationHeader {
       .height($r('app.float.interactive_button_height'))
 
     }
+    .transition(TransitionEffect.move(TransitionEdge.TOP).animation({ curve: curves.springMotion(0.4, 0.6) }))
     .height($r('app.float.mine_navigation_header_height'))
     .margin({ top: AppStorage.get<number>('statusBarHeight') })
     .width('100%')
@@ -251,6 +268,14 @@ struct UserInfo {
         Text(this.isLogged ? this.username : $r('app.string.please_login'))
           .fontSize($r('app.float.user_name_size'))
       }
+      .transition(this.isLogged ? TransitionEffect.asymmetric(
+        TransitionEffect.SLIDE.animation({ curve: curves.springMotion(0.4, 0.66) }),
+        TransitionEffect.OPACITY.animation({ duration: 0 })
+      ) : TransitionEffect.asymmetric(
+        TransitionEffect.OPACITY.combine(TransitionEffect.scale({ x: 0.5, y: 0.5 }))
+          .animation({ curve: curves.springMotion(0.4, 0.66) }),
+        TransitionEffect.OPACITY.animation({ duration: 0 })
+      ))
       .width('100%')
       .justifyContent(this.isLogged ? FlexAlign.Start : FlexAlign.Center)
       .onClick(() => {
@@ -262,6 +287,14 @@ struct UserInfo {
       Text($r('app.string.user_default_description'))
         .fontSize($r('app.float.user_description_font_size'))
         .fontColor($r('sys.color.font_secondary'))
+        .transition(this.isLogged ? TransitionEffect.asymmetric(
+          TransitionEffect.SLIDE.animation({ curve: curves.springMotion(0.4, 0.66) }),
+          TransitionEffect.OPACITY.animation({ duration: 0 })
+        ) : TransitionEffect.asymmetric(
+          TransitionEffect.OPACITY.combine(TransitionEffect.scale({ x: 0.5, y: 0.5 }))
+            .animation({ curve: curves.springMotion(0.4, 0.66) }),
+          TransitionEffect.OPACITY.animation({ duration: 0 })
+        ))
     }
     .alignItems(this.isLogged ? HorizontalAlign.Start : HorizontalAlign.Center)
     .padding({ left: $r('app.float.xxl_padding_margin') })

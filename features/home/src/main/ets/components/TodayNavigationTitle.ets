@@ -74,6 +74,7 @@ export struct TodayNavigationTitle {
                 SymbolGlyph($r('sys.symbol.dot_grid_2x2'))
                   .fontSize(22)
                   .fontWeight(FontWeight.Medium)
+                  .fontColor([$r('sys.color.icon')])
               }
               .onClick(() => {
                 this.isLoginShow = true;

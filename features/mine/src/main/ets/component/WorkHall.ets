@@ -1,6 +1,7 @@
-import { BreakPointType, BreakPointTypeEnum, CommonUrls, EventType } from '@ohos/utils';
+import { BreakPointType, BreakPointTypeEnum, CommonConstants, CommonUrls, EventType } from '@ohos/utils';
 import { UserModel } from '../model/UserModel';
 import { common } from '@kit.AbilityKit';
+import { curves } from '@kit.ArkUI';
 
 @Component
 export struct WorkHall {
@@ -47,6 +48,11 @@ export struct WorkHall {
     }
     .padding({ top: 10 })
     .width('100%')
+    .transition(TransitionEffect.asymmetric(
+      TransitionEffect.scale({ centerY: -vp2px(11), x: 0.5, y: 0.5 })
+        .animation({ curve: curves.springMotion(0.4, 0.66) }),
+      TransitionEffect.OPACITY.animation({ duration: 0 })
+    ))
   }
 
   build() {
@@ -62,6 +68,12 @@ export struct WorkHall {
           url: CommonUrls.WORK_HALL_REVIVE_URL
         })
       }
+      .transition(TransitionEffect.asymmetric(
+        TransitionEffect.scale({ x: 0.5, y: 0.5 })
+          .combine(TransitionEffect.OPACITY)
+          .animation({ curve: curves.springMotion(0.35, 0.66), delay: CommonConstants.NORMAL_ANIMATION_DELAY }),
+        TransitionEffect.OPACITY.animation({ duration: 0 })
+      ))
       .margin($r('app.float.work_hall_item_margin'))
 
       ListItem() {
@@ -74,6 +86,12 @@ export struct WorkHall {
           url: CommonUrls.WORK_HALL_PROGRESS_URL
         })
       }
+      .transition(TransitionEffect.asymmetric(
+        TransitionEffect.scale({ x: 0.5, y: 0.5 })
+          .combine(TransitionEffect.OPACITY)
+          .animation({ curve: curves.springMotion(0.35, 0.66), delay: CommonConstants.NORMAL_ANIMATION_DELAY * 2 }),
+        TransitionEffect.OPACITY.animation({ duration: 0 })
+      ))
       .margin($r('app.float.work_hall_item_margin'))
 
       ListItem() {
@@ -86,6 +104,12 @@ export struct WorkHall {
           url: CommonUrls.WORK_HALL_SCORE_URL
         })
       }
+      .transition(TransitionEffect.asymmetric(
+        TransitionEffect.scale({ x: 0.5, y: 0.5 })
+          .combine(TransitionEffect.OPACITY)
+          .animation({ curve: curves.springMotion(0.35, 0.66), delay: CommonConstants.NORMAL_ANIMATION_DELAY * 3 }),
+        TransitionEffect.OPACITY.animation({ duration: 0 })
+      ))
       .margin($r('app.float.work_hall_item_margin'))
 
       ListItem() {
@@ -97,9 +121,17 @@ export struct WorkHall {
           handelClick: this.handelClick,
           url: CommonUrls.WORK_HALL_CLOSED_URL
         })
+
       }.margin($r('app.float.work_hall_item_margin'))
+      .transition(TransitionEffect.asymmetric(
+        TransitionEffect.scale({ x: 0.5, y: 0.5 })
+          .combine(TransitionEffect.OPACITY)
+          .animation({ curve: curves.springMotion(0.35, 0.66), delay: CommonConstants.NORMAL_ANIMATION_DELAY * 4 }),
+        TransitionEffect.OPACITY.animation({ duration: 0 })
+      ))
 
     }
+    .clip(false)
     .lanes(new BreakPointType({ sm: 2, md: 2, lg: 2 }).getValue(this.currentBreakPoint))
   }
 }

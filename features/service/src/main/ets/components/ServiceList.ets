@@ -40,8 +40,7 @@ export struct ServiceList {
     $r('app.float.normal_service_list_height'))
     .width('100%')
     .clickEffect({ level: ClickEffectLevel.HEAVY })
-    .backgroundColor($r('app.color.whut_blue_background_selected'))
-    .border({ width: 0.5 })
+    .backgroundColor($r('sys.color.ohos_id_color_list_card_bg'))
     .borderRadius(8)
     .padding(this.currentBreakPoint === BreakPointTypeEnum.LG ? 2 : 0)
   }

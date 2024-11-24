@@ -59,7 +59,7 @@ export struct AllServiceList {
         .textAlign(TextAlign.Start)
         .width('100%')
     }
-    .backgroundColor($r('app.color.start_window_background'))
+    .backgroundColor($r('sys.color.background_primary'))
     .padding({
       top: 5,
       bottom: 5
@@ -77,7 +77,7 @@ export struct AllServiceList {
         .textAlign(TextAlign.Start)
         .width('100%')
     }
-    .backgroundColor($r('app.color.start_window_background'))
+    .backgroundColor($r('sys.color.background_primary'))
     .padding({
       top: 5,
       bottom: 5
@@ -95,7 +95,7 @@ export struct AllServiceList {
         .textAlign(TextAlign.Start)
         .width('100%')
     }
-    .backgroundColor($r('app.color.start_window_background'))
+    .backgroundColor($r('sys.color.background_primary'))
     .padding({
       top: 5,
       bottom: 5
@@ -113,7 +113,7 @@ export struct AllServiceList {
         .textAlign(TextAlign.Start)
         .width('100%')
     }
-    .backgroundColor($r('app.color.start_window_background'))
+    .backgroundColor($r('sys.color.background_primary'))
     .padding({
       top: 5,
       bottom: 5

@@ -75,7 +75,7 @@ export struct CampusNetwork {
     }
     .renderFit(RenderFit.RESIZE_CONTAIN)
     .justifyContent(FlexAlign.Center)
-    .backgroundColor($r('app.color.whut_blue_background'))
+    .backgroundColor($r('app.color.thin_yellow_background'))
     .borderRadius($r('app.float.border_radius'))
     .borderStyle(BorderStyle.Solid)
     .clickEffect({ level: ClickEffectLevel.LIGHT, scale: 0.99 })

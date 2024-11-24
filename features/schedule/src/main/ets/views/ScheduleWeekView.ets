@@ -180,10 +180,10 @@ export struct ScheduleWeekView {
           Row() {
             SymbolGlyph($r('sys.symbol.pencil_and_card'))
               .fontSize(18)
-              .fontColor([$r('app.color.whut_blue')])
+              .fontColor(['#00489A'])
             Text('编辑')
               .fontSize(14)
-              .fontColor($r('app.color.whut_blue'))
+              .fontColor('#00489A')
           }
         }
         .onClick(() => {

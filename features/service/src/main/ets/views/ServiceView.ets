@@ -70,7 +70,7 @@ export struct Service {
         .textAlign(TextAlign.Start)
         .width('100%')
     }
-    .backgroundColor($r('app.color.start_window_background'))
+    .backgroundColor($r('sys.color.background_primary'))
     .padding({
       left: 16,
       right: 16,
@@ -95,7 +95,7 @@ export struct Service {
           .textAlign(TextAlign.Start)
         SymbolGlyph($r('sys.symbol.chevron_right'))
           .fontWeight(FontWeight.Normal)
-          .opacity(0.6)
+          .fontColor([$r('sys.color.font_secondary')])
       }
       .alignItems(VerticalAlign.Center)
       .justifyContent(FlexAlign.Center)
@@ -106,7 +106,7 @@ export struct Service {
     .alignItems(VerticalAlign.Center)
     .justifyContent(FlexAlign.SpaceBetween)
     .width('100%')
-    .backgroundColor($r('app.color.start_window_background'))
+    .backgroundColor($r('sys.color.background_primary'))
     .padding({
       left: 16,
       right: 16,

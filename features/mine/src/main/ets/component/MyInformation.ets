@@ -1,5 +1,6 @@
-import { BreakPointTypeEnum, CommonUrls } from "@ohos/utils";
-import { UserModel } from "../../../../Index";
+import { BreakPointTypeEnum, CommonConstants, CommonUrls } from '@ohos/utils';
+import { UserModel } from '../../../../Index';
+import { curves } from '@kit.ArkUI';
 
 @Component
 export struct MyInformation {
@@ -20,6 +21,11 @@ export struct MyInformation {
       Blank()
         .layoutWeight(1)
     }
+    .transition(TransitionEffect.asymmetric(
+      TransitionEffect.scale({ centerY: -vp2px(11), x: 0.5, y: 0.5 })
+        .animation({ curve: curves.springMotion(0.4, 0.66) }),
+      TransitionEffect.OPACITY.animation({ duration: 0 })
+    ))
     .width('100%')
   }
 
@@ -37,6 +43,12 @@ export struct MyInformation {
             numberOfItem: this.userModel.numberOfBook,
           })
         }
+        .transition(TransitionEffect.asymmetric(
+          TransitionEffect.scale({ x: 0.5, y: 0.5 })
+            .combine(TransitionEffect.OPACITY)
+            .animation({ curve: curves.springMotion(0.35, 0.66), delay: CommonConstants.NORMAL_ANIMATION_DELAY }),
+          TransitionEffect.OPACITY.animation({ duration: 0 })
+        ))
         .margin($r('app.float.work_hall_item_margin'))
 
         ListItem() {
@@ -50,6 +62,12 @@ export struct MyInformation {
             numberOfItem: this.userModel.cardMoney
           })
         }
+        .transition(TransitionEffect.asymmetric(
+          TransitionEffect.scale({ x: 0.5, y: 0.5 })
+            .combine(TransitionEffect.OPACITY)
+            .animation({ curve: curves.springMotion(0.35, 0.66), delay: CommonConstants.NORMAL_ANIMATION_DELAY * 2 }),
+          TransitionEffect.OPACITY.animation({ duration: 0 })
+        ))
         .margin($r('app.float.work_hall_item_margin'))
 
         ListItem() {
@@ -62,10 +80,17 @@ export struct MyInformation {
             handelClick: this.handelClick
           })
         }
+        .transition(TransitionEffect.asymmetric(
+          TransitionEffect.scale({ x: 0.5, y: 0.5 })
+            .combine(TransitionEffect.OPACITY)
+            .animation({ curve: curves.springMotion(0.35, 0.66), delay: CommonConstants.NORMAL_ANIMATION_DELAY * 3 }),
+          TransitionEffect.OPACITY.animation({ duration: 0 })
+        ))
         .margin($r('app.float.work_hall_item_margin'))
 
       }
     }
+    .clip(false)
   }
 }
 

@@ -79,6 +79,30 @@
     {
       "name": "toggle_width",
       "value": "40"
+    },
+    {
+      "name": "title_font_size",
+      "value": "14"
+    },
+    {
+      "name": "button_height",
+      "value": "40"
+    },
+    {
+      "name": "pad_image_top",
+      "value": "32"
+    },
+    {
+      "name": "view_count_icon_width",
+      "value": "36"
+    },
+    {
+      "name": "xl_padding_margin",
+      "value": "20"
+    },
+    {
+      "name": "xxl_border_radius",
+      "value": "24"
     }
   ]
 }

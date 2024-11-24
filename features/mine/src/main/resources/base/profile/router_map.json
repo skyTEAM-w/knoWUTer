@@ -9,6 +9,11 @@
       "name": "AccountView",
       "pageSourceFile": "src/main/ets/views/AccountView.ets",
       "buildFunction": "AccountViewBuilder"
+    },
+    {
+      "name": "DarkModeConfigView",
+      "pageSourceFile": "src/main/ets/views/DarkModeConfigView.ets",
+      "buildFunction": "DarkModeConfigViewBuilder"
     }
   ]
 }
