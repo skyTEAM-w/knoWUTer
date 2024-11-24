@@ -10,6 +10,7 @@ import { PreferencesUtil } from '@ohos/datastore';
 @Entry({ routeName: 'LoginPage' })
 @Component
 struct LoginPage {
+  @StorageLink('bottomTabIndex') bottomTabIndex: number = 2;
   private webViewController: webview.WebviewController = new webview.WebviewController();
   private userModel: UserModel = UserModel.getInstance();
   private accessModel: AccessModel = AccessModel.getInstance();
@@ -29,6 +30,7 @@ struct LoginPage {
             CookieUtil.getInstance().saveZHLGDCookie(cookie)
             this.userModel.checkIsLogged().then((result) => {
               if (result) {
+                this.bottomTabIndex = 2;
                 const bundleName = (getContext(this) as common.UIAbilityContext).applicationInfo.name;
                 router.replaceUrl({
                   url: `@bundle:${bundleName}/entry/ets/pages/MainPage`

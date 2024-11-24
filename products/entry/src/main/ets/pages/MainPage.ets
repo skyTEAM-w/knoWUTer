@@ -3,10 +3,11 @@ import { Home } from '@feature/home';
 import { Tools } from '@feature/tools';
 import { Service } from '@feature/service';
 import { Schedule, ScheduleSettingFunc } from '@feature/schedule';
-import { BreakPointSystem, BreakPointTypeEnum, CookieUtil, UserSettingUtil } from '@ohos/utils';
+import { BreakPointSystem, BreakPointTypeEnum, CookieUtil, UserSettingUtil, WindowUtil } from '@ohos/utils';
 import { DBUtil } from '@ohos/datastore';
 import { WebViewPage } from '@ohos/uicomponents';
 import { UserView } from '@feature/mine/Index';
+import { display } from '@kit.ArkUI';
 
 @Preview
 @Entry
@@ -34,11 +35,39 @@ struct Index {
 
   aboutToAppear(): void {
     this.breakPointSystem.register();
+    try {
+      if (canIUse('SystemCapability.Window.SessionManager')) {
+        if (display.isFoldable()) {
+          this.changeOrientation(display.getFoldStatus());
+          display.on('foldStatusChange', (status: display.FoldStatus) => {
+            this.changeOrientation(status);
+          });
+        }
+      }
+    } catch (exception) {
+      console.error('Is not fold able device error: ' + JSON.stringify(exception));
+    }
 
   }
 
   aboutToDisappear(): void {
     this.breakPointSystem.unregister();
+    try {
+      display.off('foldStatusChange');
+      display.off('change');
+    } catch (exception) {
+      console.error('Failed to unregister callback. Code: ' + JSON.stringify(exception));
+    }
+  }
+
+  changeOrientation(status: display.FoldStatus) {
+    if (status !== display.FoldStatus.FOLD_STATUS_EXPANDED) {
+      AppStorage.setOrCreate('foldExpanded', false);
+      WindowUtil.setMainWindowRestricted(getContext(this));
+    } else {
+      AppStorage.setOrCreate('foldExpanded', true);
+      WindowUtil.setMainWindowPortrait(getContext(this));
+    }
   }
 
   @Builder
@@ -56,7 +85,7 @@ struct Index {
         .renderingStrategy(this.bottomTabIndex === index ? SymbolRenderingStrategy.MULTIPLE_COLOR :
         SymbolRenderingStrategy.MULTIPLE_COLOR)
         .fontColor(this.bottomTabIndex === index ? [$r('app.color.whut_blue'), $r('app.color.whut_yellow')] :
-          [Color.Black])
+          [$r('sys.color.icon'), $r('sys.color.icon_secondary')])
         .symbolEffect(new BounceSymbolEffect(EffectScope.WHOLE, EffectDirection.DOWN),
           this.bottomTabEffectIndex === index)
 
@@ -64,7 +93,7 @@ struct Index {
         .fontSize($r('app.float.bottom_font_size'))
         .opacity(0.6)
         .fontColor(this.bottomTabIndex === index ?
-        $r('app.color.bottom_text_color_selected') : $r('app.color.bottom_text_color_normal'))
+        $r('sys.color.ohos_id_color_bottom_tab_text_on') : $r('sys.color.ohos_id_color_bottom_tab_text_off'))
     }
     .width('100%')
     .height(this.currentBreakPoint === BreakPointTypeEnum.LG ? '15%' : '100%')

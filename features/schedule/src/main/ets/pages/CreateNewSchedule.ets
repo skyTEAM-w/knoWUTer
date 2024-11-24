@@ -136,8 +136,9 @@ export struct CreateNewSchedule {
       SymbolGlyph($r('sys.symbol.checkmark'))
         .fontSize(20)
         .fontWeight(FontWeight.Medium)
+        .fontColor([$r('sys.color.icon')])
     }
-    .backgroundColor(Color.Gray)
+    .backgroundColor($r('app.color.interact_button_background'))
     .barButtonStyle()
     .onClick(() => {
       this.confirmDialogController?.open()
@@ -199,7 +200,7 @@ export struct CreateNewSchedule {
 
             }
             .borderRadius($r('app.float.main_border_radius'))
-            .backgroundColor($r('app.color.start_window_background'))
+            .backgroundColor($r('sys.color.ohos_id_color_list_card_bg'))
 
           }
           .padding({ left: $r('app.float.md_padding_margin'), right: $r('app.float.md_padding_margin') })

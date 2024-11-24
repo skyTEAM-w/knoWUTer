@@ -47,6 +47,10 @@
     {
       "name": "application_setting",
       "value": "App Setting"
+    },
+    {
+      "name": "dark_mode",
+      "value": "Dark mode"
     }
   ]
 }

@@ -14,6 +14,7 @@ export struct Hall {
   @Consume('minePathStack') minePathStack: NavPathStack;
   @State userModel: UserModel = UserModel.getInstance()
   @StorageProp('naviIndicatorHeight') naviIndicatorHeight: number = 0;
+  @Prop isThisTab: boolean;
   innerScroller?: Scroller
   private eventHub: common.EventHub = (getContext(this) as common.UIAbilityContext).eventHub;
 
@@ -39,40 +40,46 @@ export struct Hall {
 
   build() {
     Navigation(this.hallPathStack) {
-      List({ scroller: this.innerScroller, space: 10 }) {
-        ListItem() {
-          WorkHall({
-            userModel: this.userModel,
-            handelClick: this.handelClickWork,
-            numberOfItemReview: this.userModel.numberOfItemReview,
-            numberOfItemInProgress: this.userModel.numberOfItemInProgress,
-            numberOfItemScore: this.userModel.numberOfItemScore,
-            numberOfItemClosing: this.userModel.numberOfItemClosing
-          })
+      if (this.isThisTab) {
+        List({ scroller: this.innerScroller, space: 10 }) {
+          ListItem() {
+            WorkHall({
+              userModel: this.userModel,
+              handelClick: this.handelClickWork,
+              numberOfItemReview: this.userModel.numberOfItemReview,
+              numberOfItemInProgress: this.userModel.numberOfItemInProgress,
+              numberOfItemScore: this.userModel.numberOfItemScore,
+              numberOfItemClosing: this.userModel.numberOfItemClosing
+            })
+          }
+          .clip(false)
+
+          ListItem() {
+            MyInformation({
+              userModel: this.userModel,
+              handelClick: this.handelClickInfo
+            })
+          }
+          .clip(false)
+
+
+          ListItem() {
+
+          }
+          .height(this.currentBreakPoint === BreakPointTypeEnum.LG ? $r('app.float.user_background_height_md') :
+          $r('app.float.user_background_height_lg'))
         }
-
-        ListItem() {
-          MyInformation({
-            userModel: this.userModel,
-            handelClick: this.handelClickInfo
-          })
-        }
-
-
-        ListItem() {
-
-        }
-        .height('50%')
+        .clip(false)
+        .scrollBar(BarState.Off)
+        .padding({ left: $r('app.float.xxl_padding_margin'), right: $r('app.float.xxl_padding_margin') })
+        .edgeEffect(EdgeEffect.None)
+        .width('100%')
+        .height('100%')
+        .nestedScroll({
+          scrollForward: NestedScrollMode.PARENT_FIRST,
+          scrollBackward: NestedScrollMode.SELF_FIRST
+        })
       }
-      .scrollBar(BarState.Off)
-      .padding({ left: $r('app.float.xxl_padding_margin'), right: $r('app.float.xxl_padding_margin') })
-      .edgeEffect(EdgeEffect.None)
-      .width('100%')
-      .height('100%')
-      .nestedScroll({
-        scrollForward: NestedScrollMode.PARENT_FIRST,
-        scrollBackward: NestedScrollMode.SELF_FIRST
-      })
 
     }
     .navDestination(this.pageMap)

@@ -55,6 +55,74 @@
     {
       "name": "application_setting",
       "value": "App Setting"
+    },
+    {
+      "name": "dark_mode",
+      "value": "Dark mode"
+    },
+    {
+      "name": "dark_mode_timed",
+      "value": "Scheduled start"
+    },
+    {
+      "name": "dark_mode_all_day",
+      "value": "On all day"
+    },
+    {
+      "name": "dark_mode_follow_up",
+      "value": "Follow-up system"
+    },
+    {
+      "name": "dark_mode_settings_timed_card_remark",
+      "value": "If this option is selected, the APP will switch to Dark mode only after the screen is turned on again. so as not to affect your use."
+    },
+    {
+      "name": "start_time_des",
+      "value": "Start Time"
+    },
+    {
+      "name": "end_time_des",
+      "value": "End Time"
+    },
+    {
+      "name": "hours_minutes",
+      "value": "%s:%s"
+    },
+    {
+      "name": "early_morning",
+      "value": "Early morning %s"
+    },
+    {
+      "name": "in_morning",
+      "value": "In the morning %s"
+    },
+    {
+      "name": "mornings",
+      "value": "Mornings %s"
+    },
+    {
+      "name": "noons",
+      "value": "Noons %s"
+    },
+    {
+      "name": "afternoons",
+      "value": "Afternoons %s"
+    },
+    {
+      "name": "nighttime",
+      "value": "Nighttime %s"
+    },
+    {
+      "name": "midnight",
+      "value": "Midnight %s"
+    },
+    {
+      "name": "next_day",
+      "value": "The next day"
+    },
+    {
+      "name": "same_time_warning",
+      "value": "The start time and end time cannot be the same."
     }
   ]
 }

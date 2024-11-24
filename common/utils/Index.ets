@@ -39,4 +39,6 @@ export { CryptoUtil } from './src/main/ets/utils/CryptoUtil';
 
 export { CommonUrls } from './src/main/ets/common/CommonUrls';
 
-export { CommonConstants } from './src/main/ets/common/CommonConstants'
+export { CommonConstants } from './src/main/ets/common/CommonConstants';
+
+export { DarkModeSettingsConfig, DarkModeType, DarkModeUtil } from './src/main/ets/utils/DarkModeUtil'

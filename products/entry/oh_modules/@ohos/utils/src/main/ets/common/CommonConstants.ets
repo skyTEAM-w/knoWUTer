@@ -25,5 +25,6 @@ export class CommonConstants {
   static readonly SCHEDULE_BOTTOM_INDEX = 0;
   static readonly HOME_BOTTOM_INDEX = 2;
   static readonly TOOL_BOTTOM_INDEX = 3;
+  static readonly USER_BOTTOM_INDEX = 4;
 }
 

@@ -69,7 +69,7 @@ export struct WeekScheduleCard {
     .margin({ left: 5, right: 5 })
     .justifyContent(FlexAlign.Center)
     .clickEffect({ level: ClickEffectLevel.LIGHT, scale: 0.9 })
-    .border({ color: $r('app.color.whut_blue_background_selected'), width: 3, radius: 8 })
+    .border({ color: '#4000489A', width: 3, radius: 8 })
     .backgroundColor(this.cardColor)
     .width('95%')
     .height(COURSE_SCHEDULE_HEIGHT * (this.courseSchedule.EndSession - this.courseSchedule.StartSession + 1))

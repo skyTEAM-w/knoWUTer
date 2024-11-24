@@ -1,6 +1,6 @@
 import { TopNavigationView } from '@ohos/uicomponents';
 import { BreakPointTypeEnum } from '@ohos/utils';
-import { SkipLoginSetting } from '../component/SettingComponent';
+import { DarkModeSettingCard, SkipLoginSetting } from '../component/SettingComponent';
 import { UserHead } from '../component/UserComponent';
 
 @Component
@@ -81,6 +81,13 @@ struct ApplicationSetting {
       Column({ space: 5 }) {
         Row() {
           SkipLoginSetting()
+        }
+        .height($r('app.float.app_setting_item_height'))
+        .width('100%')
+
+        Divider()
+        Row() {
+          DarkModeSettingCard()
         }
         .height($r('app.float.app_setting_item_height'))
         .width('100%')

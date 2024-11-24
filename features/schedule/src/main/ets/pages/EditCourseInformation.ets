@@ -109,6 +109,7 @@ export struct EditCourseInformation {
       SymbolGlyph($r('sys.symbol.checkmark'))
         .fontSize(20)
         .fontWeight(FontWeight.Medium)
+        .fontColor([$r('sys.color.icon')])
     }
     .backgroundColor(Color.Gray)
     .barButtonStyle()
@@ -202,7 +203,7 @@ export struct EditCourseInformation {
                     this.colorSelectDialogController.open()
                   })
                 }
-                .backgroundColor($r('sys.color.background_primary'))
+                .backgroundColor($r('sys.color.ohos_id_color_list_card_bg'))
               }
               .clip(true)
               .borderRadius($r('app.float.main_border_radius'))
@@ -233,6 +234,7 @@ export struct EditCourseInformation {
                     SymbolGlyph($r('sys.symbol.plus'))
                       .fontSize(33)
                       .fontWeight(FontWeight.Regular)
+                      .fontColor([$r('sys.color.icon')])
                     Text('新建课程安排')
                   }
                   .opacity(0.6)

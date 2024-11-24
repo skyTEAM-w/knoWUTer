@@ -35,7 +35,9 @@ export struct ScheduleTable {
   @State loginStatus: boolean | undefined = undefined;
   @State tabOptions: SegmentButtonOptions = SegmentButtonOptions.tab({
     buttons: [{ text: '日程' }, { text: '列表' }] as ItemRestriction<SegmentButtonTextItem>,
-    backgroundColor: $r('app.color.whut_blue_background_selected')
+    backgroundColor: '#4000489A',
+    fontColor: $r('sys.color.ohos_id_color_bottom_tab_text_off'),
+    selectedFontColor: $r('sys.color.ohos_id_color_bottom_tab_text_on')
   })
   @State tabSelectedIndexes: number[] = [0]
   @State sliderValue: number = 1;
@@ -167,7 +169,7 @@ export struct ScheduleTable {
     Navigation(this.schedulePathStack) {
       Column() {
         Stack({ alignContent: Alignment.Top }) {
-          if (this.tabSelectedIndexes[0] === 1) {
+          if (this.tabSelectedIndexes[0] === 1 && this.isThisTab) {
             Column() {
               Scroll() {
                 Column() {

@@ -1,0 +1,80 @@
+{
+  "color": [
+    {
+      "name": "start_window_background",
+      "value": "#FFFFFF"
+    },
+    {
+      "name": "bottom_text_color_selected",
+      "value": "#FF062CF6"
+    },
+    {
+      "name": "bottom_text_color_normal",
+      "value": "#000000"
+    },
+    {
+      "name": "bottom_tab_background_color",
+      "value": "#F1F3F5"
+    },
+    {
+      "name": "normal_background_grey",
+      "value": "#288A8888"
+    },
+    {
+      "name": "whut_blue",
+      "value": "#FAC640"
+    },
+    {
+      "name": "whut_yellow",
+      "value": "#00489A"
+    },
+    {
+      "name": "whut_blue_background",
+      "value": "#0CFAC640"
+    },
+    {
+      "name": "whut_yellow_background",
+      "value": "#0C00489A"
+    },
+    {
+      "name": "whut_blue_background_selected",
+      "value": "#FFFADA94"
+    },
+    {
+      "name": "whut_yellow_background_selected",
+      "value": "#4000489A"
+    },
+    {
+      "name": "whut_blue_background_thick",
+      "value": "#80FAC640"
+    },
+    {
+      "name": "whut_yellow_background_thick",
+      "value": "#8000489A"
+    },
+    {
+      "name": "interact_button_background",
+      "value": "#1AFFFFFF"
+    },
+    {
+      "name": "delete_button_background",
+      "value": "#9AFF8A8A"
+    },
+    {
+      "name": "sky_blue_background",
+      "value": "#34495E"
+    },
+    {
+      "name": "leaf_green_background",
+      "value": "#8E44AD"
+    },
+    {
+      "name": "thin_pink_background",
+      "value": "#C0392B"
+    },
+    {
+      "name": "thin_yellow_background",
+      "value": "#27AE60"
+    }
+  ]
+}
