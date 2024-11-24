@@ -59,6 +59,14 @@
     {
       "name": "app_setting_item_height",
       "value": "44"
+    },
+    {
+      "name": "text_right_margin",
+      "value": "34"
+    },
+    {
+      "name": "lg_time_picker_dialog_width",
+      "value": "432"
     }
   ]
 }

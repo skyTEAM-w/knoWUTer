@@ -47,6 +47,7 @@ export struct WebViewPage {
             SymbolGlyph($r("sys.symbol.chevron_left"))
               .fontSize(30)
               .height('100%')
+              .fontColor([$r('sys.color.icon')])
               .onClick(() => {
                 this.onDestinationBack?.();
               })
@@ -55,7 +56,7 @@ export struct WebViewPage {
           Row() {
             Stack() {
               Progress({ value: this.webProgress, total: 100, type: ProgressType.Capsule })
-                .width('100%').height('100%').color($r('app.color.whut_blue_background_selected'))
+                .width('100%').height('100%').color('#4000489A')
 
               Text(this.webTitle)
                 .textOverflow({ overflow: TextOverflow.Ellipsis })
@@ -75,6 +76,7 @@ export struct WebViewPage {
               SymbolGlyph($r("sys.symbol.arrow_right_up_and_square"))
                 .fontSize(25)
                 .height('80%')
+                .fontColor([$r('sys.color.icon')])
             }
             .bindMenu(this.WebViewMenu())
           } else {

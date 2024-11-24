@@ -1,8 +1,16 @@
 import { UserModel } from '@feature/mine/Index';
-import { PreferencesUtil } from '@ohos/datastore';
-import { BreakPointSystem, BreakPointType, BreakPointTypeEnum } from '@ohos/utils';
+import { DBUtil, PreferencesUtil } from '@ohos/datastore';
+import {
+  BreakPointSystem,
+  BreakPointType,
+  BreakPointTypeEnum,
+  CookieUtil,
+  DarkModeUtil,
+  UserSettingUtil
+} from '@ohos/utils';
 import { router } from '@kit.ArkUI';
 import { JSON } from '@kit.ArkTS';
+import { ScheduleSettingFunc } from '@feature/schedule';
 
 const TAG = '[IndexPage]'
 
@@ -14,6 +22,7 @@ struct IndexPage {
   @State isSkip: boolean = true;
   @State isLogged: boolean = false;
   @StorageProp('currentBreakPoint') currentBreakPoint: string = BreakPointTypeEnum.MD;
+  @StorageLink('bottomTabIndex') bottomTabIndex: number = 2;
   private userModel = UserModel.getInstance();
   private preference = PreferencesUtil.getInstance();
   private breakPointSystem: BreakPointSystem = new BreakPointSystem();
@@ -27,6 +36,14 @@ struct IndexPage {
 
   aboutToDisappear(): void {
     this.breakPointSystem.unregister()
+  }
+
+  onPageShow(): void {
+    DarkModeUtil.getInstance().checkDarkModeSetting()
+    UserSettingUtil.getInstance().checkAllSetting();
+    DBUtil.getInstance();
+    ScheduleSettingFunc.getInstance().checkAllScheduleSetting()
+    CookieUtil.getInstance().checkAllCookies();
   }
 
   dynamicImport() {

@@ -51,7 +51,7 @@ export struct CampusNews {
     Column() {
       Text(name)
         .fontSize($r('sys.float.ohos_id_text_size_body1'))
-        .fontColor(this.currentIndex === index ? $r('app.color.whut_blue') : '#182431')
+        .fontColor(this.currentIndex === index ? $r('app.color.whut_blue') : $r('app.color.whut_blue_background_thick'))
         .fontWeight(this.currentIndex === index ? FontWeight.Bold : FontWeight.Regular)
         .margin({ left: 20, right: 20 })
     }.renderFit(RenderFit.RESIZE_CONTAIN)
@@ -201,7 +201,6 @@ struct NewsList {
           duration: CommonConstants.NORMAL_ANIMATION_DURATION,
           delay: CommonConstants.NORMAL_ANIMATION_DELAY * index
         } : { duration: 0 })
-        .backgroundColor($r('sys.color.comp_background_list_card'))
         .borderRadius($r('app.float.light_border_radius'))
         .clickEffect({ level: ClickEffectLevel.LIGHT, scale: 0.95 })
         .onClick(() => {

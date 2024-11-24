@@ -323,6 +323,7 @@ export struct ScheduleNavigation {
                 SymbolGlyph($r('sys.symbol.plus'))
                   .fontSize(22)
                   .fontWeight(FontWeight.Medium)
+                  .fontColor([$r('sys.color.icon')])
               }
               .barButtonStyle()
               .bindMenu(this.plusButtonMenu())
@@ -331,6 +332,7 @@ export struct ScheduleNavigation {
                 SymbolGlyph($r('sys.symbol.person'))
                   .fontSize(22)
                   .fontWeight(FontWeight.Medium)
+                  .fontColor([$r('sys.color.icon')])
               }
               .barButtonStyle()
               .onClick(() => {
@@ -351,6 +353,7 @@ export struct ScheduleNavigation {
                 SymbolGlyph($r('sys.symbol.dot_grid_2x2'))
                   .fontSize(22)
                   .fontWeight(FontWeight.Medium)
+                  .fontColor([$r('sys.color.icon')])
               }
               .bindSheet($$this.isSettingShow, this.settingBindSheet, {
                 preferType: this.currentBreakPoint === BreakPointTypeEnum.LG ? SheetType.CENTER : SheetType.BOTTOM,

@@ -345,7 +345,7 @@ export struct ElectricityInquiryTool {
                 icon: DownloadIconStyle.FULL_FILLED
               },
               styleOptions: {
-                iconColor: Color.Black,
+                iconColor: $r('sys.color.icon'),
                 iconSize: 24,
                 fontWeight: FontWeight.Medium
               }
@@ -355,6 +355,7 @@ export struct ElectricityInquiryTool {
             SymbolGlyph($r('sys.symbol.checkmark'))
               .fontSize(24)
               .fontWeight(FontWeight.Medium)
+              .fontColor([$r('sys.color.icon')])
               .onClick(() => {
                 this.checkSelectedDormitory();
               })
@@ -433,6 +434,7 @@ export struct ElectricityInquiryTool {
           SymbolGlyph($r('sys.symbol.arrow_counterclockwise_clock'))
             .fontSize(20)
             .fontWeight(FontWeight.Medium)
+            .fontColor([$r('sys.color.icon')])
 
         }
         .onClick(() => {
@@ -477,6 +479,7 @@ export struct ElectricityInquiryTool {
               .textAlign(TextAlign.Start)
             Button(this.selectedArea)
               .fontColor(Color.Black)
+              .fontColor($r('sys.color.font'))
               .backgroundColor(Color.Transparent)
               .width('70%')
               .onClick(() => {
@@ -505,6 +508,7 @@ export struct ElectricityInquiryTool {
               .textAlign(TextAlign.Start)
             Button(this.selectedBuilding)
               .fontColor(Color.Black)
+              .fontColor($r('sys.color.font'))
               .backgroundColor(Color.Transparent)
               .width('70%')
               .onClick(() => {
@@ -532,6 +536,7 @@ export struct ElectricityInquiryTool {
               .textAlign(TextAlign.Start)
             Button(this.selectedFloor)
               .fontColor(Color.Black)
+              .fontColor($r('sys.color.font'))
               .backgroundColor(Color.Transparent)
               .width('70%')
               .onClick(() => {
@@ -560,7 +565,7 @@ export struct ElectricityInquiryTool {
               .textAlign(TextAlign.Start)
 
             Button(this.selectedRoom)
-              .fontColor(Color.Black)
+              .fontColor($r('sys.color.font'))
               .backgroundColor(Color.Transparent)
               .width('70%')
               .onClick(() => {
@@ -598,9 +603,9 @@ export struct ElectricityInquiryTool {
                   .textAlign(TextAlign.Start)
               }
               .justifyContent(FlexAlign.SpaceBetween)
-              .width('45%')
               .geometryTransition('remain')
 
+              Blank()
               Row() {
                 Text('剩余电量：')
                   .fontSize(16)
@@ -614,7 +619,6 @@ export struct ElectricityInquiryTool {
                   .textAlign(TextAlign.Start)
               }
               .justifyContent(FlexAlign.SpaceBetween)
-              .width('45%')
 
             }
             .justifyContent(FlexAlign.SpaceBetween)
@@ -626,7 +630,7 @@ export struct ElectricityInquiryTool {
           Row() {
             Button($r('app.string.text_save'))
               .width('70%')
-              .fontColor(Color.Black)
+              .fontColor($r('sys.color.font'))
               .backgroundColor(Color.Transparent)
               .onClick(() => {
                 this.saveDormitory();
@@ -643,6 +647,7 @@ export struct ElectricityInquiryTool {
         SymbolGlyph(this.showChoice ? $r('sys.symbol.chevron_up') : $r('sys.symbol.chevron_down'))
           .fontSize(20)
           .symbolEffect(new ReplaceSymbolEffect(EffectScope.WHOLE), this.showChoice)
+          .fontColor([$r('sys.color.icon')])
       }
       .width('100%')
       .justifyContent(FlexAlign.Center)
@@ -747,7 +752,7 @@ struct DormitoryItem {
     .justifyContent(FlexAlign.SpaceBetween)
     .backgroundColor(this.selectedDormitoryIndex === index ? $r('app.color.whut_blue_background_selected') :
       this.dormitoryItem.isStar ? $r('app.color.whut_yellow_background_selected') :
-      $r('app.color.start_window_background'))
+      $r('sys.color.ohos_id_color_list_card_bg'))
     .onClick(() => {
       this.selectedDormitoryIndex = index;
     })
