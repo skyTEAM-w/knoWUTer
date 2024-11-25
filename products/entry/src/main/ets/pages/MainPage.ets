@@ -3,11 +3,18 @@ import { Home } from '@feature/home';
 import { Tools } from '@feature/tools';
 import { Service } from '@feature/service';
 import { Schedule, ScheduleSettingFunc } from '@feature/schedule';
-import { BreakPointSystem, BreakPointTypeEnum, CookieUtil, UserSettingUtil, WindowUtil } from '@ohos/utils';
+import {
+  BreakPointSystem,
+  BreakPointTypeEnum,
+  CookieUtil,
+  UserSettingUtil,
+  WindowUtil
+} from '@ohos/utils';
 import { DBUtil } from '@ohos/datastore';
 import { WebViewPage } from '@ohos/uicomponents';
 import { UserView } from '@feature/mine/Index';
 import { display } from '@kit.ArkUI';
+import { ConfigurationConstant } from '@kit.AbilityKit';
 
 @Preview
 @Entry
@@ -23,6 +30,7 @@ struct Index {
   @Provide('settingPathStack') settingPathStack: NavPathStack = new NavPathStack();
   @StorageLink('currentBreakPoint') currentBreakPoint: string = BreakPointTypeEnum.MD;
   @StorageProp('naviIndicatorHeight') naviIndicatorHeight: number = 0;
+  @StorageProp('currentColorMode') currentMode: number = ConfigurationConstant.ColorMode.COLOR_MODE_LIGHT;
   private bottomTabController: TabsController = new TabsController();
   private breakPointSystem: BreakPointSystem = new BreakPointSystem();
 
@@ -116,6 +124,8 @@ struct Index {
           Image($r('app.media.user_background_lg'))
             .width('100%')
             .height('100%')
+            .foregroundBlurStyle(this.currentMode === ConfigurationConstant.ColorMode.COLOR_MODE_LIGHT ?
+            BlurStyle.NONE : BlurStyle.Thin)
         }
         Flex({
           direction: this.currentBreakPoint === BreakPointTypeEnum.LG ? FlexDirection.Row : FlexDirection.Column,

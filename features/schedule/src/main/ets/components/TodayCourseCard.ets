@@ -51,7 +51,7 @@ export struct TodayCourseCard {
       }
       .justifyContent(FlexAlign.SpaceEvenly)
       .height('100%')
-      .width(new BreakPointType({ sm: '70%', md: '75%', lg: '70%' }).getValue(this.currentBreakPoint))
+      .width(new BreakPointType({ sm: '65%', md: '75%', lg: '70%' }).getValue(this.currentBreakPoint))
 
       Column() {
         Text(`${TIME_TABLE[this.courseSchedule.StartSession - 1].StartTime}`)

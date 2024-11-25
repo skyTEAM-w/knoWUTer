@@ -7,6 +7,8 @@ export struct CampusNetwork {
   @State campusNetModel: CampusNetModel = CampusNetModel.getInstance()
   @State showPassword: boolean = false;
   @StorageProp('bottomTabIndex') bottomTabIndex: number = 2;
+  @State username: string = '';
+  @State password: string = '';
 
   aboutToAppear(): void {
     this.campusNetModel.getUserAccount();
@@ -26,20 +28,18 @@ export struct CampusNetwork {
 
       Column({ space: 5 }) {
         Row() {
-          TextInput({ placeholder: $r('app.string.user_name'), text: $$this.campusNetModel.userNetAccount.username })
+          TextInput({ placeholder: $r('app.string.user_name'), text: $$this.username })
             .type(InputType.USER_NAME)
-            .enableAutoFill(this.bottomTabIndex === 3)
         }
 
         Row() {
-          TextInput({ placeholder: $r('app.string.password'), text: $$this.campusNetModel.userNetAccount.password })
+          TextInput({ placeholder: $r('app.string.password'), text: $$this.password })
             .type(InputType.Password)
             .showPasswordIcon(true)
             .showPassword(this.showPassword)
             .onSecurityStateChange((isShowPassword: boolean) => {
               this.showPassword = isShowPassword;
             })
-            .enableAutoFill(this.bottomTabIndex === 3)
         }
       }
 
@@ -67,6 +67,8 @@ export struct CampusNetwork {
           .backgroundColor(Color.Transparent)
           .fontColor($r('sys.color.font_primary'))
           .onClick(() => {
+            this.campusNetModel.userNetAccount.username = this.username;
+            this.campusNetModel.userNetAccount.password = this.password;
             this.campusNetModel.saveUserAccount()
           })
       }
