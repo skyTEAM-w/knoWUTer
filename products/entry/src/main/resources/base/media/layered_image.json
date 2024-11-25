@@ -1,6 +1,6 @@
 {
   "layered-image": {
-    "background": "$media:background",
-    "foreground": "$media:startIcon_whut_fr"
+    "background": "$media:background_harmonyos",
+    "foreground": "$media:foreground"
   }
 }
