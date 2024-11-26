@@ -59,7 +59,9 @@ export struct TodayCourseCard {
           .fontWeight(FontWeight.Bold)
         Column() {
           SymbolGlyph($r('sys.symbol.dot_grid_1x2'))
+            .fontColor([$r('sys.color.icon')])
           SymbolGlyph($r('sys.symbol.dot_grid_1x2'))
+            .fontColor([$r('sys.color.icon')])
         }
 
         Text(`${TIME_TABLE[this.courseSchedule.EndSession - 1].EndTime}`)
