@@ -5,6 +5,7 @@ import { JSON } from '@kit.ArkTS';
 import { LoadingFailed } from '@ohos/uicomponents';
 import { common } from '@kit.AbilityKit';
 import { curves } from '@kit.ArkUI';
+import { store } from '../model/caiping';
 
 const TAG = '[CampusNews]'
 

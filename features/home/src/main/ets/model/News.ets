@@ -1,10 +1,16 @@
 import { ObservedArray, WebUrl } from '@ohos/utils';
 
 @Observed
-export class News {
+export class News implements NewsInt {
   DATE: string = '';
   TITLE: string = '';
   HREF: string = '';
+}
+
+export interface NewsInt {
+  DATE: string;
+  TITLE: string;
+  HREF: string;
 }
 
 export class NewsUrl implements WebUrl {

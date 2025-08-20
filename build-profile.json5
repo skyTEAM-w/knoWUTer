@@ -4,7 +4,7 @@
       {
         "name": "default",
         "signingConfig": "default",
-        "compatibleSdkVersion": "5.0.0(12)",
+        "compatibleSdkVersion": "5.0.5(17)",
         "runtimeOS": "HarmonyOS"
       }
     ],
@@ -21,13 +21,13 @@
         "name": "default",
         "type": "HarmonyOS",
         "material": {
-          "certpath": "C:\\Users\\Administrator\\.ohos\\config\\default_WHUTHelper_cp8-8MMRKniAzlzI6QW88MSuSrliDt6GEcPahalEzdI=.cer",
-          "storePassword": "0000001BB28D4100C084282E75467807119346A2EDAAADC7B1A1000EDC7B7EE120ED089D40F866856A43B9",
-          "keyAlias": "debugKey",
-          "keyPassword": "0000001BB34F591BD752DBAFDE6C49E5BACBA5D0C6FB7727A8AEEC5F0D2492377AB020803D95625DFB9ECB",
-          "profile": "C:\\Users\\Administrator\\.ohos\\config\\default_WHUTHelper_cp8-8MMRKniAzlzI6QW88MSuSrliDt6GEcPahalEzdI=.p7b",
+          "storeFile": "./sign/keystore.p12",
+          "storePassword": "0000001CFFF79D2699FDAD86B51B6100D5584344533A772A04FBAEB0941112B305E09FB2D2E09152FDA3F110",
+          "keyAlias": "WHUT",
+          "keyPassword": "0000001C53E0853A08178466CCFB8AEE34615FA541285F458741CBB710DFC701F05ABDB67F8B77FA732C0051",
           "signAlg": "SHA256withECDSA",
-          "storeFile": "C:\\Users\\Administrator\\.ohos\\config\\default_WHUTHelper_cp8-8MMRKniAzlzI6QW88MSuSrliDt6GEcPahalEzdI=.p12"
+          "profile": "./sign/knowWHUTer-debugDebug.p7b",
+          "certpath": "./sign/knowhuter-debug.cer"
         }
       }
     ]

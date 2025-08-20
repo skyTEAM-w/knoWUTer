@@ -54,7 +54,7 @@ export struct TodayCourseCard {
       .width(new BreakPointType({ sm: '65%', md: '75%', lg: '70%' }).getValue(this.currentBreakPoint))
 
       Column() {
-        Text(`${TIME_TABLE[this.courseSchedule.StartSession - 1].StartTime}`)
+        Text(`${TIME_TABLE[this.courseSchedule.StartSession ? this.courseSchedule.StartSession : 1 - 1].StartTime}`)
           .fontSize(new BreakPointType({ sm: 16, md: 18, lg: 18 }).getValue(this.currentBreakPoint))
           .fontWeight(FontWeight.Bold)
         Column() {
