@@ -112,6 +112,7 @@ struct IndexPage {
                 .backgroundColor($r('sys.color.ohos_id_button_bg_focus_color'))
                 .fontColor($r('sys.color.ohos_id_color_text_secondary'))
                 .width('100%')
+                .border({ width: 1, color: $r('sys.color.ohos_id_color_text_secondary') })
                 .onClick(() => {
                   AppStorage.setOrCreate<boolean>('isLogged', false)
                   this.preference.setValue<boolean>('isAlwaysSkip', this.isSkip);

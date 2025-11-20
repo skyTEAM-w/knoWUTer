@@ -10,6 +10,11 @@ export class UserNetFunc {
   constructor() {
   }
 
+  /**
+   * 获取待审核的项目数量
+   * @param cookie 用户的cookie信息
+   * @returns 待审核的项目数量
+   */
   public getReviewItemNum(cookie: string) {
     const headers: rcp.RequestHeaders = {
       "content-type": 'application/json;charset=utf-8',
@@ -31,7 +36,11 @@ export class UserNetFunc {
         })
     })
   }
-
+  /**
+   * 获取进行中的项目数量
+   * @param cookie 用户的cookie信息
+   * @returns 进行中的项目数量
+   */
   public getProgressItemNum(cookie: string) {
     const headers: rcp.RequestHeaders = {
       "content-type": 'application/json;charset=utf-8',
@@ -53,6 +62,7 @@ export class UserNetFunc {
         })
     })
   }
+
 
   public getScoreItemNum(cookie: string) {
     const headers: rcp.RequestHeaders = {
