@@ -20,14 +20,14 @@ export class UserNetFunc {
       "content-type": 'application/json;charset=utf-8',
       "cookie": cookie
     }
-    let content = '{}';
+    let content: string = '{}';
     return new Promise((resolve: (value: number | PromiseLike<number>) => void,
       reject: (value: object) => void) => {
       this.httpUtil.httpPostByRcp('https://zhlgd.whut.edu.cn/tp_up/up/workhall/getDWSHNum', headers, content)
-        .then((response) => {
-          const responseJson = response.toJSON()
+        .then((response: rcp.Response) => {
+          const responseJson: Object | null = response.toJSON()
           if (responseJson) {
-            resolve((responseJson as object)?.['NUM'])
+            resolve((responseJson as Record<string, Object>)['NUM'] as number)
           }
           reject(new Object)
         })
@@ -46,14 +46,14 @@ export class UserNetFunc {
       "content-type": 'application/json;charset=utf-8',
       "cookie": cookie
     }
-    let content = '{}';
+    let content: string = '{}';
     return new Promise((resolve: (value: number | PromiseLike<number>) => void,
       reject: (value: object) => void) => {
       this.httpUtil.httpPostByRcp('https://zhlgd.whut.edu.cn/tp_up/up/workhall/getZBSXNum', headers, content)
-        .then((response) => {
-          const responseJson = response.toJSON()
+        .then((response: rcp.Response) => {
+          const responseJson: Object | null = response.toJSON()
           if (responseJson) {
-            resolve((responseJson as object)?.['NUM'])
+            resolve((responseJson as Record<string, Object>)['NUM'] as number)
           }
           reject(new Object)
         })
@@ -61,6 +61,7 @@ export class UserNetFunc {
           reject(error)
         })
     })
+
   }
 
 
@@ -69,14 +70,14 @@ export class UserNetFunc {
       "content-type": 'application/json;charset=utf-8',
       "cookie": cookie
     }
-    let content = '{}';
+    let content: string = '{}';
     return new Promise((resolve: (value: number | PromiseLike<number>) => void,
       reject: (value: object) => void) => {
       this.httpUtil.httpPostByRcp('https://zhlgd.whut.edu.cn/tp_up/up/workhall/getDWPJNum', headers, content)
-        .then((response) => {
-          const responseJson = response.toJSON()
+        .then((response: rcp.Response) => {
+          const responseJson: Object | null = response.toJSON()
           if (responseJson) {
-            resolve((responseJson as object)?.['NUM'])
+            resolve((responseJson as Record<string, Object>)['NUM'] as number)
           }
           reject(new Object)
         })
@@ -91,14 +92,14 @@ export class UserNetFunc {
       "content-type": 'application/json;charset=utf-8',
       "cookie": cookie
     }
-    let content = '{}';
+    let content: string = '{}';
     return new Promise((resolve: (value: number | PromiseLike<number>) => void,
       reject: (value: object) => void) => {
       this.httpUtil.httpPostByRcp('https://zhlgd.whut.edu.cn/tp_up/up/workhall/getBJSXNum', headers, content)
-        .then((response) => {
-          const responseJson = response.toJSON()
+        .then((response: rcp.Response) => {
+          const responseJson: Object | null = response.toJSON()
           if (responseJson) {
-            resolve((responseJson as object)?.['NUM'])
+            resolve((responseJson as Record<string, Object>)['NUM'] as number)
           }
           reject(new Object)
         })
@@ -113,15 +114,15 @@ export class UserNetFunc {
       "content-type": 'application/json;charset=utf-8',
       "cookie": cookie
     }
-    let content = '{}';
+    let content: string = '{}';
     return new Promise((resolve: (value: number | PromiseLike<number>) => void,
       reject: (value: object) => void) => {
       this.httpUtil.httpPostByRcp('https://zhlgd.whut.edu.cn/tp_up/up/sysintegration/getlibraryRecordCount', headers,
         content)
-        .then((response) => {
-          const responseJson = response.toJSON()
+        .then((response: rcp.Response) => {
+          const responseJson: Object | null = response.toJSON()
           if (responseJson) {
-            resolve((responseJson as object)?.['UNBACKLIBRARYCOUNT'])
+            resolve((responseJson as Record<string, Object>)['UNBACKLIBRARYCOUNT'] as number)
           }
           reject(new Object)
         })
@@ -136,14 +137,14 @@ export class UserNetFunc {
       "content-type": 'application/json;charset=utf-8',
       "cookie": cookie
     }
-    let content = '{}';
+    let content: string = '{}';
     return new Promise((resolve: (value: number | PromiseLike<number>) => void,
       reject: (value: object) => void) => {
       this.httpUtil.httpPostByRcp('https://zhlgd.whut.edu.cn/tp_up/up/sysintegration/getCardMoney', headers, content)
-        .then((response) => {
-          const responseJson = response.toJSON()
+        .then((response: rcp.Response) => {
+          const responseJson: Object | null = response.toJSON()
           if (responseJson) {
-            resolve((responseJson as object)?.['KHYE'])
+            resolve((responseJson as Record<string, Object>)['KHYE'] as number)
           }
           reject(new Object)
         })
@@ -159,11 +160,11 @@ export class UserNetFunc {
       "content-type": 'application/json;charset=utf-8',
       "cookie": cookie
     }
-    let content = '{}'
+    let content: string = '{}'
     return new Promise((resolve: (value: boolean | PromiseLike<boolean>) => void,
       reject: (value: object) => void) => {
       this.httpUtil.httpPostByRcp('https://zhlgd.whut.edu.cn/tp_up/up/grabnews/getGrabNewsList', headers, content)
-        .then((response) => {
+        .then((response: rcp.Response) => {
           console.debug(TAG, response.statusCode)
           resolve(response.statusCode === 200)
         }).catch((error: BusinessError) => {

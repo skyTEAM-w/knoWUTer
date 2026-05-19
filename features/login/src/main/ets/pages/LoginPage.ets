@@ -1,7 +1,7 @@
 import { webview } from '@kit.ArkWeb';
 import { UrlConstants } from '../constants/UrlConstants';
 import { UserModel } from '@feature/mine';
-import { CookieUtil } from '@ohos/util';
+import { CookieUtil } from '@ohos/utils';
 import { router } from '@kit.ArkUI';
 import { common } from '@kit.AbilityKit';
 import { AccessModel } from '../model/AccessModel';

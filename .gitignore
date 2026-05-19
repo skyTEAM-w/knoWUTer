@@ -1,16 +1,87 @@
-/node_modules
-/oh_modules
-/local.properties
-/.idea
-**/build
-/.hvigor
-.cxx
+# HarmonyOS 构建输出
+build/
+.hvigor/
+output/
+.cache/
+oh_modules/
+*.hap
+*.har
+*.hsp
+.appanalyzer/
+
+# Hvigor wrapper
+hvigorw
+hvigorw.bat
+
+# C++ 构建缓存
+.cxx/
 /.clangd
 /.clang-format
 /.clang-tidy
-**/.test
-/.appanalyzer
-**/cj_res
-**/*.cj.macrocall
-**/ability_mainability_entry.cj
-**/module_**_entry.cj
+
+# Node modules
+node_modules/
+
+# IDE 配置
+.idea/
+.vscode/
+*.iml
+
+# 系统文件
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# 日志和临时文件
+*.log
+*.tmp
+*.temp
+
+# Gradle (如果使用)
+.gradle/
+local.properties
+
+# 测试覆盖率
+coverage/
+
+# 打包文件
+*.zip
+*.tar
+*.tar.gz
+*.rar
+
+# 密钥和签名文件 (重要：不要提交签名配置)
+*.p12
+*.jks
+*.keystore
+signing-config.json5
+
+# 本地环境配置
+.env.local
+.env.*.local
+
+# 数据库文件
+*.db
+*.db-shm
+*.db-wal
+
+# 截图
+screenshots/
+
+# 其他无关文件
+*.bak
+*.backup
+
+# Claude AI 工具配置
+.claude/
+
+# 自动生成文件
+**/BuildProfile.ets
+
+# 预览缓存
+**/.preview/
+
+# Cangjie 编译输出
+**/cj_res/

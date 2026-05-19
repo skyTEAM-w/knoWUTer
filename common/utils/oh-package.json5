@@ -1,12 +1,11 @@
 {
   "name": "utils",
   "version": "1.0.0",
-  "description": "Please describe the basic information.",
-  "main": "Index.ets",
+  "description": "Common utilities for WHUTHelper",
+  "main": "",
   "author": "",
   "license": "",
   "dependencies": {
-    "@ohos/datastore": 'file:../datastore'
+    "@ohos/datastore": "file:../datastore"
   }
 }
-

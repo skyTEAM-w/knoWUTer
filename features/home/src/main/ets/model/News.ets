@@ -13,6 +13,7 @@ export interface NewsInt {
   HREF: string;
 }
 
+
 export class NewsUrl implements WebUrl {
   url: string = '';
 

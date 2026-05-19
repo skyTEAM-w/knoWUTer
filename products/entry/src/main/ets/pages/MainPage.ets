@@ -153,9 +153,9 @@ struct Index {
               Tools()
             }.tabBar(this.TabBuilder(3))
 
-            TabContent() {
-              UserView()
-            }.tabBar(this.TabBuilder(4))
+            // TabContent() {
+            //   UserView()
+            // }.tabBar(this.TabBuilder(4))
 
           }
           .width('100%')

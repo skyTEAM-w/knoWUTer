@@ -7,7 +7,6 @@ import { TodayCourseCard } from '@feature/schedule/src/main/ets/components/Today
 import { common } from '@kit.AbilityKit';
 import { ScheduleEventData } from '@feature/schedule/src/main/ets/model/Schedule';
 import { curves } from '@kit.ArkUI';
-import { cai } from '../model/caiping';
 
 const TAG = '[TodayCourse]'
 
@@ -77,7 +76,7 @@ export struct TodayCourse {
             courseId as string, courseName as string, scheduleId as string,
             weekDay as string, startSession as number, endSession as number, place as string, weekRangesStr as string))
         })
-        this.todayCourseSchedules.pushArrayData(cai);
+        this.todayCourseSchedules.pushArrayData(dataList);
         AppStorage.setOrCreate<string>('currentWeekAndDay',
           `第${this.currentWeek}周  周${WEEKS_START_SUNDAY[this.currentWeekDay]}`)
       })
