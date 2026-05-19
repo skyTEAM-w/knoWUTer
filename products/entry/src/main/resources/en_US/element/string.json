@@ -14,15 +14,15 @@
     },
     {
       "name": "bottom_text_course",
-      "value": "Course"
+      "value": "Schedule"
     },
     {
       "name": "bottom_text_service",
-      "value": "Service"
+      "value": "Health"
     },
     {
       "name": "bottom_text_home",
-      "value": "Home"
+      "value": "Today"
     },
     {
       "name": "bottom_text_tools",

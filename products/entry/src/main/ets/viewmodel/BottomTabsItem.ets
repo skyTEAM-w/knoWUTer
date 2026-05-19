@@ -1,5 +1,7 @@
+import { SymbolGlyphModifier } from '@kit.ArkUI';
+
 export interface BottomTabsItem {
-  icon: Resource;
-  iconSelected: Resource;
-  text: ResourceStr;
+  normalSymbol: SymbolGlyphModifier;
+  selectedSymbol: SymbolGlyphModifier;
+  label: ResourceStr;
 }
