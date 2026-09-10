@@ -58,6 +58,14 @@ coverage/
 *.keystore
 signing-config.json5
 
+# 本机签名材料与配置（每台机器都不同，切勿入库：
+# 路径含用户名，且密码由 DevEco 以密钥库所在目录为密钥加密，换机器无法解密）
+build-profile.local.json5
+sign/
+
+# DevEco CodeGenie 会话缓存
+.codegenie/
+
 # 本地环境配置
 .env.local
 .env.*.local
