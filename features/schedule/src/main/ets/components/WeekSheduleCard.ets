@@ -31,7 +31,11 @@ export struct WeekScheduleCard {
 
   updateCard() {
     this.isThisTab = true
-    this.cardColor = new ScheduleDatabaseFunc().queryCourseColor(this.courseSchedule);
+    new ScheduleDatabaseFunc().queryCourseColor(this.courseSchedule)
+      .then((color: string) => {
+        this.cardColor = color;
+      })
+      .catch((e: Error) => console.error('WeekScheduleCard', `queryCourseColor failed: ${e.message}`));
   }
 
   build() {

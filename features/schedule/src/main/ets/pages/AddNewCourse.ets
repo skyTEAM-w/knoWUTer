@@ -35,8 +35,8 @@ export struct AddNewCourse {
       secondaryButton: {
         value: $r('app.string.confirm'),
         action: () => {
-          this.saveCourseInfomation();
-          this.onDestinationBack();
+          this.saveCourseInfomation().then(() => this.onDestinationBack())
+            .catch((e: Error) => console.error('AddNewCourse', `save failed: ${e.message}`))
         }
       }
     })
@@ -60,18 +60,18 @@ export struct AddNewCourse {
     this.courseInformation.courseSerialNum = String(this.mDate.getFullYear().toString() + this.mDate.getMonth());
   }
 
-  saveCourseInfomation() {
+  async saveCourseInfomation(): Promise<void> {
     if (this.courseInformation && this.courseSchedule) {
       this.courseInformation.classDateAndPlace =
         courseScheduleToClassDateAndPlace(this.courseSchedule?.getDataList() as CourseSchedule[]);
       this.courseInformation.courseName =
         this.courseInformation.courseName === '' ? '新课程' : this.courseInformation.courseName;
       console.debug(JSON.stringify(this.courseInformation))
-      this.scheduleDbFunc.insertCourseInformation([this.courseInformation],
+      await this.scheduleDbFunc.insertCourseInformation([this.courseInformation],
         new Schedule(this.selectedTableId as string, '', ''),
         this.courseColor.toString())
       console.debug('courseScheduleList', JSON.stringify(this.courseSchedule.getDataList()))
-      this.scheduleDbFunc.updateCourseSchedule(this.courseSchedule.getDataList(), this.courseInformation);
+      await this.scheduleDbFunc.updateCourseSchedule(this.courseSchedule.getDataList(), this.courseInformation);
       // this.updateCourse = !this.updateCourse;
       const eventHub: common.EventHub = (getContext(this) as common.UIAbilityContext).eventHub;
       eventHub.emit(EventType.UPDATE_COURSE);

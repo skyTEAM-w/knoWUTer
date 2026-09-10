@@ -31,27 +31,33 @@ export struct ScheduleListView {
 
   aboutToAppear(): void {
     const eventHub: common.EventHub = (getContext(this) as common.UIAbilityContext).eventHub;
-    eventHub.on(EventType.UPDATE_COURSE, (): void => this.updateCourseEvent());
+    eventHub.on(EventType.UPDATE_COURSE, (): void => {
+      this.updateCourseEvent();
+    });
     eventHub.on(EventType.DELETE_COURSE, (): void => this.deleteCourseEvent());
     this.getCourseList()
   }
 
-  updateCourseInformation() {
-    this.courseList.pushArrayData((new ScheduleDatabaseFunc().queryAllCourseInformation(this.selectedSchedule as Schedule) as LazyDataSource<Course>).getDataList())
+  async updateCourseInformation() {
+    const list: LazyDataSource<Course> = await new ScheduleDatabaseFunc()
+      .queryAllCourseInformation(this.selectedSchedule as Schedule);
+    this.courseList.pushArrayData(list.getDataList());
   }
 
-  updateCourseEvent() {
-    this.courseList.pushArrayData((new ScheduleDatabaseFunc().queryAllCourseInformation(this.selectedSchedule as Schedule) as LazyDataSource<Course>).getDataList())
+  async updateCourseEvent() {
+    const list: LazyDataSource<Course> = await new ScheduleDatabaseFunc()
+      .queryAllCourseInformation(this.selectedSchedule as Schedule);
+    this.courseList.pushArrayData(list.getDataList());
   }
 
   deleteCourseEvent() {
     this.courseList.reloadData();
   }
 
-  getCourseList() {
+  async getCourseList() {
     if (this.selectedScheduleTableIndex !== -1) {
       if (this.selectedSchedule) {
-        this.courseList = this.scheduleDBFunc.queryAllCourseInformation(this.selectedSchedule) as LazyDataSource<Course>
+        this.courseList = await this.scheduleDBFunc.queryAllCourseInformation(this.selectedSchedule);
       }
     }
   }

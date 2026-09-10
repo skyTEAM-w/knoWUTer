@@ -1,19 +1,13 @@
 import { CourseSchedule, WEEKS_START_SUNDAY } from '@feature/schedule/src/main/ets/model/CourseSchedule';
-import { JSON, taskpool } from '@kit.ArkTS';
+import { JSON } from '@kit.ArkTS';
 import { BreakPointType, BreakPointTypeEnum, CommonConstants, DateUtil, EventType, LazyDataSource } from '@ohos/utils';
 import { getTodayCourse } from '../service/HomeTaskPoolFunc';
-import { relationalStore } from '@kit.ArkData';
 import { TodayCourseCard } from '@feature/schedule/src/main/ets/components/TodayCourseCard';
 import { common } from '@kit.AbilityKit';
 import { ScheduleEventData } from '@feature/schedule/src/main/ets/model/Schedule';
 import { curves } from '@kit.ArkUI';
 
 const TAG = '[TodayCourse]'
-
-async function getTodayCourseTask(tableId: string, currentWeek: number, weekNumber: number, context: Context) {
-  let task: taskpool.Task = new taskpool.Task(getTodayCourse, tableId, currentWeek, weekNumber, context);
-  return await taskpool.execute(task) as Array<relationalStore.ValuesBucket>;
-}
 
 @Component
 export struct TodayCourse {
@@ -46,40 +40,19 @@ export struct TodayCourse {
     this.getCourseScheduleList()
   }
 
-  getCourseScheduleList() {
+  async getCourseScheduleList(): Promise<void> {
     this.currentWeek = DateUtil.getWeeksBetweenDates(this.startDate, new DateUtil().getToday())
     this.currentWeekDay = new Date().getDay()
     console.debug(TAG, this.selectedTableId)
     console.debug(TAG, this.startDate)
     console.debug(TAG, this.currentWeekDay)
-    getTodayCourseTask(this.selectedTableId as string, this.currentWeek,
-      this.currentWeekDay === 7 ? 0 : this.currentWeekDay - 1, getContext(this))
-      .then((value: Array<relationalStore.ValuesBucket>) => {
-        let dataList: CourseSchedule[] = []
-        if (value.length === 0) {
-          this.hasCourse = false;
-        } else {
-          this.hasCourse = true;
-        }
-        value.forEach((item: relationalStore.ValuesBucket) => {
-          const tableId = item.TableId;
-          const scheduleId = item.ScheduleId;
-          const weekRanges = item.WeekRanges;
-          const weekDay = item.WeekDay;
-          const startSession = item.StartSession
-          const endSession = item.EndSession
-          const place = item.Place;
-          const courseId = item.ClassId;
-          const courseName = item.CourseName;
-          const weekRangesStr = item.WeekRangesStr;
-          dataList.push(new CourseSchedule(weekRanges as string, tableId as string,
-            courseId as string, courseName as string, scheduleId as string,
-            weekDay as string, startSession as number, endSession as number, place as string, weekRangesStr as string))
-        })
-        this.todayCourseSchedules.pushArrayData(dataList);
-        AppStorage.setOrCreate<string>('currentWeekAndDay',
-          `第${this.currentWeek}周  周${WEEKS_START_SUNDAY[this.currentWeekDay]}`)
-      })
+    // 直接 await 数据层：DB 访问必须在主线程，taskpool worker 拿不到原生 store 句柄
+    const dataList: CourseSchedule[] = await getTodayCourse(this.selectedTableId as string, this.currentWeek,
+      this.currentWeekDay === 7 ? 0 : this.currentWeekDay - 1);
+    this.hasCourse = dataList.length > 0;
+    this.todayCourseSchedules.pushArrayData(dataList);
+    AppStorage.setOrCreate<string>('currentWeekAndDay',
+      `第${this.currentWeek}周  周${WEEKS_START_SUNDAY[this.currentWeekDay]}`);
   }
 
   build() {

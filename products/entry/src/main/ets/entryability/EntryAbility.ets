@@ -1,7 +1,6 @@
 import { AbilityConstant, UIAbility, Want } from '@kit.AbilityKit';
 import { hilog } from '@kit.PerformanceAnalysisKit';
 import { window } from '@kit.ArkUI';
-import { relationalStore } from '@kit.ArkData';
 import { WindowUtil } from '@ohos/utils';
 import { ScheduleSettingFunc } from '@feature/schedule';
 
@@ -18,18 +17,10 @@ export default class EntryAbility extends UIAbility {
     // Main window is created, set main page for this ability
     hilog.info(0x0000, 'testTag', '%{public}s', 'Ability onWindowStageCreate');
 
-    const STORE_CONFIG: relationalStore.StoreConfig = {
-      name: 'ApplicationDB.db',
-      securityLevel: relationalStore.SecurityLevel.S3
-    };
-
-    relationalStore.getRdbStore(this.context, STORE_CONFIG, (err, store) => {
-      if (err) {
-        console.error(`Failed to get RdbStore. Code:${err.code}, message:${err.message}`);
-        return;
-      }
-      console.info('Succeeded in getting RdbStore.');
-    })
+    // 这里原先还额外用 relationalStore.getRdbStore 打开过一次业务库。
+    // 那是旧 ArkTS 数据层的入口，与原生层的 OH_Rdb_CreateOrOpen 会各自持有一份
+    // 连接，且没有任何初始化顺序保证。业务库统一由原生层打开（initDatabase），
+    // 因此移除。
 
     WindowUtil.requestFullScreen(windowStage, this.context);
 

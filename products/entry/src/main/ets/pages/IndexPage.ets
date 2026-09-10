@@ -1,5 +1,5 @@
 import { UserModel } from '@feature/mine/Index';
-import { DBUtil, PreferencesUtil } from '@ohos/datastore';
+import { PreferencesUtil, initDatabase } from '@ohos/datastore';
 import {
   BreakPointSystem,
   BreakPointType,
@@ -41,7 +41,13 @@ struct IndexPage {
   onPageShow(): void {
     DarkModeUtil.getInstance().checkDarkModeSetting()
     UserSettingUtil.getInstance().checkAllSetting();
-    DBUtil.getInstance();
+    // 原生数据层初始化（就绪 Promise）。各 API 内部会等待就绪，
+    // 这里提前触发并记录失败，避免漂移重建等问题静默发生。
+    initDatabase(getContext(this).databaseDir).then(() => {
+      console.info(TAG, 'native datastore ready');
+    }).catch((e: Error) => {
+      console.error(TAG, `native datastore init failed: ${e.message}`);
+    });
     ScheduleSettingFunc.getInstance().checkAllScheduleSetting()
     CookieUtil.getInstance().checkAllCookies();
   }

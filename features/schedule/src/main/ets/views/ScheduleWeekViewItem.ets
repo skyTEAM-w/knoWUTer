@@ -31,8 +31,12 @@ export struct ScheduleWeekViewItem {
     this.getWeekViewData(this.weekNum);
     this.getWeekCourseData()
     const eventHub: common.EventHub = (getContext(this) as common.UIAbilityContext).eventHub;
-    eventHub.on(EventType.UPDATE_COURSE, (): void => this.updateWeekData());
-    eventHub.on(EventType.DELETE_COURSE, (): void => this.updateWeekData());
+    eventHub.on(EventType.UPDATE_COURSE, (): void => {
+      this.updateWeekData();
+    });
+    eventHub.on(EventType.DELETE_COURSE, (): void => {
+      this.updateWeekData();
+    });
   }
 
   onBottomIndexChange() {
@@ -50,17 +54,27 @@ export struct ScheduleWeekViewItem {
     this.scrollController.scrollEdge(Edge.Top)
   }
 
-  getWeekCourseData() {
-    if (this.selectedSchedule) {
-      for (let i = 0; i < 7; i++) {
-        const weekDayCourse =
-          this.scheduleDBFunc.queryCourseScheduleByWeek(this.selectedSchedule, this.currentWeek + this.weekNum, i)
-        if (weekDayCourse) {
-          const CourseDataAfterPadding = paddingCourseSchedule(weekDayCourse)
-          this.weekCourse[i] = CourseDataAfterPadding;
-        }
-      }
+  /**
+   * 拉取本周七天的课程安排。
+   *
+   * 七天各查一次（原来就是七次查询，只是同步的）；并发发起避免串行等待。
+   * 数据到齐后一次性赋值，避免 LazyForEach 看到半填充的数组。
+   */
+  async getWeekCourseData(): Promise<void> {
+    if (!this.selectedSchedule) {
+      return;
     }
+    const week: number = this.currentWeek + this.weekNum;
+    const tasks: Promise<CourseSchedule[]>[] = [];
+    for (let i = 0; i < 7; i++) {
+      tasks.push(this.scheduleDBFunc.queryCourseScheduleByWeek(this.selectedSchedule, week, i));
+    }
+    const results: CourseSchedule[][] = await Promise.all(tasks);
+    const next: CourseSchedule[][] = [];
+    for (let i = 0; i < 7; i++) {
+      next[i] = paddingCourseSchedule(results[i]);
+    }
+    this.weekCourse = next;
   }
 
   showBindSheet() {

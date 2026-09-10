@@ -38,24 +38,25 @@ export struct DeleteOptionDialog {
     })
   }
 
-  onConfirm() {
+  async onConfirm() {
     const eventHub: common.EventHub = (getContext(this) as common.UIAbilityContext).eventHub;
+    const db: ScheduleDatabaseFunc = new ScheduleDatabaseFunc();
     switch (this.choice) {
       case SelectedType.DeleteThisSchedule: {
         this.courseSchedule.weekRanges = this.buildSelectedWeekList();
         this.courseSchedule.weekRangesStr = compressRange(this.courseSchedule.weekRanges);
         console.debug(JSON.stringify(this.courseSchedule));
-        new ScheduleDatabaseFunc().updateOneCourseSchedule(this.courseSchedule);
+        await db.updateOneCourseSchedule(this.courseSchedule);
         eventHub.emit(EventType.DELETE_COURSE)
         break;
       }
       case SelectedType.DeleteWeekdaySchedule: {
-        new ScheduleDatabaseFunc().deleteCourseSchedule([this.courseSchedule]);
+        await db.deleteCourseSchedule([this.courseSchedule]);
         eventHub.emit(EventType.DELETE_COURSE)
         break;
       }
       case SelectedType.DeleteCourse: {
-        new ScheduleDatabaseFunc().deleteCourse(this.courseSchedule.TableId, this.courseSchedule.ClassId);
+        await db.deleteCourse(this.courseSchedule.TableId, this.courseSchedule.ClassId);
         eventHub.emit(EventType.DELETE_COURSE)
         break;
       }

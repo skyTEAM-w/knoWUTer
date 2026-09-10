@@ -6,6 +6,9 @@
   "author": "",
   "license": "",
   "dependencies": {
+  },
+  "devDependencies": {
+    "@type/libwhutdb.so": "file:./src/main/cpp/types/libwhutdb"
   }
 }
 

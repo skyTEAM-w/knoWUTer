@@ -15,6 +15,7 @@ import {
 } from '../service/ToolsNetFunc';
 import {
   deleteDormitory,
+  insertMeter,
   insertOrUpdateDormitory,
   queryAreaListDataBase,
   queryBuildingListDataBase,
@@ -86,6 +87,8 @@ export struct ElectricityInquiryTool {
 
   onBindSheetShow() {
     if (this.isShow) {
+      // queryDormitoryHistory 内部异步拉取并推送到同一个 LazyDataSource，
+      // 数据到达后 ArkUI 会刷新，故此处保持同步签名
       this.tableSet = queryDormitoryHistory()
     }
   }
@@ -116,15 +119,17 @@ export struct ElectricityInquiryTool {
     this.selectedDormitory = this.tableSet.getData(this.selectedDormitoryIndex);
     if (!await this.getElectricityFeeAndPower(new Room(this.selectedDormitory.Room, this.selectedDormitory.RoomId),
       true)) {
-      this.electricityFeeHistory =
-        (queryDormitoryElectricityFeeAndRemainPower(this.selectedDormitory) as string[])[0];
-      this.remainPowerHistory =
-        (queryDormitoryElectricityFeeAndRemainPower(this.selectedDormitory) as string[])[1]
+      // 原生数据层为异步查询，先取回历史值再赋值，避免重复查询两次
+      const history: string[] = await queryDormitoryElectricityFeeAndRemainPower(this.selectedDormitory);
+      if (history.length >= 2) {
+        this.electricityFeeHistory = history[0];
+        this.remainPowerHistory = history[1];
+      }
     }
   }
 
   async getAreaList() {
-    if (this.areaList = queryAreaListDataBase()) {
+    if (this.areaList = await queryAreaListDataBase()) {
       this.parseAreaListToPickerList(this.areaList);
     } else {
       this.areaList = await getAreaListHttp(AppStorage.get<string>('fee_cookie') as string)
@@ -141,7 +146,7 @@ export struct ElectricityInquiryTool {
   }
 
   async getBuildingList(area: Area) {
-    if (this.buildList = queryBuildingListDataBase(area)) {
+    if (this.buildList = await queryBuildingListDataBase(area)) {
       this.parseBuildingListToPickerList(this.buildList);
     } else {
       this.buildList = await getBuildingListHttp(AppStorage.get<string>('fee_cookie') as string, area);
@@ -157,7 +162,7 @@ export struct ElectricityInquiryTool {
   }
 
   async getFloorList(area: Area, building: Building) {
-    if (this.floorList = queryFloorListDataBase(building)) {
+    if (this.floorList = await queryFloorListDataBase(building)) {
       this.parseFloorListToPickerList(this.floorList);
     } else {
       this.floorList =
@@ -174,7 +179,7 @@ export struct ElectricityInquiryTool {
   }
 
   async getRoomList(building: Building, floor: Floor) {
-    if (this.roomList = queryRoomListDataBase(building, floor)) {
+    if (this.roomList = await queryRoomListDataBase(building, floor)) {
       this.parseRoomListToPickerList(this.roomList)
     } else {
       this.roomList =
@@ -191,6 +196,16 @@ export struct ElectricityInquiryTool {
   async getElectricityFee(cookie: string, room: Room) {
     let meter = await getMeterIdHttp(cookie, room);
     if (meter) {
+      // 电表缓存写入放在这里：Meters 对 Rooms 是复合外键
+      // (RoomId, BuildingId, FloorId)，只有组件层同时持有 building 与 floor。
+      // 缺任一列会因父键不成立而写入失败。
+      const building: Building | undefined = this.buildList?.[this.selectedBuildingIndex];
+      const floor: Floor | undefined = this.floorList?.[this.selectedFloorIndex];
+      if (building && floor) {
+        insertMeter(meter, room, building, floor).catch((e: Error) => {
+          console.error(TAG, `cache Meter failed: ${e.message}`);
+        });
+      }
       let httpReserve = await getElectricityFeeHttp(cookie, meter);
       if (httpReserve) {
         console.debug(JSON.stringify(httpReserve));
@@ -714,12 +729,16 @@ struct DormitoryItem {
     this.dormitoryItem.isStar = !this.dormitoryItem.isStar;
     this.tableSet.changeData(this.mIndex, this.dormitoryItem);
     console.info(JSON.stringify(this.dormitoryItem))
-    updateDormitoryStarStatus(this.dormitoryItem);
+    updateDormitoryStarStatus(this.dormitoryItem).catch((e: Error) => {
+      console.error(TAG, `updateDormitoryStarStatus failed: ${e.message}`);
+    });
   }
 
   deleteDormitory() {
     this.selectedDormitoryIndex = -1;
-    deleteDormitory(this.dormitoryItem);
+    deleteDormitory(this.dormitoryItem).catch((e: Error) => {
+      console.error(TAG, `deleteDormitory failed: ${e.message}`);
+    });
     this.tableSet.deleteData(this.mIndex);
   }
 

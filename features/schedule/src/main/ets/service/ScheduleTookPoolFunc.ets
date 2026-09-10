@@ -49,12 +49,22 @@ export function classDateAndPlaceToCourseScheduleTask(course: Course, schedule?:
   return courseSchedule;
 }
 
-@Concurrent
-export function saveCourseInfomation(course: CourseSendable, courseSchedule: CourseScheduleSendable[],
-  deleteSchedule: CourseScheduleSendable[], tableId: string, color: string) {
-  new ScheduleDatabaseFunc().deleteCourseSchedule(deleteSchedule);
-  new ScheduleDatabaseFunc().updateCourseInfomation(course as Course, tableId, color);
-  new ScheduleDatabaseFunc().updateCourseSchedule(courseSchedule, course as Course);
+/**
+ * 保存课程 + 上课安排。
+ *
+ * 原实现是 @Concurrent 的，在 taskpool 线程里直接调数据层。
+ * 现在必须留在主线程：原生数据层的 store 句柄属于创建它的 ArkTS VM，
+ * 而 taskpool 每个 worker 是独立 VM —— 在 worker 里调用只会拿到空结果
+ * （原生侧的 g_store 为 null）。DB 访问统一收敛到主线程；
+ * 与 DB 无关的 classDateAndPlaceToCourseScheduleTask 仍留在 taskpool。
+ */
+export async function saveCourseInfomation(course: CourseSendable,
+  courseSchedule: CourseScheduleSendable[], deleteSchedule: CourseScheduleSendable[],
+  tableId: string, color: string): Promise<void> {
+  const db: ScheduleDatabaseFunc = new ScheduleDatabaseFunc();
+  await db.deleteCourseSchedule(deleteSchedule);
+  await db.updateCourseInfomation(course as Course, tableId, color);
+  await db.updateCourseSchedule(courseSchedule, course as Course);
   console.debug('saveCourseInfomation')
   new LocalStorage().setOrCreate('updateCourse', true);
 }

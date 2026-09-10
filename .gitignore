@@ -66,6 +66,10 @@ sign/
 # DevEco CodeGenie 会话缓存
 .codegenie/
 
+# DSH 工具链临时产物（设备调试截图 / hvigor 临时目录）
+.dsh-hdc/
+.dsh-hvigor-tmp/
+
 # 本地环境配置
 .env.local
 .env.*.local

@@ -18,16 +18,18 @@ export struct ManageSchedule {
   onDestinationBack: () => void = () => {
   };
 
-  aboutToAppear(): void {
-    this.scheduleList.pushArrayData(this.scheduleDBFunc.queryAllScheduleTable() as Schedule[]);
+  async aboutToAppear(): Promise<void> {
+    this.scheduleList.pushArrayData(await this.scheduleDBFunc.queryAllScheduleTable());
   }
 
   deleteSelectedSchedule(index: number) {
     if (!this.scheduleList.isEmpty()) {
       let schedule = this.scheduleList.getData(index)
       console.debug(TAG, 'deleteSelectedSchedule', JSON.stringify(schedule));
-      this.scheduleDBFunc.deleteSchedule(schedule);
+      // 先本地移除（UI 立即反馈），落库异步完成
       this.scheduleList.deleteData(index);
+      this.scheduleDBFunc.deleteSchedule(schedule)
+        .catch((e: Error) => console.error(TAG, `deleteSchedule failed: ${e.message}`));
     }
     if (index < this.selectedScheduleTableIndex) {
       this.selectedScheduleTableIndex -= 1;

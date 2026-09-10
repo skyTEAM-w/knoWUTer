@@ -33,8 +33,8 @@ export struct EditCourseInformation {
       secondaryButton: {
         value: $r('app.string.confirm'),
         action: () => {
-          this.saveCourseInfomation();
-          this.onDestinationBack();
+          this.saveCourseInfomation().then(() => this.onDestinationBack())
+            .catch((e: Error) => console.error(TAG, `save failed: ${e.message}`))
         }
       }
     })
@@ -52,16 +52,15 @@ export struct EditCourseInformation {
   onDestinationBack: () => void = () => {
   };
 
-  saveCourseInfomation() {
+  async saveCourseInfomation(): Promise<void> {
     if (this.courseInformation && this.courseSchedule) {
       this.courseInformation.classDateAndPlace =
         courseScheduleToClassDateAndPlace(this.courseSchedule?.getDataList() as CourseSchedule[]);
       console.debug(JSON.stringify(this.deletedCourseSchedule))
-      this.scheduleDbFunc.deleteCourseSchedule(this.deletedCourseSchedule);
-      this.scheduleDbFunc.updateCourseInfomation(this.courseInformation, this.tableId.toString(),
+      await this.scheduleDbFunc.deleteCourseSchedule(this.deletedCourseSchedule);
+      await this.scheduleDbFunc.updateCourseInfomation(this.courseInformation, this.tableId.toString(),
         this.courseColor.toString())
-      // console.debug(TAG, 'courseScheduleList', JSON.stringify(this.courseSchedule.getDataList()))
-      this.scheduleDbFunc.updateCourseSchedule(this.courseSchedule.getDataList(), this.courseInformation);
+      await this.scheduleDbFunc.updateCourseSchedule(this.courseSchedule.getDataList(), this.courseInformation);
       const eventHub: common.EventHub = (getContext(this) as common.UIAbilityContext).eventHub;
       eventHub.emit(EventType.UPDATE_COURSE);
     }
@@ -277,14 +276,19 @@ export struct EditCourseInformation {
       this.courseId = param.courseId as String;
       this.tableId = param.tableId as String;
       this.onDestinationBack = param.onDestinationBack as () => void;
-      this.courseInformation =
-        new ScheduleDatabaseFunc().queryCourseInformation(this.tableId as string, this.courseId as string);
-      this.courseSchedule = new ScheduleDatabaseFunc().queryCourseAllSchedule(this.courseInformation as Course,
-        new Schedule(this.tableId as string, '', ''));
-      this.courseColor =
-        new ScheduleDatabaseFunc().queryCourseColorByString(this.tableId as string, this.courseId as string);
-      this.scheduleCount = this.courseSchedule?.totalCount() as number;
+      this.loadCourse();
     })
+  }
+
+  /** 载入课程主体信息、上课安排与颜色（原实现在 onReady 里同步取，现在统一异步） */
+  private async loadCourse(): Promise<void> {
+    const tableId: string = this.tableId as string;
+    const courseId: string = this.courseId as string;
+    this.courseInformation = await this.scheduleDbFunc.queryCourseInformation(tableId, courseId);
+    this.courseSchedule = await this.scheduleDbFunc.queryCourseAllSchedule(
+      this.courseInformation as Course, new Schedule(tableId, '', ''));
+    this.courseColor = await this.scheduleDbFunc.queryCourseColorByString(tableId, courseId);
+    this.scheduleCount = this.courseSchedule?.totalCount() as number;
   }
 }
 

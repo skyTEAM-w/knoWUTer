@@ -9,7 +9,7 @@ import {
   HttpReserve,
   HttpRoomList
 } from '../model/HttpPostResponse';
-import { insertArea, insertBuilding, insertFloor, insertMeter, insertRoom } from './ToolsDatabaseFunc';
+import { insertArea, insertBuilding, insertFloor, insertRoom } from './ToolsDatabaseFunc';
 
 
 const TAG = '[ToolsNetFunc]'
@@ -88,7 +88,11 @@ export async function getAreaListHttp(cookie: string): Promise<ArrayList<Area> |
     let dbAreaList: ArrayList<Area> = parseResponseBodyToAreaList(areaList);
     if (JSON.has(jsonObject, 'areaList')) {
       dbAreaList.forEach((item: Area) => {
-        insertArea(item);
+        // 原生数据层为异步：这里保持"缓存写入不阻塞返回"的原有语义，
+        // 但必须捕获失败，避免未处理的 Promise 拒绝。
+        insertArea(item).catch((e: Error) => {
+          console.error(TAG, `cache Area failed: ${e.message}`);
+        });
       })
     }
     return dbAreaList;
@@ -114,7 +118,9 @@ export async function getBuildingListHttp(cookie: string, area: Area): Promise<A
     console.debug(TAG, JSON.stringify(dbBuildList))
     if (JSON.has(jsonObject, 'buildList')) {
       dbBuildList.forEach((item: Building) => {
-        insertBuilding(item, area);
+        insertBuilding(item, area).catch((e: Error) => {
+          console.error(TAG, `cache Building failed: ${e.message}`);
+        });
       })
     }
     return dbBuildList;
@@ -143,7 +149,9 @@ export async function getFloorListHttp(cookie: string, area: Area,
     console.debug(TAG, JSON.stringify(dbFloorList))
     if (JSON.has(jsonObject, 'floorList')) {
       dbFloorList.forEach((item: Floor) => {
-        insertFloor(item, building);
+        insertFloor(item, building).catch((e: Error) => {
+          console.error(TAG, `cache Floor failed: ${e.message}`);
+        });
       })
     }
     return dbFloorList;
@@ -174,7 +182,9 @@ export async function getRoomListHttp(cookie: string, building: Building,
     console.debug(TAG, JSON.stringify(dbFloorList))
     if (JSON.has(jsonObject, 'roomList')) {
       dbFloorList.forEach((item: Room) => {
-        insertRoom(item, building, floor);
+        insertRoom(item, building, floor).catch((e: Error) => {
+          console.error(TAG, `cache Room failed: ${e.message}`);
+        });
       })
     }
     return dbFloorList;
@@ -197,9 +207,9 @@ export async function getMeterIdHttp(cookie: string, room: Room): Promise<Meter 
     console.info(TAG, JSON.parse(body));
     console.info(TAG, JSON.has(jsonObject, 'meterId'));
     console.debug(TAG, JSON.stringify(httpMeter));
-    if (JSON.has(jsonObject, 'meterId')) {
-      insertMeter(new Meter(httpMeter.meterId), room);
-    }
+    // 电表缓存写入不在这里做：Meters 对 Rooms 是复合外键
+    // (RoomId, BuildingId, FloorId)，而本函数只拿到 room，
+    // 缺楼栋/楼层无法满足父键。改由组件层（持有 building/floor）写入。
     return new Meter(httpMeter.meterId)
   }
   return undefined;

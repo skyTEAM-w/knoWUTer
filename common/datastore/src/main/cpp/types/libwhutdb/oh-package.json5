@@ -1,0 +1,6 @@
+{
+  "name": "libwhutdb.so",
+  "types": "./index.d.ts",
+  "version": "1.0",
+  "description": "whuthelper 原生数据层（NDK RDB）"
+}

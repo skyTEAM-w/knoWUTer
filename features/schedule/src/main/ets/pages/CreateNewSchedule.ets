@@ -52,9 +52,13 @@ export struct CreateNewSchedule {
       secondaryButton: {
         value: $r('app.string.confirm'),
         action: () => {
-          this.saveNewSchedule();
-          promptAction.showToast({ message: '保存成功' })
-          this.onDestinationBack()
+          this.saveNewSchedule().then(() => {
+            promptAction.showToast({ message: '保存成功' })
+            this.onDestinationBack()
+          }).catch((e: Error) => {
+            console.error(TAG, `saveNewSchedule failed: ${e.message}`)
+            promptAction.showToast({ message: '保存失败' })
+          })
         }
       }
     })
@@ -95,30 +99,37 @@ export struct CreateNewSchedule {
     })
   }
 
-  saveNewSchedule() {
-    if (this.courseList) {
-      let resultSet = this.scheduleDBFunc.queryScheduleInfomationByScheduleName(new Schedule('', this.scheduleName,
-        new intl.DateTimeFormat("zh-cn", { dateStyle: 'short' }).format(this.selectedDate)));
-
-      if (resultSet && resultSet.rowCount > 0) {
-        this.scheduleName += resultSet.rowCount.toString()
-      }
-      let scheduleId = this.scheduleDBFunc.insertScheduleInformation(new Schedule('', this.scheduleName,
-        new intl.DateTimeFormat("zh-cn", { dateStyle: 'short' }).format(this.selectedDate)));
-      console.debug(TAG, 'scheduleId', scheduleId);
-      let courseArray: Course[] | undefined = this.courseList?.getDataList();
-      if (courseArray && scheduleId) {
-        const scheduleInfomation =
-          new Schedule(scheduleId.toString(), this.scheduleName,
-            new intl.DateTimeFormat("zh-cn", { dateStyle: 'short' }).format(this.selectedDate))
-        console.debug(TAG, 'scheduleInfomation', JSON.stringify(scheduleInfomation))
-        this.scheduleDBFunc.insertCourseInformation(courseArray, scheduleInfomation);
-        courseArray.forEach((course: Course) => {
-          if (course.classDateAndPlace) {
-            const courseSchedule = classDateAndPlaceToCourseSchedule(course, scheduleInfomation, true);
-            this.scheduleDBFunc.insertCourseSchedule(courseSchedule);
-          }
-        })
+  /**
+   * 保存导入的课表。
+   *
+   * 改名去重（UNIQUE(TableName, StartDate) 冲突时自动加后缀）已下沉到数据层，
+   * 这里只负责按拿到的 ScheduleId 写课程与上课安排。
+   */
+  async saveNewSchedule(): Promise<void> {
+    if (!this.courseList) {
+      return;
+    }
+    const startDate: string =
+      new intl.DateTimeFormat("zh-cn", { dateStyle: 'short' }).format(this.selectedDate);
+    const scheduleId: string = await this.scheduleDBFunc.insertScheduleInformation(
+      new Schedule('', this.scheduleName, startDate));
+    console.debug(TAG, 'scheduleId', scheduleId);
+    if (!scheduleId || scheduleId.length === 0) {
+      promptAction.showToast({ message: '课表创建失败' });
+      return;
+    }
+    const courseArray: Course[] | undefined = this.courseList?.getDataList();
+    if (!courseArray) {
+      return;
+    }
+    const scheduleInfomation: Schedule = new Schedule(scheduleId, this.scheduleName, startDate);
+    await this.scheduleDBFunc.insertCourseInformation(courseArray, scheduleInfomation);
+    for (const course of courseArray) {
+      if (course.classDateAndPlace) {
+        const courseSchedule = classDateAndPlaceToCourseSchedule(course, scheduleInfomation, true);
+        if (courseSchedule && courseSchedule.length > 0) {
+          await this.scheduleDBFunc.insertCourseSchedule(courseSchedule);
+        }
       }
     }
   }

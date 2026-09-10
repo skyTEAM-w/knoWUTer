@@ -73,10 +73,15 @@ export struct ScheduleTable {
     this.isThisTab = this.bottomTabIndex === CommonConstants.SCHEDULE_BOTTOM_INDEX;
   }
 
-  onWeekNeedChange(propName: string) {
+  private async reloadScheduleTableList(): Promise<void> {
+    const list: Schedule[] = await this.scheduleDBFunc.queryAllScheduleTable();
+    this.scheduleTableList.pushArrayData(list);
+  }
+
+  async onWeekNeedChange(propName: string) {
     if (propName == 'selectedScheduleTableIndex') {
       this.scheduleSettingFunc.saveSelectScheduleIndex(this.selectedScheduleTableIndex);
-      this.scheduleTableList.pushArrayData(this.scheduleDBFunc.queryAllScheduleTable() as Schedule[]);
+      await this.reloadScheduleTableList();
       this.selectedSchedule = this.scheduleTableList.getData(this.selectedScheduleTableIndex);
       this.selectedTableId = this.selectedSchedule.scheduleId;
       console.debug(TAG, 'tableid', this.selectedTableId);
@@ -88,19 +93,18 @@ export struct ScheduleTable {
       })
       this.selectedWeek = this.currentWeek;
     } else {
-      this.scheduleTableList.pushArrayData(this.scheduleDBFunc.queryAllScheduleTable() as Schedule[]);
+      await this.reloadScheduleTableList();
     }
 
   }
 
-  updateCourseInformation() {
-    this.courseList =
-      this.scheduleDBFunc.queryAllCourseInformation(this.selectedSchedule as Schedule) as LazyDataSource<Course>
+  async updateCourseInformation() {
+    this.courseList = await this.scheduleDBFunc.queryAllCourseInformation(this.selectedSchedule as Schedule);
   }
 
-  getAllSchedule() {
+  async getAllSchedule() {
     // TODO: 存在代码冗余，测试后删减
-    this.scheduleTableList.pushArrayData(this.scheduleDBFunc.queryAllScheduleTable() as Schedule[]);
+    await this.reloadScheduleTableList();
     console.debug(TAG, 'getAllSchedule', JSON.stringify(this.scheduleTableList))
     if (!this.scheduleTableList.isEmpty() && this.selectedScheduleTableIndex !== -1 && !this.isSettingShow) {
       this.selectedSchedule = this.scheduleTableList.getData(this.selectedScheduleTableIndex);

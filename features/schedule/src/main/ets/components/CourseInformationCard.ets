@@ -44,7 +44,9 @@ export struct ClassInformationCard {
       secondaryButton: {
         value: $r('app.string.confirm'),
         action: () => {
-          new ScheduleDatabaseFunc().deleteCourse(this.selectedSchedule.scheduleId, this.courseInformation.classId);
+          new ScheduleDatabaseFunc()
+            .deleteCourse(this.selectedSchedule.scheduleId, this.courseInformation.classId)
+            .catch((e: Error) => console.error(TAG, `deleteCourse failed: ${e.message}`));
           this.courseInformationList.deleteData(this.index);
           const eventHub: common.EventHub = (getContext(this) as common.UIAbilityContext).eventHub;
           eventHub.emit(EventType.DELETE_COURSE)

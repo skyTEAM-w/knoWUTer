@@ -10,7 +10,7 @@ import {
   UserSettingUtil,
   WindowUtil
 } from '@ohos/utils';
-import { DBUtil } from '@ohos/datastore';
+import { initDatabase } from '@ohos/datastore';
 import { WebViewPage } from '@ohos/uicomponents';
 import { UserView } from '@feature/mine/Index';
 import { display } from '@kit.ArkUI';
@@ -36,7 +36,12 @@ struct Index {
 
   onPageShow(): void {
     UserSettingUtil.getInstance().checkAllSetting();
-    DBUtil.getInstance();
+    // 原生数据层初始化（就绪 Promise）
+    initDatabase(getContext(this).databaseDir).then(() => {
+      console.info('[MainPage]', 'native datastore ready');
+    }).catch((e: Error) => {
+      console.error('[MainPage]', `native datastore init failed: ${e.message}`);
+    });
     ScheduleSettingFunc.getInstance().checkAllScheduleSetting()
     CookieUtil.getInstance().checkAllCookies();
   }
